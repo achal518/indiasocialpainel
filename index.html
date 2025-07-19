@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Social Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="logo-section">
+                <h1>India Social Panel</h1>
+                <div class="logo-icon">🇮🇳</div>
+            </div>
+            <div class="login-form">
+                <h2>Welcome Back!</h2>
+                <p>Sign in to your account</p>
+                <button id="googleSignIn" class="google-signin-btn">
+                    <i class="fab fa-google"></i>
+                    Sign in with Google
+                </button>
+                <div class="signup-link">
+                    <p>Don't have an account? <a href="#" id="signUpLink">Sign Up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button id="hamburgerMenu" class="hamburger-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <span class="logo-text">India Social Panel</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div id="balanceBtn" class="balance-display">₹0.00</div>
+                <div class="user-avatar" id="userAvatar">A</div>
+                <div class="dropdown-arrow">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Side Navigation -->
+        <nav id="sideNav" class="side-nav">
+            <div class="nav-overlay" id="navOverlay"></div>
+            <div class="nav-content">
+                <div class="nav-header">
+                    <h3>Menu</h3>
+                    <button id="closeNav" class="close-nav">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#" id="newOrderNav">New Order</a></li>
+                    <li><a href="#" id="orderHistoryNav">Order History</a></li>
+                    <li><a href="#" id="servicesNav">Services</a></li>
+                    <li><a href="#" id="depositNav">Deposit</a></li>
+                    <li><a href="#" onclick="location.reload()">Sign Out</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Home -->
+            <div id="dashboardHome" class="page active">
+                <!-- Important Update Section - Moved to Top -->
+                <div class="update-card">
+                    <div class="update-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Important Update 🚨</h3>
+                    </div>
+                    <p>Turn off "Flag for review" before ordering Instagram followers.</p>
+                    <p class="hindi-text">हिंदी: Instagram Followers Order करने से पहले "Flag for review" ऑप्शन को बंद करना होगा।</p>
+
+                    <div class="instagram-guide">
+                        <div class="guide-header">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Followers and contacts</span>
+                        </div>
+                        <div class="guide-content">
+                            <h4>Followers</h4>
+                            <div class="toggle-section">
+                                <span>Flag for review</span>
+                                <div class="toggle-switch">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                            <p class="guide-description">Followers and follow requests from certain accounts, including potential spam, will be flagged and moved to a separate section of your Followers list. Learn more.</p>
+                        </div>
+                    </div>
+
+                    <div class="must-read">
+                        <h4>📖 Must Read 📖</h4>
+                        <ul>
+                            <li>Read description before adding an order.</li>
+                            <li><strong>Do not place a second order on the same link before completion.</strong></li>
+                            <li><strong>Wrong or non-working link? No refund.</strong></li>
+                            <li>We work on start count + quantity = final quantity.</li>
+                            <li>Don't change username if you ordered a refill service.</li>
+                            <li>📚 Read <a href="#" id="userGuideLink">User Guide ➤ Click Here</a></li>
+                            <li>📱 <span id="whatsappGroupText">Check Other Services</span> ➤ <a href="http://t.me/Indiasocialpainel_official_bot?start=start" id="whatsappGroupLink">Click Here</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Total Orders Section - Moved above balance -->
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>TOTAL ORDERS AT INDIASOCIALPANEL.IN</h3>
+                    <div class="stats-number">119168991</div>
+                    <p>3+ years experience providing SMM services!</p>
+                </div>
+
+                <!-- Balance Section - Moved below stats -->
+                <div class="balance-card">
+                    <div class="balance-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <p>looking to Deposit?</p>
+                    <button class="deposit-btn" id="depositBtnMain">DEPOSIT NOW</button>
+                    <div class="balance-info">
+                        <h4>CURRENT BALANCE</h4>
+                        <div class="balance-amount">₹0.00</div>
+                        <p>Your total spendings : ₹0.00</p>
+                    </div>
+                </div>
+
+                <!-- Order Tabs -->
+                <div class="order-tabs">
+                    <button class="tab-btn active" id="newOrderTab">🛒 New Order</button>
+                    <button class="tab-btn" id="massOrderTab">📦 Mass Order</button>
+                </div>
+
+                <!-- Search Service -->
+                <div class="search-section">
+                    <input type="text" id="searchService" placeholder="Search Service" class="search-input">
+                </div>
+
+                <!-- Service Selection -->
+                <div class="service-section">
+                    <label for="serviceSelect">Service</label>
+                    <select id="serviceSelect" class="service-select">
+                        <option value="">Select Service</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="whatsapp">WhatsApp</option>
+                        <option value="other">Other</option>
+                        <option value="new-offers">New Service Offers</option>
+                    </select>
+                </div>
+
+                <!-- Package Selection -->
+                <div class="package-section">
+                    <label for="packageSelect">Package</label>
+                    <select id="packageSelect" class="package-select">
+                        <option value="">Select Package</option>
+                    </select>
+                </div>
+
+                <!-- Price Display -->
+                <div id="priceSection" class="price-section hidden">
+                    <div class="price-box">
+                        <h4>Price</h4>
+                        <div id="priceDisplay" class="price-display">тВ╣0.00</div>
+                    </div>
+
+                    <div class="description-box">
+                        <h4>Description</h4>
+                        <div class="warning-icon">⚠️ Please Read Before Ordering</div>
+                        <div id="descriptionContent" class="description-content">
+                            <p>Start: 0-15 Minutes</p>
+                            <p>Speed: 100K per Day | Can Be Slow Sometimes</p>
+                            <p>Quality: Old Accounts</p>
+                            <p>Drop Rate: Low Drop 💧(UPTO 10%)</p>
+                            <p>Refill Time: 365 Days Only If Drop below 10%⚡️</p>
+                            <p><strong>Notes:</strong></p>
+                            <p>Speed and start time may vary during high demand.</p>
+                            <p>Please do not place a second order on the same link before the first one is completed.</p>
+                        </div>
+                    </div>
+
+                    <!-- Link Input -->
+                    <div class="input-section">
+                        <label for="linkInput">Link (Must be Public)</label>
+                        <input type="url" id="linkInput" placeholder="Account Must be Public" class="link-input">
+                    </div>
+
+                    <!-- Quantity Input -->
+                    <div class="input-section">
+                        <label for="quantityInput">Quantity</label>
+                        <input type="number" id="quantityInput" placeholder="100" class="quantity-input" min="100" max="1000000">
+                        <div class="quantity-info">Min: 100 - Max: 1000000</div>
+                    </div>
+
+                    <!-- You will pay -->
+                    <div class="payment-section">
+                        <h4>You will pay</h4>
+                        <div id="totalAmount" class="total-amount">0.00</div>
+                        <div id="balanceError" class="balance-error hidden">
+                            😭 Houston we have problem! And its... Not enough funds on balance
+                        </div>
+                    </div>
+
+                    <!-- Terms Checkbox -->
+                    <div class="terms-section">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="termsCheckbox">
+                            <span class="checkmark"></span>
+                            Yes, I have confirmed the <a href="#" class="terms-link">Terms & Conditions</a>
+                        </label>
+                    </div>
+
+                    <!-- Place Order Button -->
+                    <button id="placeOrderBtn" class="place-order-btn">PLACE ORDER</button>
+
+                    <!-- Error Message -->
+                    <div id="errorMessage" class="error-message hidden">
+                        Please ensure all required fields are filled and terms & conditions are accepted to place your order.
+                    </div>
+                </div>
+
+                <!-- Latest News -->
+                <div class="news-section">
+                    <h3>📰 LATEST NEWS</h3>
+                    <div class="news-item">
+                        <div class="news-date">2025-05-21 13:01:03</div>
+                        <div class="news-content">
+                            <h4>🎉 Congratulations 🎉</h4>
+                            <p>Now You are a <span class="member-text">Member</span> of India Social Panel.in</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order History Page -->
+            <div id="orderHistoryPage" class="page">
+                <div class="page-header">
+                    <h2>Order History</h2>
+                </div>
+                <div class="empty-state">
+                    <div class="empty-icon">🛒</div>
+       scriptript           <h3>You haven't placed any orders yet.</h3>
+                    <p>Start your journey to social media success by placing your first order now!</p>
+                    <button class="cta-btn" onclick="showPage('dashboardHome')">Place Your First Order</button>
+                </div>
+            </div>
+
+            <!-- Services Page -->
+            <div id="servicesPage" class="page">
+                <div class="page-header">
+                    <h2>All Services</h2>
+                </div>
+                <div class="services-grid">
+                    <div class="service-category">
+                        <h3>📺 YouTube Services</h3>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <span>YouTube Channel Monetization</span>
+                                <span class="service-price">₹17,000</span>
+                            </div>
+                            <div class="service-item">
+                                <span>YouTube Subscribe</span>
+                                <span class="service-price">₹400/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>YouTube Views</span>
+                                <span class="service-price">₹250/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>YouTube Shorts Views</span>
+                                <span class="service-price">₹200/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>YouTube Like</span>
+                                <span class="service-price">₹170/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>YouTube Watchtime</span>
+                                <span class="service-price">₹6,000/k hours</span>
+                            </div>
+                            <div class="service-item">
+                                <span>YouTube Live Stream Views</span>
+                                <span class="service-price">₹250/k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-category">
+                        <h3>📸 Instagram Services</h3>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <span>Instagram View</span>
+                                <span class="service-price">₹25/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>Instagram Story View</span>
+                                <span class="service-price">₹20/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>Instagram Story/Post Like</span>
+                                <span class="service-price">₹20/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>Instagram Followers</span>
+                                <span class="service-price">₹200/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>Instagram Reels Share</span>
+                                <span class="service-price">₹15/k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-category">
+                        <h3>📘 Facebook Services</h3>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <span>Facebook Monetization</span>
+                                <span class="service-price">₹5,000</span>
+                            </div>
+                            <div class="service-item">
+                                <span>Facebook Post Like</span>
+                                <span class="service-price">₹200/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>Facebook Followers</span>
+                                <span class="service-price">₹200/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>Facebook View</span>
+                                <span class="service-price">₹15/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>Facebook Story View</span>
+                                <span class="service-price">₹150/k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-category">
+                        <h3>💬 WhatsApp Services</h3>
+                        <div class="service-list">
+                            <div class="service-item">
+                                <span>WhatsApp Blue Tick</span>
+                                <span class="service-price">₹40,000</span>
+                            </div>
+                            <div class="service-item">
+                                <span>WhatsApp Channel Member</span>
+                                <span class="service-price">₹300/k</span>
+                            </div>
+                            <div class="service-item">
+                                <span>WhatsApp Poll Votes</span>
+                                <span class="service-price">₹500/k</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deposit Page -->
+            <div id="depositPage" class="page">
+                <div class="page-header">
+                    <h2>Deposit Funds</h2>
+                </div>
+                <div class="empty-state">
+                    <div class="empty-icon">💳</div>
+                    <p>Deposit functionality coming soon...</p>
+                </div>
+            </div>
+
+            <!-- User Guide Page -->
+            <div id="userGuidePage" class="page">
+                <div class="page-header">
+                    <h2>User Guidelines</h2>
+                </div>
+                <div class="guide-content">
+                    <p>Aap guidelines ka sahi se palan karen.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>India Social Panel</h3>
+                    <p>India Social Panel is a registered digital marketing agency specializing in Website Development, Social Media Marketing, Graphic Design, and Meta & Google Ads services. We are committed to delivering exceptional results to help your business grow online.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <div class="support-links">
+                        <div class="support-item">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Tickets</span>
+                        </div>
+                        <div class="support-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>indiasocialpanel@email.com</span>
+                        </div>
+                        <div class="support-item">
+                            <i class="fas fa-phone"></i>
+                            <span>+919431863716</span>
+                        </div>
+                        <div class="support-item">
+                            <i class="fab fa-instagram"></i>
+                            <span>indiasocialpanel.official</span>
+                        </div>
+                        <div class="support-item">
+                            <i class="fab fa-telegram"></i>
+                            <a href="https://t.me/Indiasocialpainel_support_bot?start=start">indiasocialpanel_support</a>
+                        </div>
+                        <div class="support-item">
+                            <i class="fas fa-language"></i>
+                            <select id="languageSelect">
+                                <option value="hindi">Hindi</option>
+                                <option value="english">English</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>┬й 2025 India Social Panel. All rights reserved. India Social Panel is a registered digital marketing agency offering Website Development, Social Media Marketing, Graphic Design, and Meta & Google Ads services. Instagram, Facebook, Threads, WhatsApp, and their respective logos are trademarks of Meta Platforms, Inc. тАв Telegram and the Telegram logo are trademarks of Telegram Messenger Inc. тАв Twitter and the Twitter logo are trademarks of Twitter, Inc. тАв TikTok and the TikTok logo are trademarks of ByteDance Ltd. тАв Google, YouTube, Gmail, and their respective logos are trademarks of Google LLC.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Floating Contact Button -->
+    <div class="floating-contact">
+        <a href="https://t.me/Indiasocialpainel_support_bot?start=start" class="contact-btn" target="_blank">
+            <i class="fas fa-comments"></i>
+            <span>Contact Us</span>
+        </a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
