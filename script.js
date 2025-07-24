@@ -1,298 +1,978 @@
 // Service packages data
 const servicePackages = {
     youtube: [
-        { name: "YouTube Channel Monetization", price: 17000, priceType: "fixed" },
-        { name: "YouTube Subscribe", price: 400, priceType: "per_k" },
-        { name: "YouTube Views", price: 250, priceType: "per_k" },
-        { name: "YouTube Shorts Views", price: 200, priceType: "per_k" },
-        { name: "YouTube Like", price: 170, priceType: "per_k" },
-        { name: "YouTube Watchtime", price: 6000, priceType: "per_k", unit: "hours" },
-        { name: "YouTube Live Stream Views", price: 250, priceType: "per_k" }
+        { id: 1001, name: "YouTube Channel Monetization - Basic", price: 15000, priceType: "fixed", desc: "Basic monetization setup", tier: "basic", deliveryTime: "7-15 days", guarantee: "90 days", quality: "Standard setup" },
+        { id: 1002, name: "YouTube Channel Monetization - Premium", price: 19000, priceType: "fixed", desc: "Premium monetization with faster approval & support", tier: "premium", deliveryTime: "3-7 days", guarantee: "180 days", quality: "Premium setup" },
+
+        { id: 1011, name: "YouTube Subscribers - Basic", price: 350, priceType: "per_k", desc: "Standard subscribers delivery", tier: "basic", deliveryTime: "3-5 days", guarantee: "90 days", quality: "Mixed accounts" },
+        { id: 1012, name: "YouTube Subscribers - Standard", price: 400, priceType: "per_k", desc: "Real & active subscribers from worldwide", tier: "standard", deliveryTime: "2-3 days", guarantee: "180 days", quality: "Real accounts" },
+        { id: 1013, name: "YouTube Subscribers - Premium", price: 520, priceType: "per_k", desc: "Premium active subscribers with high retention", tier: "premium", deliveryTime: "1-2 days", guarantee: "365 days", quality: "HQ active users" },
+
+        { id: 1021, name: "YouTube Views - Basic", price: 200, priceType: "per_k", desc: "Standard video views", tier: "basic", deliveryTime: "12-24 hours", guarantee: "30 days", quality: "Basic retention" },
+        { id: 1022, name: "YouTube Views - Standard", price: 250, priceType: "per_k", desc: "High retention views from real users", tier: "standard", deliveryTime: "6-12 hours", guarantee: "60 days", quality: "Good retention" },
+        { id: 1023, name: "YouTube Views - Premium", price: 350, priceType: "per_k", desc: "Maximum retention views for better ranking", tier: "premium", deliveryTime: "3-6 hours", guarantee: "90 days", quality: "Max retention" },
+
+        { id: 1031, name: "YouTube Shorts Views - Basic", price: 150, priceType: "per_k", desc: "Basic shorts views delivery", tier: "basic", deliveryTime: "6-12 hours", guarantee: "15 days", quality: "Standard views" },
+        { id: 1032, name: "YouTube Shorts Views - Standard", price: 200, priceType: "per_k", desc: "Fast delivery shorts views", tier: "standard", deliveryTime: "3-6 hours", guarantee: "30 days", quality: "Good retention" },
+        { id: 1033, name: "YouTube Shorts Views - Premium", price: 280, priceType: "per_k", desc: "Ultra-fast shorts views with viral potential", tier: "premium", deliveryTime: "1-3 hours", guarantee: "45 days", quality: "Viral quality" },
+
+        { id: 1041, name: "YouTube Likes - Basic", price: 140, priceType: "per_k", desc: "Standard video likes", tier: "basic", deliveryTime: "2-4 hours", guarantee: "30 days", quality: "Mixed accounts" },
+        { id: 1042, name: "YouTube Likes - Standard", price: 170, priceType: "per_k", desc: "Genuine likes from active accounts", tier: "standard", deliveryTime: "1-2 hours", guarantee: "60 days", quality: "Real accounts" },
+        { id: 1043, name: "YouTube Likes - Premium", price: 220, priceType: "per_k", desc: "Premium likes with maximum engagement boost", tier: "premium", deliveryTime: "30-60 mins", guarantee: "90 days", quality: "HQ engaged users" },
+
+        { id: 1051, name: "YouTube Watch Time - Standard", price: 5500, priceType: "per_k", unit: "hours", desc: "Standard watch time for monetization", tier: "standard", deliveryTime: "5-10 days", guarantee: "180 days", quality: "Real watch time" },
+        { id: 1052, name: "YouTube Watch Time - Premium", price: 6500, priceType: "per_k", unit: "hours", desc: "Premium watch time with faster delivery", tier: "premium", deliveryTime: "3-7 days", guarantee: "365 days", quality: "HQ watch time" }
     ],
     instagram: [
-        { name: "Instagram View", price: 25, priceType: "per_k" },
-        { name: "Instagram Story View", price: 20, priceType: "per_k" },
-        { name: "Instagram Story/Post Like", price: 20, priceType: "per_k" },
-        { name: "Instagram Followers", price: 200, priceType: "per_k" },
-        { name: "Instagram Reels Share", price: 15, priceType: "per_k" }
+        { id: 2001, name: "Instagram Followers - Basic", price: 150, priceType: "per_k", desc: "Standard followers with basic delivery", tier: "basic", deliveryTime: "24-48 hours", guarantee: "30 days", quality: "Mixed accounts" },
+        { id: 2002, name: "Instagram Followers - Standard", price: 200, priceType: "per_k", desc: "High quality followers with profile pictures", tier: "standard", deliveryTime: "12-24 hours", guarantee: "90 days", quality: "Real accounts" },
+        { id: 2003, name: "Instagram Followers - Premium", price: 280, priceType: "per_k", desc: "Premium followers with high engagement & retention", tier: "premium", deliveryTime: "6-12 hours", guarantee: "365 days", quality: "Active HQ accounts" },
+
+        { id: 2011, name: "Instagram Likes - Basic", price: 15, priceType: "per_k", desc: "Quick likes delivery", tier: "basic", deliveryTime: "1-2 hours", guarantee: "7 days", quality: "Mixed accounts" },
+        { id: 2012, name: "Instagram Likes - Standard", price: 20, priceType: "per_k", desc: "Instant likes from real accounts", tier: "standard", deliveryTime: "30 mins", guarantee: "30 days", quality: "Real accounts" },
+        { id: 2013, name: "Instagram Likes - Premium", price: 35, priceType: "per_k", desc: "Ultra-fast premium likes with high retention", tier: "premium", deliveryTime: "15 mins", guarantee: "90 days", quality: "HQ active users" },
+
+        { id: 2021, name: "Instagram Views - Basic", price: 18, priceType: "per_k", desc: "Standard video/reel views", tier: "basic", deliveryTime: "2-4 hours", guarantee: "7 days", quality: "Basic views" },
+        { id: 2022, name: "Instagram Views - Standard", price: 25, priceType: "per_k", desc: "Video/Reel views with high retention", tier: "standard", deliveryTime: "1-2 hours", guarantee: "30 days", quality: "Good retention" },
+        { id: 2023, name: "Instagram Views - Premium", price: 40, priceType: "per_k", desc: "Maximum retention views with organic pattern", tier: "premium", deliveryTime: "30 mins", guarantee: "60 days", quality: "Max retention" },
+
+        { id: 2031, name: "Instagram Story Views - Basic", price: 15, priceType: "per_k", desc: "Basic story views delivery", tier: "basic", deliveryTime: "1-3 hours", guarantee: "No refill", quality: "Standard views" },
+        { id: 2032, name: "Instagram Story Views - Standard", price: 20, priceType: "per_k", desc: "Story views from active users", tier: "standard", deliveryTime: "30-60 mins", guarantee: "24 hours", quality: "Active users" },
+        { id: 2033, name: "Instagram Story Views - Premium", price: 30, priceType: "per_k", desc: "Instant story views from premium accounts", tier: "premium", deliveryTime: "15 mins", guarantee: "7 days", quality: "Premium accounts" },
+
+        { id: 2041, name: "Instagram Reels Likes - Basic", price: 20, priceType: "per_k", desc: "Standard reels likes", tier: "basic", deliveryTime: "2-4 hours", guarantee: "7 days", quality: "Mixed accounts" },
+        { id: 2042, name: "Instagram Reels Likes - Standard", price: 25, priceType: "per_k", desc: "Boost your reels engagement", tier: "standard", deliveryTime: "1-2 hours", guarantee: "30 days", quality: "Real accounts" },
+        { id: 2043, name: "Instagram Reels Likes - Premium", price: 40, priceType: "per_k", desc: "Ultra-fast reels likes with maximum engagement", tier: "premium", deliveryTime: "30 mins", guarantee: "60 days", quality: "HQ engaged users" },
+
+        { id: 2051, name: "Instagram Reels Views - Basic", price: 22, priceType: "per_k", desc: "Standard reels views", tier: "basic", deliveryTime: "2-4 hours", guarantee: "7 days", quality: "Basic retention" },
+        { id: 2052, name: "Instagram Reels Views - Standard", price: 30, priceType: "per_k", desc: "High retention reel views", tier: "standard", deliveryTime: "1-2 hours", guarantee: "30 days", quality: "Good retention" },
+        { id: 2053, name: "Instagram Reels Views - Premium", price: 45, priceType: "per_k", desc: "Maximum retention reels views for viral growth", tier: "premium", deliveryTime: "30 mins", guarantee: "60 days", quality: "Max retention" },
+
+        { id: 2061, name: "Instagram Comments - Standard", price: 450, priceType: "per_k", desc: "Basic positive comments", tier: "standard", deliveryTime: "6-12 hours", guarantee: "30 days", quality: "Generic comments" },
+        { id: 2062, name: "Instagram Comments - Premium", price: 600, priceType: "per_k", desc: "Custom positive comments with high engagement", tier: "premium", deliveryTime: "3-6 hours", guarantee: "60 days", quality: "Custom comments" },
+
+        { id: 2071, name: "Instagram Saves - Standard", price: 80, priceType: "per_k", desc: "Standard post saves", tier: "standard", deliveryTime: "2-4 hours", guarantee: "30 days", quality: "Real users" },
+        { id: 2072, name: "Instagram Saves - Premium", price: 120, priceType: "per_k", desc: "Premium post saves from engaged users", tier: "premium", deliveryTime: "1-2 hours", guarantee: "60 days", quality: "Engaged users" }
     ],
     facebook: [
-        { name: "Facebook Monetization", price: 5000, priceType: "fixed" },
-        { name: "Facebook Post Like", price: 200, priceType: "per_k" },
-        { name: "Facebook Followers", price: 200, priceType: "per_k" },
-        { name: "Facebook View", price: 15, priceType: "per_k" },
-        { name: "Facebook Story View", price: 150, priceType: "per_k" }
+        { id: 3001, name: "Facebook Monetization - Standard", price: 4500, priceType: "fixed", desc: "Standard page monetization setup", tier: "standard", deliveryTime: "5-10 days", guarantee: "180 days", quality: "Standard setup" },
+        { id: 3002, name: "Facebook Monetization - Premium", price: 5500, priceType: "fixed", desc: "Premium monetization with priority support", tier: "premium", deliveryTime: "3-7 days", guarantee: "365 days", quality: "Premium setup" },
+
+        { id: 3011, name: "Facebook Page Likes - Basic", price: 160, priceType: "per_k", desc: "Basic page likes delivery", tier: "basic", deliveryTime: "24-48 hours", guarantee: "60 days", quality: "Mixed accounts" },
+        { id: 3012, name: "Facebook Page Likes - Standard", price: 200, priceType: "per_k", desc: "Real page likes from active users", tier: "standard", deliveryTime: "12-24 hours", guarantee: "90 days", quality: "Real accounts" },
+        { id: 3013, name: "Facebook Page Likes - Premium", price: 260, priceType: "per_k", desc: "Premium page likes with high engagement", tier: "premium", deliveryTime: "6-12 hours", guarantee: "180 days", quality: "HQ active users" },
+
+        { id: 3021, name: "Facebook Followers - Basic", price: 170, priceType: "per_k", desc: "Standard profile followers", tier: "basic", deliveryTime: "24-48 hours", guarantee: "60 days", quality: "Mixed accounts" },
+        { id: 3022, name: "Facebook Followers - Standard", price: 200, priceType: "per_k", desc: "Profile followers from worldwide", tier: "standard", deliveryTime: "12-24 hours", guarantee: "90 days", quality: "Real accounts" },
+        { id: 3023, name: "Facebook Followers - Premium", price: 270, priceType: "per_k", desc: "Premium followers with maximum retention", tier: "premium", deliveryTime: "6-12 hours", guarantee: "180 days", quality: "HQ engaged users" },
+
+        { id: 3031, name: "Facebook Post Likes - Basic", price: 80, priceType: "per_k", desc: "Basic post likes", tier: "basic", deliveryTime: "2-4 hours", guarantee: "30 days", quality: "Mixed accounts" },
+        { id: 3032, name: "Facebook Post Likes - Standard", price: 100, priceType: "per_k", desc: "Post likes with instant delivery", tier: "standard", deliveryTime: "1-2 hours", guarantee: "60 days", quality: "Real accounts" },
+        { id: 3033, name: "Facebook Post Likes - Premium", price: 135, priceType: "per_k", desc: "Premium post likes for maximum engagement", tier: "premium", deliveryTime: "30 mins", guarantee: "90 days", quality: "HQ engaged users" },
+
+        { id: 3041, name: "Facebook Video Views - Basic", price: 12, priceType: "per_k", desc: "Standard video views", tier: "basic", deliveryTime: "3-6 hours", guarantee: "15 days", quality: "Basic retention" },
+        { id: 3042, name: "Facebook Video Views - Standard", price: 15, priceType: "per_k", desc: "Video views with high retention", tier: "standard", deliveryTime: "1-3 hours", guarantee: "30 days", quality: "Good retention" },
+        { id: 3043, name: "Facebook Video Views - Premium", price: 22, priceType: "per_k", desc: "Maximum retention video views", tier: "premium", deliveryTime: "30-60 mins", guarantee: "45 days", quality: "Max retention" }
     ],
     whatsapp: [
-        { name: "WhatsApp Blue Tick", price: 40000, priceType: "fixed" },
-        { name: "WhatsApp Channel Member", price: 300, priceType: "per_k" },
-        { name: "WhatsApp Poll Votes", price: 500, priceType: "per_k" }
+        { id: 4001, name: "WhatsApp Blue Tick Verification", price: 40000, priceType: "fixed", desc: "Official business verification badge" },
+        { id: 4002, name: "WhatsApp Channel Members", price: 300, priceType: "per_k", desc: "Real channel subscribers" },
+        { id: 4003, name: "WhatsApp Poll Votes", price: 500, priceType: "per_k", desc: "Poll votes from active users" },
+        { id: 4004, name: "WhatsApp Status Views", price: 200, priceType: "per_k", desc: "Status views from contacts" }
+    ],
+    twitter: [
+        { id: 5001, name: "Twitter Followers", price: 250, priceType: "per_k", desc: "Real followers with profile pictures" },
+        { id: 5002, name: "Twitter Likes", price: 50, priceType: "per_k", desc: "Tweet likes from active accounts" },
+        { id: 5003, name: "Twitter Retweets", price: 150, priceType: "per_k", desc: "Retweets for better engagement" },
+        { id: 5004, name: "Twitter Views", price: 30, priceType: "per_k", desc: "Tweet/Video views" },
+        { id: 5005, name: "Twitter Comments", price: 800, priceType: "per_k", desc: "Custom positive replies" },
+        { id: 5006, name: "Twitter Spaces Listeners", price: 300, priceType: "per_k", desc: "Live space listeners" }
+    ],
+    tiktok: [
+        { id: 6001, name: "TikTok Followers", price: 300, priceType: "per_k", desc: "Real followers from worldwide" },
+        { id: 6002, name: "TikTok Likes", price: 40, priceType: "per_k", desc: "Video likes with fast delivery" },
+        { id: 6003, name: "TikTok Views", price: 35, priceType: "per_k", desc: "High retention video views" },
+        { id: 6004, name: "TikTok Shares", price: 200, priceType: "per_k", desc: "Video shares for viral reach" },
+        { id: 6005, name: "TikTok Comments", price: 700, priceType: "per_k", desc: "Custom positive comments" },
+        { id: 6006, name: "TikTok Live Views", price: 400, priceType: "per_k", desc: "Live stream viewers" }
+    ],
+    telegram: [
+        { id: 7001, name: "Telegram Channel Members", price: 150, priceType: "per_k", desc: "Real channel subscribers" },
+        { id: 7002, name: "Telegram Group Members", price: 200, priceType: "per_k", desc: "Active group members" },
+        { id: 7003, name: "Telegram Post Views", price: 25, priceType: "per_k", desc: "Channel post views" },
+        { id: 7004, name: "Telegram Reactions", price: 100, priceType: "per_k", desc: "Post reactions/emojis" },
+        { id: 7005, name: "Telegram Comments", price: 500, priceType: "per_k", desc: "Channel post comments" }
+    ],
+    linkedin: [
+        { id: 8001, name: "LinkedIn Connections", price: 400, priceType: "per_k", desc: "Professional connections" },
+        { id: 8002, name: "LinkedIn Page Likes", price: 350, priceType: "per_k", desc: "Company page followers" },
+        { id: 8003, name: "LinkedIn Post Likes", price: 200, priceType: "per_k", desc: "Post engagement from professionals" },
+        { id: 8004, name: "LinkedIn Views", price: 100, priceType: "per_k", desc: "Profile/post views" },
+        { id: 8005, name: "LinkedIn Shares", price: 500, priceType: "per_k", desc: "Post shares in network" }
+    ],
+    snapchat: [
+        { id: 9001, name: "Snapchat Followers", price: 400, priceType: "per_k", desc: "Real snapchat followers" },
+        { id: 9002, name: "Snapchat Story Views", price: 150, priceType: "per_k", desc: "Story views from real users" },
+        { id: 9003, name: "Snapchat Spotlight Views", price: 200, priceType: "per_k", desc: "Spotlight video views" }
+    ],
+    pinterest: [
+        { id: 10001, name: "Pinterest Followers", price: 300, priceType: "per_k", desc: "Real Pinterest followers" },
+        { id: 10002, name: "Pinterest Saves", price: 150, priceType: "per_k", desc: "Pin saves from active users" },
+        { id: 10003, name: "Pinterest Likes", price: 100, priceType: "per_k", desc: "Pin likes with fast delivery" },
+        { id: 10004, name: "Pinterest Views", price: 50, priceType: "per_k", desc: "Pin impressions and views" }
+    ],
+    reddit: [
+        { id: 11001, name: "Reddit Upvotes", price: 200, priceType: "per_k", desc: "Post/comment upvotes" },
+        { id: 11002, name: "Reddit Followers", price: 500, priceType: "per_k", desc: "Profile followers" },
+        { id: 11003, name: "Reddit Comments", price: 800, priceType: "per_k", desc: "Custom positive comments" }
+    ],
+    discord: [
+        { id: 12001, name: "Discord Server Members", price: 250, priceType: "per_k", desc: "Real server members" },
+        { id: 12002, name: "Discord Online Members", price: 400, priceType: "per_k", desc: "Active online users" },
+        { id: 12003, name: "Discord Reactions", price: 150, priceType: "per_k", desc: "Message reactions" }
+    ],
+    spotify: [
+        { id: 13001, name: "Spotify Plays", price: 100, priceType: "per_k", desc: "Track plays with high retention" },
+        { id: 13002, name: "Spotify Followers", price: 400, priceType: "per_k", desc: "Artist/playlist followers" },
+        { id: 13003, name: "Spotify Likes", price: 200, priceType: "per_k", desc: "Track/album likes" },
+        { id: 13004, name: "Spotify Playlist Followers", price: 300, priceType: "per_k", desc: "Playlist followers" }
+    ],
+    twitch: [
+        { id: 14001, name: "Twitch Followers", price: 350, priceType: "per_k", desc: "Channel followers" },
+        { id: 14002, name: "Twitch Live Views", price: 500, priceType: "per_k", desc: "Live stream viewers" },
+        { id: 14003, name: "Twitch Likes", price: 200, priceType: "per_k", desc: "Video likes" },
+        { id: 14004, name: "Twitch Chatters", price: 800, priceType: "per_k", desc: "Active chat participants" }
+    ],
+    threads: [
+        { id: 15001, name: "Threads Followers", price: 250, priceType: "per_k", desc: "Meta Threads followers" },
+        { id: 15002, name: "Threads Likes", price: 80, priceType: "per_k", desc: "Post likes from real users" },
+        { id: 15003, name: "Threads Reposts", price: 200, priceType: "per_k", desc: "Post reposts/shares" },
+        { id: 15004, name: "Threads Views", price: 50, priceType: "per_k", desc: "Post views and impressions" }
+    ],
+    "website-traffic": [
+        { id: 16001, name: "Website Traffic - Worldwide", price: 500, priceType: "per_k", desc: "Real visitors from all countries" },
+        { id: 16002, name: "Website Traffic - USA", price: 1000, priceType: "per_k", desc: "Targeted USA traffic" },
+        { id: 16003, name: "Website Traffic - India", price: 300, priceType: "per_k", desc: "Indian targeted visitors" },
+        { id: 16004, name: "Organic Search Traffic", price: 1500, priceType: "per_k", desc: "SEO organic visitors" }
+    ],
+    "google-reviews": [
+        { id: 17001, name: "Google 5 Star Reviews", price: 1000, priceType: "per_review", desc: "Genuine 5-star business reviews" },
+        { id: 17002, name: "Google Review Likes", price: 200, priceType: "per_k", desc: "Helpful votes on reviews" },
+        { id: 17003, name: "Google Business Views", price: 100, priceType: "per_k", desc: "Business profile views" }
+    ],
+    "seo-services": [
+        { id: 18001, name: "High DA Backlinks", price: 2000, priceType: "per_k", desc: "Quality backlinks from high DA sites" },
+        { id: 18002, name: "Local Citations", price: 500, priceType: "per_k", desc: "Local business directory listings" },
+        { id: 18003, name: "Social Signals", price: 300, priceType: "per_k", desc: "Social media mentions and shares" }
     ]
 };
 
-// Language content
+// Simplified content - removed unused multilingual support
 const content = {
-    hindi: {
-        loginTitle: "India Social Panel",
-        welcomeBack: "Welcome Back!",
-        signInText: "Sign in to your account",
-        signInButton: "Sign in with Google",
-        noAccount: "Don't have an account?",
-        signUp: "Sign Up",
-        menu: "Menu",
-        newOrder: "New Order",
-        orderHistory: "Order History",
-        services: "Services",
-        deposit: "Deposit",
-        totalOrders: "TOTAL ORDERS AT INDIASOCIALPANEL.IN",
-        experience: "3+ years experience providing SMM services!",
-        lookingDeposit: "looking to Deposit?",
-        depositNow: "DEPOSIT NOW",
-        currentBalance: "CURRENT BALANCE",
-        totalSpendings: "Your total spendings : ╤В╨ТтХг0.00",
-        massOrder: "╨Б╨п╨б╨╡ Mass Order",
-        importantUpdate: "Important Update ╨Б╨п╨д╨в",
-        flagReview: "Turn off \"Flag for review\" before ordering Instagram followers.",
-        flagReviewHindi: "рд╣рд┐рдВрджреА: Instagram Followers Order рдХрд░рдиреЗ рд╕реЗ рдкрд╣рд▓реЗ \"Flag for review\" рдСрдкреНрд╢рди рдХреЛ рдмрдВрдж рдХрд░рдирд╛ рд╣реЛрдЧрд╛ред",
-        mustRead: "╨Б╨п╨г╨ЬMust Read ╨Б╨п╨г╨Ь",
-        readDescription: "Read description before adding an order.",
-        noSecondOrder: "Do not place a second order on the same link before completion.",
-        wrongLink: "Wrong or non-working link? No refund.",
-        startCount: "We work on start count + quantity = final quantity.",
-        dontChange: "Don't change username if you ordered a refill service.",
-        userGuide: "╨Б╨п╨г╨ж Read User Guide ╤В╨о╨м Click Here",
-        otherServices: "╨Б╨п╨гтЦТ Check Other Services ╤В╨о╨м Click Here",
-        searchService: "Search Service",
-        service: "Service",
-        selectService: "Select Service",
-        package: "Package",
-        selectPackage: "Select Package",
-        order: "ORDER",
-        price: "Price",
-        description: "Description",
-        pleaseRead: "╤В╨к╨░╤ПтХХ╨Я Please Read Before Ordering",
-        linkLabel: "Link (Must be Public)",
-        linkPlaceholder: "Account Must be Public",
-        quantity: "Quantity",
-        quantityInfo: "Min: 100 - Max: 1000000",
-        youWillPay: "You will pay",
-        balanceError: "ЁЯШн Houston we have problem! And its... Not enough funds on balance",
-        termsText: "Yes, I have confirmed the Terms & Conditions",
-        placeOrder: "PLACE ORDER",
-        errorMessage: "Please ensure all required fields are filled correctly (Service, Package, Link, Quantity 100-1000000) and terms & conditions are accepted to place your order.",
-        latestNews: "╨Б╨п╨гтЦС LATEST NEWS",
-        congratulations: "╨Б╨п╨Ю╨Щ Congratulations ╨Б╨п╨Ю╨Щ",
-        memberText: "Now You are a Member of India Social Panel.in",
-        noOrders: "You haven't placed any orders yet.",
-        startJourney: "Start your journey to social media success by placing your first order now!",
-        placeFirstOrder: "Place Your First Order",
-        allServices: "All Services",
-        youtubeServices: "╨Б╨п╨гтХС YouTube Services",
-        instagramServices: "╨Б╨п╨гтХХ Instagram Services",
-        facebookServices: "╨Б╨п╨г╨и Facebook Services",
-        whatsappServices: "╨Б╨п╨в╨╝ WhatsApp Services",
-        depositFunds: "Deposit Funds",
-        depositSoon: "Deposit functionality coming soon...",
-        userGuidelines: "User Guidelines",
-        guidelinesText: "Aap guidelines ka sahi se palan karen.",
-        support: "Support",
-        tickets: "Tickets",
-        changeLanguage: "Change Language",
-        contactUs: "Contact Us",
-        footerText: "India Social Panel is a registered digital marketing agency specializing in Website Development, Social Media Marketing, Graphic Design, and Meta & Google Ads services. We are committed to delivering exceptional results to help your business grow online."
-    },
     english: {
-        loginTitle: "India Social Panel",
-        welcomeBack: "Welcome Back!",
-        signInText: "Sign in to your account",
-        signInButton: "Sign in with Google",
-        noAccount: "Don't have an account?",
-        signUp: "Sign Up",
-        menu: "Menu",
-        newOrder: "New Order",
-        orderHistory: "Order History",
-        services: "Services",
-        deposit: "Deposit",
-        totalOrders: "TOTAL ORDERS AT INDIASOCIALPANEL.IN",
-        experience: "3+ years experience providing SMM services!",
-        lookingDeposit: "looking to Deposit?",
-        depositNow: "DEPOSIT NOW",
-        currentBalance: "CURRENT BALANCE",
-        totalSpendings: "Your total spendings : тВ╣0.00",
-        massOrder: "ЁЯУж Mass Order",
-        importantUpdate: "Important Update ЁЯЪи",
-        flagReview: "Turn off \"Flag for review\" before ordering Instagram followers.",
-        flagReviewHindi: "Hindi: Turn off \"Flag for review\" option before ordering Instagram Followers.",
-        mustRead: "╨Б╨п╨г╨ЬMust Read ╨Б╨п╨г╨Ь",
-        readDescription: "Read description before adding an order.",
-        noSecondOrder: "Do not place a second order on the same link before completion.",
-        wrongLink: "Wrong or non-working link? No refund.",
-        startCount: "We work on start count + quantity = final quantity.",
-        dontChange: "Don't change username if you ordered a refill service.",
-        userGuide: "╨Б╨п╨г╨ж Read User Guide ╤В╨о╨м Click Here",
-        otherServices: "╨Б╨п╨гтЦТ Check Other Services ╤В╨о╨м Click Here",
         searchService: "Search Service",
-        service: "Service",
-        selectService: "Select Service",
-        package: "Package",
+        selectService: "Select Service", 
         selectPackage: "Select Package",
-        order: "ORDER",
-        price: "Price",
-        description: "Description",
-        pleaseRead: "╤В╨к╨░╤ПтХХ╨Я Please Read Before Ordering",
-        linkLabel: "Link (Must be Public)",
-        linkPlaceholder: "Account Must be Public",
-        quantity: "Quantity",
-        quantityInfo: "Min: 100 - Max: 1000000",
-        youWillPay: "You will pay",
-        balanceError: "ЁЯШн Houston we have problem! And its... Not enough funds on balance",
-        termsText: "Yes, I have confirmed the Terms & Conditions",
-        placeOrder: "PLACE ORDER",
-        errorMessage: "Please ensure all required fields are filled correctly (Service, Package, Link, Quantity 100-1000000) and terms & conditions are accepted to place your order.",
-        latestNews: "╨Б╨п╨гтЦС LATEST NEWS",
-        congratulations: "╨Б╨п╨Ю╨Щ Congratulations ╨Б╨п╨Ю╨Щ",
-        memberText: "Now You are a Member of India Social Panel.in",
-        noOrders: "You haven't placed any orders yet.",
-        startJourney: "Start your journey to social media success by placing your first order now!",
-        placeFirstOrder: "Place Your First Order",
-        allServices: "All Services",
-        youtubeServices: "╨Б╨п╨гтХС YouTube Services",
-        instagramServices: "╨Б╨п╨гтХХ Instagram Services",
-        facebookServices: "╨Б╨п╨г╨и Facebook Services",
-        whatsappServices: "╨Б╨п╨в╨╝ WhatsApp Services",
-        depositFunds: "Deposit Funds",
-        depositSoon: "Deposit functionality coming soon...",
-        userGuidelines: "User Guidelines",
-        guidelinesText: "Please follow the guidelines properly.",
-        support: "Support",
-        tickets: "Tickets",
-        changeLanguage: "Change Language",
-        contactUs: "Contact Us",
-        footerText: "India Social Panel is a registered digital marketing agency specializing in Website Development, Social Media Marketing, Graphic Design, and Meta & Google Ads services. We are committed to delivering exceptional results to help your business grow online."
+        placeOrder: "PLACE ORDER"
     }
 };
 
-let currentLanguage = 'hindi';
 let selectedService = '';
 let selectedPackage = null;
-let isLoggedIn = false;
+let orderHistory = [];
+let currentOrder = null;
+let currentBalance = 0.00;
 
-// DOM Elements
-const loginPage = document.getElementById('loginPage');
-const dashboard = document.getElementById('dashboard');
-const googleSignIn = document.getElementById('googleSignIn');
-const signUpLink = document.getElementById('signUpLink');
-const hamburgerMenu = document.getElementById('hamburgerMenu');
-const sideNav = document.getElementById('sideNav');
-const navOverlay = document.getElementById('navOverlay');
-const closeNav = document.getElementById('closeNav');
-const userAvatar = document.getElementById('userAvatar');
-const balanceBtn = document.getElementById('balanceBtn');
-const serviceSelect = document.getElementById('serviceSelect');
-const packageSelect = document.getElementById('packageSelect');
-const searchService = document.getElementById('searchService');
-const priceSection = document.getElementById('priceSection');
-const priceDisplay = document.getElementById('priceDisplay');
-const descriptionContent = document.getElementById('descriptionContent');
-const linkInput = document.getElementById('linkInput');
-const quantityInput = document.getElementById('quantityInput');
-const totalAmount = document.getElementById('totalAmount');
-const termsCheckbox = document.getElementById('termsCheckbox');
-const placeOrderBtn = document.getElementById('placeOrderBtn');
-const errorMessage = document.getElementById('errorMessage');
-const balanceError = document.getElementById('balanceError');
-const orderBtn = document.getElementById('orderBtn');
-const languageSelect = document.getElementById('languageSelect');
-const contactUsButton = document.getElementById('contactUsButton'); // added for contact us button
-
-// Navigation elements
-const newOrderNav = document.getElementById('newOrderNav');
-const orderHistoryNav = document.getElementById('orderHistoryNav');
-const servicesNav = document.getElementById('servicesNav');
-const depositNav = document.getElementById('depositNav');
-const depositBtnMain = document.getElementById('depositBtnMain');
-const userGuideLink = document.getElementById('userGuideLink');
-const whatsappGroupLink = document.getElementById('whatsappGroupLink');
-
-// Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    // Show login page initially
-    showLoginPage();
+    updateBalanceDisplay();
+    showDashboard();
 
-    // Event listeners
-    googleSignIn.addEventListener('click', handleGoogleSignIn);
-    signUpLink.addEventListener('click', handleGoogleSignIn);
-    hamburgerMenu.addEventListener('click', toggleSideNav);
-    closeNav.addEventListener('click', closeSideNav);
-    navOverlay.addEventListener('click', closeSideNav);
-    balanceBtn.addEventListener('click', () => showPage('depositPage'));
-    depositBtnMain.addEventListener('click', () => showPage('depositPage'));
+    // Core event listeners
+    document.getElementById('hamburgerMenu')?.addEventListener('click', toggleSideNav);
+    document.getElementById('closeNav')?.addEventListener('click', closeSideNav);
+    document.getElementById('navOverlay')?.addEventListener('click', closeSideNav);
+    document.getElementById('balanceBtn')?.addEventListener('click', () => showPage('addFundsPage'));
+    document.getElementById('userAvatar')?.addEventListener('click', () => showPage('userProfilePage'));
+    document.getElementById('darkModeToggle')?.addEventListener('click', toggleDarkMode);
+    document.getElementById('serviceSelect')?.addEventListener('change', handleServiceChange);
+    document.getElementById('packageSelect')?.addEventListener('change', handlePackageChange);
+    document.getElementById('searchService')?.addEventListener('input', setupSearchFunctionality);
+    document.getElementById('quantityInput')?.addEventListener('input', calculateTotal);
+    document.getElementById('placeOrderBtn')?.addEventListener('click', handlePlaceOrder);
+    document.getElementById('linkInput')?.addEventListener('input', validateLink);
 
-    // Navigation listeners
-    newOrderNav.addEventListener('click', () => {
-        showPage('dashboardHome');
-        closeSideNav();
-    });
-    orderHistoryNav.addEventListener('click', () => {
-        showPage('orderHistoryPage');
-        closeSideNav();
-    });
-    servicesNav.addEventListener('click', () => {
-        showPage('servicesPage');
-        closeSideNav();
-    });
-    depositNav.addEventListener('click', () => {
-        showPage('depositPage');
-        closeSideNav();
-    });
-
-    // Service and package listeners
-    serviceSelect.addEventListener('change', handleServiceChange);
-    packageSelect.addEventListener('change', handlePackageChange);
-    searchService.addEventListener('input', handleSearch);
-    quantityInput.addEventListener('input', calculateTotal);
-    placeOrderBtn.addEventListener('click', handlePlaceOrder);
-    // contact us button listener added here
-    if(contactUsButton){
-      contactUsButton.addEventListener('click', openTelegramSupport);
-    }
-
-    // Other links
-    userGuideLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        showPage('userGuidePage');
-    });
-
-    // Language selector
-    languageSelect.addEventListener('change', handleLanguageChange);
+    setupCustomDropdowns();
+    setupNavigationListeners();
+    loadDarkModePreference();
+    setupSearchFunctionality();
+    initializeAIChatListeners();
+    setupProfileFunctionality();
 });
 
-function showLoginPage() {
-    loginPage.classList.remove('hidden');
-    dashboard.classList.add('hidden');
+function validateLink() {
+    const linkInput = document.getElementById('linkInput');
+    const linkValidationMessage = document.getElementById('linkValidationMessage');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+
+    if (!linkInput || !linkValidationMessage || !placeOrderBtn) return;
+
+    const linkValue = linkInput.value.trim();
+    const isValidLink = linkValue.startsWith('https://');
+
+    if (isValidLink) {
+        linkValidationMessage.textContent = 'Link is valid.';
+        linkValidationMessage.className = 'validation-message success';
+        placeOrderBtn.disabled = false;
+    } else {
+        linkValidationMessage.textContent = 'Link must start with https://';
+        linkValidationMessage.className = 'validation-message error';
+        placeOrderBtn.disabled = true;
+    }
 }
 
-function showDashboard() {
-    loginPage.classList.add('hidden');
-    dashboard.classList.remove('hidden');
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('dark-mode', isDarkMode);
 
-    // Set user avatar (simulate Google account first letter)
-    const userName = "User"; // This would come from Google auth
-    userAvatar.textContent = userName.charAt(0).toUpperCase();
+    // Update icon
+    const icon = document.querySelector('#darkModeToggle i');
+    if (icon) {
+        if (isDarkMode) {
+            icon.className = 'fas fa-sun';
+        } else {
+            icon.className = 'fas fa-moon';
+        }
+    }
 }
 
-function handleGoogleSignIn() {
-    // Simulate Google sign in
-    isLoggedIn = true;
-    showDashboard();
+function loadDarkModePreference() {
+    const darkMode = localStorage.getItem('dark-mode');
+    if (darkMode === 'true') {
+        document.body.classList.add('dark-mode');
+        const icon = document.querySelector('#darkModeToggle i');
+        if (icon) {
+            icon.className = 'fas fa-sun';
+        }
+    }
 }
+
+function setupSearchFunctionality() {
+    const searchInput = document.getElementById('searchService');
+    const searchOptions = document.getElementById('searchOptions');
+
+    if (searchInput && searchOptions) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+
+            if (query.length === 0) {
+                searchOptions.innerHTML = '';
+                searchOptions.classList.remove('active');
+                return;
+            }
+
+            // Search through all services
+            const allServices = [];
+            Object.entries(servicePackages).forEach(([category, services]) => {
+                services.forEach(service => {
+                    allServices.push({
+                        ...service,
+                        category: category
+                    });
+                });
+            });
+
+            // Enhanced search - match by first letter and partial match
+            const filteredServices = allServices.filter(service => {
+                const serviceName = service.name.toLowerCase();
+                const serviceCategory = getServiceDisplayName(service.category).toLowerCase();
+
+                // First letter match
+                const firstLetterMatch = serviceName.startsWith(query.charAt(0));
+
+                // Partial match in name or category
+                const nameMatch = serviceName.includes(query);
+                const categoryMatch = serviceCategory.includes(query);
+
+                return firstLetterMatch || nameMatch || categoryMatch;
+            }).sort((a, b) => {
+                // Prioritize first letter matches
+                const aStartsWith = a.name.toLowerCase().startsWith(query);
+                const bStartsWith = b.name.toLowerCase().startsWith(query);
+
+                if (aStartsWith && !bStartsWith) return -1;
+                if (!aStartsWith && bStartsWith) return 1;
+
+                return a.name.localeCompare(b.name);
+            });
+
+            searchOptions.innerHTML = '';
+
+            if (filteredServices.length > 0) {
+                filteredServices.slice(0, 15).forEach(service => {
+                    const option = document.createElement('div');
+                    option.className = 'package-option search-result';
+                    option.dataset.service = service.category;
+                    option.dataset.package = JSON.stringify(service);
+
+                    const priceText = service.priceType === 'per_k' 
+                        ? `₹${service.price}/1k${service.unit ? ` ${service.unit}` : ''}`
+                        : `₹${service.price}${service.unit ? ` ${service.unit}` : ''}`;
+
+                    const { icon, iconClass } = getPackageIconAndType(service.name, service.price);
+
+                    option.innerHTML = `
+                        <div class="package-icon ${iconClass}">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="package-content">
+                            <div class="package-info">
+                                <div class="package-name">ID: ${service.id} - ${service.name}</div>
+                                <div class="package-desc">${service.desc}</div>
+                                <div class="service-category">${getServiceDisplayName(service.category)}</div>
+                            </div>
+                            <div class="package-price">${priceText}</div>
+                        </div>
+                    `;
+
+                    option.addEventListener('click', function() {
+                        // Auto-select service and package
+                        selectedService = service.category;
+                        selectedPackage = service;
+
+                        // Update service dropdown
+                        const serviceSelected = document.getElementById('serviceSelected');
+                        if (serviceSelected) {
+                            const serviceIcon = document.querySelector(`[data-value="${service.category}"] .service-icon`);
+                            const iconHTML = serviceIcon ? serviceIcon.outerHTML : '<i class="fas fa-cog"></i>';
+                            serviceSelected.querySelector('.selected-text').innerHTML = 
+                                iconHTML + ' ' + getServiceDisplayName(service.category);
+                        }
+
+                        // Update package dropdown
+                        populatePackages(service.category);
+                        setTimeout(() => {
+                            selectPackageByServiceId(service.id);
+                        }, 100);
+
+                        // Clear search
+                        searchInput.value = '';
+                        searchOptions.innerHTML = '';
+                        searchOptions.classList.remove('active');
+
+                        showNotification('Service and package selected successfully!', 'success');
+                    });
+
+                    searchOptions.appendChild(option);
+                });
+
+                searchOptions.classList.add('active');
+            } else {
+                searchOptions.innerHTML = '<div class="no-results">कोई सेवा नहीं मिली / No services found</div>';
+                searchOptions.classList.add('active');
+            }
+        });
+
+        // Close search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-section')) {
+                searchOptions.classList.remove('active');
+            }
+        });
+    }
+}
+
+function getServiceDisplayName(category) {
+    const serviceNames = {
+        instagram: 'Instagram Services',
+        facebook: 'Facebook Services',
+        youtube: 'YouTube Services',
+        whatsapp: 'WhatsApp Services',
+        twitter: 'Twitter/X Services',
+        tiktok: 'TikTok Services',
+        telegram: 'Telegram Services',
+        linkedin: 'LinkedIn Services',
+        snapchat: 'Snapchat Services',
+        pinterest: 'Pinterest Services',
+        reddit: 'Reddit Services',
+        discord: 'Discord Services',
+        spotify: 'Spotify Services',
+        twitch: 'Twitch Services',
+        threads: 'Threads Services',
+        'website-traffic': 'Website Traffic',
+        'google-reviews': 'Google Reviews',
+        'seo-services': 'SEO Services'
+    };
+    return serviceNames[category] || category;
+}
+
+function selectPackageByServiceId(serviceId) {
+    const packageOptions = document.getElementById('packageOptions');
+    if (packageOptions) {
+        const options = packageOptions.querySelectorAll('.package-option');
+        options.forEach(option => {
+            const packageData = JSON.parse(option.dataset.package);
+            if (packageData.id === serviceId) {
+                selectPackageOption(option, packageData, serviceId.toString());
+                return;
+            }
+        });
+    }
+}
+
+function handlePlaceOrder() {
+    const linkInput = document.getElementById('linkInput');
+    const quantityInput = document.getElementById('quantityInput');
+    const termsCheckbox = document.getElementById('termsCheckbox');
+    const errorMessage = document.getElementById('errorMessage');
+    const linkValidationMessage = document.getElementById('linkValidationMessage');
+
+    // Check all conditions properly
+    const isServiceSelected = selectedService !== '';
+    const isPackageSelected = selectedPackage !== null;
+    const isLinkFilled = linkInput && linkInput.value.trim() !== '';
+    const isQuantityFilled = quantityInput && quantityInput.value.trim() !== '';
+    const quantity = quantityInput ? parseInt(quantityInput.value.trim()) || 0 : 0;
+    const isTermsAccepted = termsCheckbox && termsCheckbox.checked;
+
+    console.log('Order validation:', {
+        isServiceSelected,
+        isPackageSelected,
+        isLinkFilled,
+        isQuantityFilled,
+        quantity,
+        isTermsAccepted,
+        selectedService,
+        selectedPackage
+    });
+
+    // Validate all fields
+    if (!isServiceSelected) {
+        showNotification('Please select a service first!', 'error');
+        return;
+    }
+
+    if (!isPackageSelected) {
+        showNotification('Please select a package!', 'error');
+        return;
+    }
+
+    if (!isLinkFilled) {
+        showNotification('Please enter your link!', 'error');
+        return;
+    }
+
+    // Check if link validation message shows error
+    const linkValue = linkInput.value.trim();
+    if (!linkValue.startsWith('https://')) {
+        showNotification('Please enter a valid link starting with https://', 'error');
+        return;
+    }
+
+    if (!isQuantityFilled || quantity < 100 || quantity > 1000000) {
+        showNotification('Please enter quantity between 100-1000000!', 'error');
+        return;
+    }
+
+    if (!isTermsAccepted) {
+        showNotification('Please accept Terms & Conditions!', 'error');
+        return;
+    }
+
+    if (errorMessage) {
+        errorMessage.classList.add('hidden');
+    }
+
+    // Generate unique order ID
+    const orderId = 'ISP' + Date.now().toString().slice(-8) + Math.random().toString(36).substr(2, 4).toUpperCase();
+
+    // Calculate total price
+    const totalPrice = selectedPackage.priceType === 'per_k' ? 
+        (selectedPackage.price * quantity) / 1000 : selectedPackage.price;
+
+    // Create order object
+    const order = {
+        id: orderId,
+        serviceId: selectedPackage.id,
+        serviceName: selectedPackage.name,
+        link: linkInput.value.trim(),
+        quantity: quantity,
+        price: totalPrice,
+        status: 'Pending Payment',
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString()
+    };
+
+    // Store current order for payment
+    currentOrder = order;
+
+    // Add to order history
+    orderHistory.push(order);
+
+    // Update order history page
+    updateOrderHistoryPage();
+
+    // Show payment page
+    showPaymentPage(order);
+
+    // Clear form
+    clearOrderForm();
+}
+
+function clearOrderForm() {
+    document.getElementById('linkInput').value = '';
+    document.getElementById('quantityInput').value = '';
+    document.getElementById('termsCheckbox').checked = false;
+
+    // Reset dropdowns
+    selectedService = '';
+    selectedPackage = null;
+
+    const serviceSelected = document.getElementById('serviceSelected');
+    const packageSelected = document.getElementById('packageSelected');
+    const priceSection = document.getElementById('priceSection');
+
+    if (serviceSelected) {
+        serviceSelected.querySelector('.selected-text').textContent = 'Select Service';
+    }
+
+    if (packageSelected) {
+        packageSelected.querySelector('.selected-text').textContent = 'Select Package';
+    }
+
+    if (priceSection) {
+        priceSection.classList.add('hidden');
+    }
+
+    // Reset link validation
+    const linkValidationMessage = document.getElementById('linkValidationMessage');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    if (linkValidationMessage && placeOrderBtn) {
+        linkValidationMessage.textContent = '';
+        linkValidationMessage.className = 'validation-message hidden';
+        placeOrderBtn.disabled = false;
+    }
+}
+
+function updateOrderHistoryPage() {
+    const orderHistoryContent = document.getElementById('orderHistoryContent');
+
+    if (!orderHistoryContent) return;
+
+    if (orderHistory.length === 0) {
+        orderHistoryContent.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🛒</div>
+                <h3>आपने अभी तक कोई ऑर्डर नहीं दिया है</h3>
+                <h3>You haven't placed any orders yet.</h3>
+                <p>अपनी पहली ऑर्डर देकर सोशल मीडिया सफलता की यात्रा शुरू करें!</p>
+                <p>Start your journey to social media success by placing your first order now!</p>
+                <button class="cta-btn" onclick="showPage('dashboardHome')">अपना पहला ऑर्डर दें / Place Your First Order</button>
+            </div>
+        `;
+    } else {
+        orderHistoryContent.innerHTML = `
+            <div class="order-filters">
+                <select class="filter-select">
+                    <option>All Orders / सभी ऑर्डर</option>
+                    <option>Pending Payment / भुगतान बाकी</option>
+                    <option>Processing / प्रक्रिया में</option>  
+                    <option>Completed / पूर्ण</option>
+                    <option>Cancelled / रद्द</option>
+                </select>
+            </div>
+            <div class="orders-list">
+                ${orderHistory.map(order => {
+                    const statusClass = order.status.toLowerCase().replace(' ', '-');
+                    let displayStatus = order.status;
+                    let estimatedTime = '';
+
+                    if (order.status === 'Processing') {
+                        displayStatus = 'Processing / प्रक्रिया में';
+                        estimatedTime = '<div class="estimated-time">⏱️ Est. completion: 2-4 hours</div>';
+                    } else if (order.status === 'Pending Payment') {
+                        displayStatus = 'Payment Required / भुगतान आवश्यक';
+                        estimatedTime = '<div class="estimated-time">💳 Payment pending</div>';
+                    } else if (order.status === 'Completed') {
+                        displayStatus = 'Completed / पूर्ण';
+                        estimatedTime = '<div class="estimated-time">✅ Successfully delivered</div>';
+                    }
+
+                    return `
+                    <div class="order-item">
+                        <div class="order-details">
+                            <div class="order-id">#${order.id}</div>
+                            <div class="order-service">ID: ${order.serviceId} - ${order.serviceName}</div>
+                            <div class="order-link">🔗 ${order.link}</div>
+                            <div class="order-quantity">📊 Quantity: ${order.quantity.toLocaleString()}</div>
+                            ${estimatedTime}
+                        </div>
+                        <div class="order-status ${statusClass}">${displayStatus}</div>
+                        <div class="order-amount">₹${order.price.toFixed(2)}</div>
+                        <div class="order-date">${order.date}<br><small>${order.time}</small></div>
+                    </div>
+                `;
+                }).join('')}
+            </div>
+        `;
+    }
+}
+
+function populatePackages(service) {
+    const packageOptions = document.getElementById('packageOptions');
+    const packageSelected = document.getElementById('packageSelected');
+    const packageSelect = document.getElementById('packageSelect');
+    const priceSection = document.getElementById('priceSection');
+
+    if (!packageOptions || !packageSelected) return;
+
+    // Reset package selection
+    packageOptions.innerHTML = '';
+    packageSelected.querySelector('.selected-text').textContent = 'Select Package';
+    if (priceSection) priceSection.classList.add('hidden');
+
+    // Clear hidden select
+    if (packageSelect) {
+        packageSelect.innerHTML = '<option value="">Select Package</option>';
+    }
+
+    let packages = [];
+
+    if (service === 'new-offers') {
+        packages = [
+            ...servicePackages.youtube,
+            ...servicePackages.instagram,
+            ...servicePackages.facebook,
+            ...servicePackages.whatsapp,
+            ...servicePackages.twitter,
+            ...servicePackages.tiktok
+        ];
+    } else if (servicePackages[service]) {
+        packages = servicePackages[service];
+    } else {
+        const noOption = document.createElement('div');
+        noOption.className = 'package-option';
+        noOption.innerHTML = `
+            <div class="package-icon growth">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="package-content">
+                <div class="package-info">
+                    <div class="package-name">Coming Soon...</div>
+                    <div class="package-desc">This service will be available soon</div>
+                </div>
+            </div>
+        `;
+        packageOptions.appendChild(noOption);
+        return;
+    }
+
+    packages.forEach((pkg, index) => {
+        const option = document.createElement('div');
+        option.className = 'package-option';
+        option.dataset.value = `${service}_${index}`;
+        option.dataset.package = JSON.stringify(pkg);
+
+        const priceText = pkg.priceType === 'per_k' 
+            ? `₹${pkg.price}/1k${pkg.unit ? ` ${pkg.unit}` : ''}`
+            : `₹${pkg.price}${pkg.unit ? ` ${pkg.unit}` : ''}`;
+
+        // Determine icon and type based on package name
+        const { icon, iconClass, badge } = getPackageIconAndType(pkg.name, pkg.price);
+
+        // Create tier indicator
+        const tierClass = pkg.tier ? `tier-${pkg.tier}` : 'tier-standard';
+        const tierText = pkg.tier ? pkg.tier.toUpperCase() : 'STANDARD';
+
+        option.innerHTML = `
+            <div class="package-icon ${iconClass}">
+                <i class="${icon}"></i>
+            </div>
+            <div class="package-content">
+                <div class="package-info">
+                    <div class="package-name">
+                        ID: ${pkg.id} - ${pkg.name}
+                        <span class="tier-indicator ${tierClass}">${tierText}</span>
+                    </div>
+                    <div class="package-desc">${pkg.desc || 'High quality service with fast delivery'}</div>
+                    <div class="package-details">
+                        ${pkg.deliveryTime ? `<span class="package-detail">⏱️ ${pkg.deliveryTime}</span>` : ''}
+                        ${pkg.guarantee ? `<span class="package-detail">🛡️ ${pkg.guarantee}</span>` : ''}
+                        ${pkg.quality ? `<span class="package-detail">⭐ ${pkg.quality}</span>` : ''}
+                    </div>
+                </div>
+                <div class="package-pricing">
+                    <div class="package-price">${priceText}</div>
+                </div>
+            </div>
+        `;
+
+        // Add click event listener to each package option
+        option.addEventListener('click', function() {
+            selectPackageOption(this, pkg, `${service}_${index}`);
+        });
+
+        packageOptions.appendChild(option);
+
+        // Also add to hidden select for compatibility
+        if (packageSelect) {
+            const selectOption = document.createElement('option');
+            selectOption.value = `${service}_${index}`;
+            selectOption.textContent = `ID: ${pkg.id} - ${pkg.name}`;
+            selectOption.dataset.package = JSON.stringify(pkg);
+            packageSelect.appendChild(selectOption);
+        }
+    });
+}
+
+function initializeAIChatListeners() {
+    // Add AI chat specific event listeners
+    document.addEventListener('click', function(e) {
+        // Handle AI support button clicks
+        if (e.target.closest('.ai-support')) {
+            e.preventDefault();
+            openAISupport();
+        }
+
+        // Handle quick question buttons
+        if (e.target.classList.contains('quick-btn')) {
+            e.preventDefault();
+            const question = e.target.textContent.trim();
+            askQuickQuestion(question);
+        }
+    });
+
+    // Handle chat input enter key
+    document.addEventListener('keypress', function(e) {
+        if (e.target.id === 'chatInput' && e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+}
+
+function setupNavigationListeners() {
+    const navItems = [
+        { id: 'newOrderNav', page: 'dashboardHome' },
+        { id: 'orderHistoryNav', page: 'orderHistoryPage' },
+        { id: 'servicesNav', page: 'servicesPage' },
+        { id: 'depositNav', page: 'addFundsPage' },
+        { id: 'childPanelsNav', page: 'childPanelsPage' },
+        { id: 'ordersNav', page: 'ordersPage' },
+        { id: 'refillHistoryNav', page: 'refillHistoryPage' },
+        { id: 'addFundsNav', page: 'addFundsPage' },
+        { id: 'ticketsNav', page: 'ticketsPage' },
+        { id: 'faqNav', page: 'faqPage' },
+        { id: 'apiNav', page: 'apiPage' },
+        { id: 'referEarnNav', page: 'referEarnPage' },
+        { id: 'tutorialVideoNav', page: 'tutorialVideoPage' },
+        { id: 'depositBtnMain', page: 'addFundsPage' }
+    ];
+
+    navItems.forEach(item => {
+        const element = document.getElementById(item.id);
+        if (element) {
+            element.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(item.page);
+                closeSideNav();
+            });
+        }
+    });
+
+    // User guide link
+    const userGuideLink = document.getElementById('userGuideLink');
+    if (userGuideLink) {
+        userGuideLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('userGuidePage');
+        });
+    }
+}
+
+function setupCustomDropdowns() {
+    // Service dropdown
+    const serviceDropdown = document.getElementById('serviceDropdown');
+    const serviceSelected = document.getElementById('serviceSelected');
+    const serviceOptions = document.getElementById('serviceOptions');
+
+    if (serviceSelected && serviceOptions) {
+        serviceSelected.addEventListener('click', () => {
+            serviceOptions.classList.toggle('active');
+            serviceSelected.classList.toggle('active');
+
+            // Close package dropdown if open
+            const packageOptions = document.getElementById('packageOptions');
+            const packageSelected = document.getElementById('packageSelected');
+            if (packageOptions && packageSelected) {
+                packageOptions.classList.remove('active');
+                packageSelected.classList.remove('active');
+            }
+        });
+
+        // Service option selection
+        serviceOptions.addEventListener('click', (e) => {
+            const option = e.target.closest('.dropdown-option');
+            if (option) {
+                const value = option.dataset.value;
+                const text = option.querySelector('span').firstChild.textContent;
+                const icon = option.querySelector('.service-icon').outerHTML;
+
+                // Update selected display
+                serviceSelected.querySelector('.selected-text').innerHTML = icon + ' ' + text;
+
+                // Update hidden select
+                const serviceSelect = document.getElementById('serviceSelect');
+                serviceSelect.value = value;
+                selectedService = value;
+
+                // Remove active states
+                serviceOptions.classList.remove('active');
+                serviceSelected.classList.remove('active');
+
+                // Remove previous selections
+                document.querySelectorAll('.dropdown-option.selected').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                option.classList.add('selected');
+
+                // Trigger change
+                handleServiceChange();
+            }
+        });
+    }
+
+    // Package dropdown
+    const packageDropdown = document.getElementById('packageDropdown');
+    const packageSelected = document.getElementById('packageSelected');
+    const packageOptions = document.getElementById('packageOptions');
+
+    if (packageSelected && packageOptions) {
+        packageSelected.addEventListener('click', () => {
+            if (packageOptions.children.length > 0) {
+                packageOptions.classList.toggle('active');
+                packageSelected.classList.toggle('active');
+
+                // Close service dropdown if open
+                if (serviceOptions && serviceSelected) {
+                    serviceOptions.classList.remove('active');
+                    serviceSelected.classList.remove('active');
+                }
+            }
+        });
+
+        // Package option selection
+        packageOptions.addEventListener('click', (e) => {
+            const option = e.target.closest('.package-option');
+            if (option && !option.classList.contains('search-result')) {
+                const value = option.dataset.value;
+                const packageData = JSON.parse(option.dataset.package);
+                const text = option.querySelector('.package-name').textContent;
+                selectPackageOption(option, packageData, value, text);
+            }
+        });
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.custom-dropdown')) {
+            document.querySelectorAll('.dropdown-options').forEach(options => {
+                options.classList.remove('active');
+            });
+            document.querySelectorAll('.dropdown-selected').forEach(selected => {
+                selected.classList.remove('active');
+            });
+        }
+    });
+}
+
+function setupServiceItemClickHandlers() {
+    // Add click handlers to service items in services page
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.service-item')) {
+            const serviceItem = e.target.closest('.service-item');
+            const serviceName = serviceItem.querySelector('span').textContent;
+
+            // Navigate to new order page and pre-select service
+            showPage('dashboardHome');
+
+            // Pre-select the appropriate service category
+            const serviceSelect = document.getElementById('serviceSelect');
+            if (serviceName.includes('YouTube')) {
+                serviceSelect.value = 'youtube';
+            } else if (serviceName.includes('Instagram')) {
+                serviceSelect.value = 'instagram';
+            } else if (serviceName.includes('Facebook')) {
+                serviceSelect.value = 'facebook';
+            } else if (serviceName.includes('WhatsApp')) {
+                serviceSelect.value = 'whatsapp';
+            }
+
+            // Trigger service change
+            handleServiceChange();
+
+            // Scroll to service selection
+            document.getElementById('serviceSelect').scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+}
+
+
+
+function selectPackageOption(option, packageData, value, text = null) {
+    const packageSelected = document.getElementById('packageSelected');
+    const packageOptions = document.getElementById('packageOptions');
+    const packageSelect = document.getElementById('packageSelect');
+
+    if (!text) {
+        text = option.querySelector('.package-name').textContent;
+    }
+
+    // Update selected display
+    if (packageSelected) {
+        packageSelected.querySelector('.selected-text').textContent = text;
+    }
+
+    // Update hidden select
+    if (packageSelect) {
+        packageSelect.innerHTML = `<option value="${value}" selected>${text}</option>`;
+    }
+
+    selectedPackage = packageData;
+
+    // Remove active states
+    if (packageOptions && packageSelected) {
+        packageOptions.classList.remove('active');
+        packageSelected.classList.remove('active');
+    }
+
+    // Remove previous selections
+    document.querySelectorAll('.package-option.selected').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    if (option) {
+        option.classList.add('selected');
+    }
+
+    // Show price section and calculate
+    showPriceSection(packageData);
+    calculateTotal();
+}
+
+
 
 function toggleSideNav() {
-    sideNav.classList.add('active');
+    const sideNav = document.getElementById('sideNav');
+    if (sideNav) {
+        sideNav.classList.add('active');
+    }
 }
 
 function closeSideNav() {
-    sideNav.classList.remove('active');
+    const sideNav = document.getElementById('sideNav');
+    if (sideNav) {
+        sideNav.classList.remove('active');
+    }
 }
 
 function showPage(pageId) {
@@ -305,53 +985,77 @@ function showPage(pageId) {
     if (targetPage) {
         targetPage.classList.add('active');
     }
+
+    // Handle specific page logic
+    if (pageId === 'refillHistoryPage') {
+        updateRefillHistoryPage();
+    } else if (pageId === 'orderHistoryPage') {
+        updateOrderHistoryPage();
+    }
+}
+
+function updateRefillHistoryPage() {
+    const refillContent = document.querySelector('#refillHistoryPage .refill-content');
+    if (refillContent && !document.querySelector('.no-orders-refill')) {
+        // Check if user has no orders
+        const hasOrders = orderHistory.length > 0;
+
+        if (!hasOrders) {
+            refillContent.innerHTML = `
+                <div class="empty-state no-orders-refill">
+                    <div class="empty-icon">📋</div>
+                    <h3>No refill history found</h3>
+                    <p>You haven't placed any orders yet. Place your first order to see refill information here.</p>
+                    <button class="cta-btn" onclick="showPage('dashboardHome')">
+                        <i class="fas fa-plus-circle"></i> Place Your First Order
+                    </button>
+                    <div class="help-section">
+                        <h4>Learn about Refills:</h4>
+                        <ul>
+                            <li>• 365-day refill guarantee on all services</li>
+                            <li>• Refill provided if drop exceeds 10%</li>
+                            <li>• Contact support team for refills</li>
+                        </ul>
+                        <button onclick="openTelegramSupport()" class="support-btn">
+                            <i class="fab fa-telegram"></i> Contact Support
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
 }
 
 function handleServiceChange() {
-    const selectedValue = serviceSelect.value;
-    selectedService = selectedValue;
+    const serviceSelect = document.getElementById('serviceSelect');
+    const packageSelect = document.getElementById('packageSelect');
+    const priceSection = document.getElementById('priceSection');
+
+    if (!serviceSelect || !packageSelect || !priceSection) return;
+
+    const selectedValue = selectedService || serviceSelect.value;
 
     // Clear package selection
     packageSelect.innerHTML = '<option value="">Select Package</option>';
     priceSection.classList.add('hidden');
+
+    // Reset package dropdown display
+    const packageSelected = document.getElementById('packageSelected');
+    if (packageSelected) {
+        packageSelected.querySelector('.selected-text').textContent = 'Select Package';
+    }
 
     if (selectedValue) {
         populatePackages(selectedValue);
     }
 }
 
-function populatePackages(service) {
-    let packages = [];
-
-    if (service === 'new-offers') {
-        // Show all packages
-        packages = [
-            ...servicePackages.youtube,
-            ...servicePackages.instagram,
-            ...servicePackages.facebook,
-            ...servicePackages.whatsapp
-        ];
-    } else if (service === 'other') {
-        // Show coming soon message
-        const option = document.createElement('option');
-        option.value = '';
-        option.textContent = 'Coming Soon...';
-        packageSelect.appendChild(option);
-        return;
-    } else if (servicePackages[service]) {
-        packages = servicePackages[service];
-    }
-
-    packages.forEach((pkg, index) => {
-        const option = document.createElement('option');
-        option.value = `${service}_${index}`;
-        option.textContent = `${pkg.name} - тВ╣${pkg.price}${pkg.priceType === 'per_k' ? '/k' : ''}${pkg.unit ? ` ${pkg.unit}` : ''}`;
-        option.dataset.package = JSON.stringify(pkg);
-        packageSelect.appendChild(option);
-    });
-}
-
 function handlePackageChange() {
+    const packageSelect = document.getElementById('packageSelect');
+    const priceSection = document.getElementById('priceSection');
+
+    if (!packageSelect || !priceSection) return;
+
     const selectedValue = packageSelect.value;
 
     if (selectedValue) {
@@ -367,20 +1071,27 @@ function handlePackageChange() {
 }
 
 function showPriceSection(packageData) {
+    const priceSection = document.getElementById('priceSection');
+    const priceDisplay = document.getElementById('priceDisplay');
+
+    if (!priceSection || !priceDisplay) return;
+
     priceSection.classList.remove('hidden');
 
-    // Update price display
     if (packageData.priceType === 'per_k') {
-        priceDisplay.textContent = `тВ╣${packageData.price} for 1000`;
+        priceDisplay.textContent = `₹${packageData.price} for 1000`;
     } else {
-        priceDisplay.textContent = `тВ╣${packageData.price}`;
+        priceDisplay.textContent = `₹${packageData.price}`;
     }
 
     updateDynamicDescription();
 }
 
 function updateDynamicDescription() {
-    if (!selectedPackage) return;
+    const descriptionContent = document.getElementById('descriptionContent');
+    const quantityInput = document.getElementById('quantityInput');
+
+    if (!selectedPackage || !descriptionContent || !quantityInput) return;
 
     const quantity = parseInt(quantityInput.value) || 0;
     let calculatedPrice = 0;
@@ -392,25 +1103,37 @@ function updateDynamicDescription() {
     }
 
     const dynamicDescription = `
-        <p><strong>Your chosen ${selectedPackage.name} for ╤В╨ТтХг${calculatedPrice.toFixed(2)} will be delivered within 1 hour.</strong></p>
-        <p>We ensure permanent results with no refills needed, guaranteeing seamless growth with India Social Panel!</p>
-        <hr>
-        <p>Start: 0-15 Minutes</p>
-        <p>Speed: 100K per Day | Can Be Slow Sometimes</p>
-        <p>Quality: Old Accounts</p>
-        <p>Drop Rate: Low Drop ╨Б╨п╨в╨╖(UPTO 10%)</p>
-        <p>Refill Time: 365 Days Only If Drop below 10%╤В╨йтХЧ╤ПтХХ╨Я</p>
-        <p><strong>Notes:</strong></p>
-        <p>Speed and start time may vary during high demand.</p>
-        <p>Please do not place a second order on the same link before the first one is completed.</p>
+        <p><strong>🚀 ${selectedPackage.name} - Only ₹${calculatedPrice.toFixed(2)} with instant delivery + 365 day guarantee!</strong></p>
+
+        <p><strong>⏰ Service Delivery Time:</strong></p>
+        <p>⚡ Start: <strong>0-15 minutes</strong> | 🚀 Speed: <strong>100K per day</strong></p>
+        <p>👥 Quality: <strong>Real accounts</strong> | 💧 Drop rate: <strong>Maximum 10%</strong></p>
+
+        <p><strong>🛡️ Our Guarantee:</strong></p>
+        <p>🔒 <strong>365-day refill guarantee</strong> (if drop exceeds 10%)</p>
+        <p>💯 <strong>100% safe delivery</strong> - No ban risk</p>
+        <p>⚡ <strong>Instant start</strong> - Within 15 minutes</p>
+        <p>🎯 <strong>High retention</strong> - Permanent results</p>
+
+        <p><strong>⚠️ Please read before ordering:</strong></p>
+        <p>📝 Account must be <strong>public</strong> (won't work on private)</p>
+        <p>🔗 Enter correct and working link (no refund for wrong links)</p>
+        <p>⏳ Don't place second order until first one is completed</p>
+        <p>👤 Don't change username after refill service</p>
+
+        <p><strong>📞 24/7 Support:</strong> @Indiasocialpainel_support_bot</p>
     `;
 
     descriptionContent.innerHTML = dynamicDescription;
 }
 
 function calculateTotal() {
-    if (!selectedPackage || !quantityInput.value) {
-        totalAmount.textContent = '0.00';
+    const quantityInput = document.getElementById('quantityInput');
+    const totalAmount = document.getElementById('totalAmount');
+    const balanceError = document.getElementById('balanceError');
+
+    if (!selectedPackage || !quantityInput || !totalAmount || !quantityInput.value) {
+        if (totalAmount) totalAmount.textContent = '0.00';
         return;
     }
 
@@ -424,301 +1147,1602 @@ function calculateTotal() {
     }
 
     totalAmount.textContent = total.toFixed(2);
-
-    // Update dynamic description with new calculated price
     updateDynamicDescription();
 
-    // Show balance error (simulate insufficient funds)
-    if (total > 0) {
-        balanceError.classList.remove('hidden');
-    } else {
-        balanceError.classList.add('hidden');
+    if (balanceError) {
+        if (total > 0) {
+            balanceError.classList.remove('hidden');
+        } else {
+            balanceError.classList.add('hidden');
+        }
     }
 }
 
-function handlePlaceOrder() {
-    // Check if all fields are filled
-    const isServiceSelected = serviceSelect.value !== '';
-    const isPackageSelected = packageSelect.value !== '';
-    const isLinkFilled = linkInput.value.trim() !== '';
-    const isQuantityFilled = quantityInput.value.trim() !== '';
-    const quantity = parseInt(quantityInput.value.trim()) || 0;
-    const isTermsAccepted = termsCheckbox.checked;
-
-    if (!isServiceSelected || !isPackageSelected || !isLinkFilled || !isQuantityFilled || !isTermsAccepted || quantity < 100 || quantity > 1000000) {
-        errorMessage.classList.remove('hidden');
-        return;
-    }
-
-    // Hide error message
-    errorMessage.classList.add('hidden');
-
-    // Create and show confirmation page
-    showOrderConfirmationPage();
+function handleSearch() {
+    // This function is now handled by setupSearchFunctionality()
 }
-// contact us button function added here
+
+
+
+function showDashboard() {
+    document.getElementById('userAvatar').textContent = 'A';
+}
+
+function updateBalanceDisplay() {
+    document.querySelectorAll('.balance-display, .balance-amount').forEach(display => {
+        display.textContent = `₹${currentBalance.toFixed(2)}`;
+    });
+}
+
 function openTelegramSupport() {
     window.open('https://t.me/Indiasocialpainel_support_bot?start=start', '_blank');
 }
 
-function showOrderConfirmationPage() {
-    // Create confirmation page HTML with better design
-    const confirmationHTML = `
-        <!DOCTYPE html>
-        <html lang="hi">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Order Confirmation - India Social Panel</title>
-            <style>
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
-                body {
-                    font-family: 'Inter', sans-serif;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    min-height: 100vh;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    padding: 20px;
-                }
-                .confirmation-container {
-                    background: white;
-                    border-radius: 25px;
-                    padding: 50px 40px;
-                    text-align: center;
-                    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-                    max-width: 600px;
-                    width: 100%;
-                    position: relative;
-                    overflow: hidden;
-                }
-                .confirmation-container::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    height: 5px;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                }
-                .success-icon {
-                    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-                    width: 80px;
-                    height: 80px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin: 0 auto 25px;
-                    font-size: 40px;
-                    color: white;
-                    animation: bounce 1s ease-in-out;
-                }
-                @keyframes bounce {
-                    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-                    40% { transform: translateY(-10px); }
-                    60% { transform: translateY(-5px); }
-                }
-                .logo {
-                    color: #667eea;
-                    font-size: 32px;
-                    font-weight: 700;
-                    margin-bottom: 15px;
-                }
-                .order-success {
-                    color: #28a745;
-                    font-size: 24px;
-                    font-weight: 600;
-                    margin-bottom: 20px;
-                }
-                .confirmation-text {
-                    font-size: 18px;
-                    color: #333;
-                    margin-bottom: 15px;
-                    line-height: 1.6;
-                }
-                .hindi-text {
-                    font-size: 16px;
-                    color: #666;
-                    margin-bottom: 35px;
-                    font-style: italic;
-                }
-                .telegram-button {
-                    display: inline-block;
-                    background: linear-gradient(135deg, #0088cc 0%, #0066aa 100%);
-                    color: white;
-                    padding: 18px 40px;
-                    border-radius: 15px;
-                    text-decoration: none;
-                    font-weight: 600;
-                    font-size: 18px;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 10px 25px rgba(0, 136, 204, 0.3);
-                    position: relative;
-                    overflow: hidden;
-                }
-                .telegram-button::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: -100%;
-                    width: 100%;
-                    height: 100%;
-                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-                    transition: left 0.5s;
-                }
-                .telegram-button:hover::before {
-                    left: 100%;
-                }
-                .telegram-button:hover {
-                    transform: translateY(-3px);
-                    box-shadow: 0 15px 35px rgba(0, 136, 204, 0.4);
-                }
-                .telegram-icon {
-                    margin-right: 10px;
-                    font-size: 20px;
-                }
-                .note-section {
-                    background: #f8f9fa;
-                    border-radius: 12px;
-                    padding: 20px;
-                    margin-top: 30px;
-                    border-left: 4px solid #667eea;
-                }
-                .note-title {
-                    color: #667eea;
-                    font-weight: 600;
-                    margin-bottom: 10px;
-                    font-size: 16px;
-                }
-                .note-text {
-                    color: #555;
-                    font-size: 14px;
-                    line-height: 1.5;
-                }
-                @media (max-width: 480px) {
-                    .confirmation-container {
-                        padding: 30px 20px;
-                    }
-                    .logo {
-                        font-size: 24px;
-                    }
-                    .order-success {
-                        font-size: 20px;
-                    }
-                    .confirmation-text {
-                        font-size: 16px;
-                    }
-                    .telegram-button {
-                        padding: 15px 30px;
-                        font-size: 16px;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="confirmation-container">
-                <div class="success-icon">тЬУ</div>
-                <div class="logo">ЁЯЗоЁЯЗ│ India Social Panel</div>
-                <div class="order-success">Order Successfully Placed! ЁЯОЙ</div>
-                <div class="confirmation-text">
-                    рдЖрдкрдХрд╛ рдСрд░реНрдбрд░ рд╕рдлрд▓рддрд╛рдкреВрд░реНрд╡рдХ рдкреНрд░рд╛рдкреНрдд рд╣реЛ рдЧрдпрд╛ рд╣реИред
+// Enhanced Contact Widget Functions
+function toggleContactOptions() {
+    const contactOptions = document.getElementById('contactOptions');
+    const mainBtn = document.getElementById('contactMainBtn');
+
+    if (contactOptions && mainBtn) {
+        contactOptions.classList.toggle('active');
+        mainBtn.classList.toggle('active');
+    }
+}
+
+function openWhatsAppSupport() {
+    // WhatsApp business number - replace with actual number
+    const whatsappNumber = '+919431863716';
+    const message = 'Hello! I need support from India Social Panel.';
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, '_blank');
+    toggleContactOptions(); // Close menu after click
+}
+
+function openInstagramPage() {
+    window.open('https://instagram.com/indiasocialpanel.official', '_blank');
+    toggleContactOptions(); // Close menu after click
+}
+
+// Enhanced AI Chatbot Knowledge Base with comprehensive responses
+const aiKnowledgeBase = {
+    // Order related questions
+    "how to place order": "To place an order:\n1. Select Service (Instagram, YouTube, Facebook, WhatsApp)\n2. Choose Package you need\n3. Enter your link (account must be public)\n4. Enter quantity (min 100)\n5. Accept Terms & Conditions\n6. Click PLACE ORDER button\n\nYour order will start immediately! 🚀",
+
+    "order status": "To check your order status:\n1. Go to 'Orders' in Menu\n2. You'll see list of all orders there\n3. Status: Processing, Completed, or Cancelled\n\nMost orders start in 0-15 minutes and complete within 24 hours. 📊",
+
+    "refill guarantee": "Our Refill Policy:\n• 365-day guarantee\n• Free refill if drop exceeds 10%\n• Don't change username after order\n• Quality service with permanent results\n\nContact support team for refills! 🔄",
+
+    // Payment related
+    "payment methods": "We accept:\n💳 UPI Payment (Instant)\n💳 Credit/Debit Cards\n🏦 Bank Transfer\n💰 Google Pay, PhonePe, Paytm\n\nAll payments are secure with instant processing. Minimum deposit starts from ₹100.",
+
+    "add funds": "To add funds:\n1. Click 'Add Funds' in Menu\n2. Enter amount (₹100 minimum)\n3. Select payment method\n4. Complete payment\n\nBalance will be credited instantly! Your current balance shows in header. 💰",
+
+    "minimum deposit": "Minimum deposit is ₹100. You can pay via UPI, Cards or Bank transfer. Payment processes instantly and balance is added immediately.",
+
+    // Service related
+    "instagram services": "Instagram Services:\n📸 Followers - ₹200/k\n❤️ Likes - ₹20/k\n👁️ Views - ₹25/k\n📖 Story Views - ₹20/k\n📤 Reels Share - ₹15/k\n\nAll services include refill guarantee and high quality accounts!",
+
+    "youtube services": "YouTube Services:\n💰 Channel Monetization - ₹17,000\n👥 Subscribers - ₹400/k\n👁️ Views - ₹250/k\n🩳 Shorts Views - ₹200/k\n❤️ Likes - ₹170/k\n⏰ Watch Time - ₹6,000/k hours\n\nReal and active users for growth!",
+
+    "facebook services": "Facebook Services:\n💰 Monetization - ₹5,000\n👥 Followers - ₹200/k\n❤️ Page Likes - ₹200/k\n👁️ Video Views - ₹15/k\n📖 Story Views - ₹150/k\n\nOrganic growth with genuine engagement!",
+
+    "whatsapp services": "WhatsApp Services:\n✅ Blue Tick Verification - ₹40,000\n👥 Channel Members - ₹300/k\n🗳️ Poll Votes - ₹500/k\n\nPremium services with instant delivery!",
+
+    // API related
+    "api information": "API Details:\n🔑 Free API key available\n📚 Complete documentation\n⚡ 99.8% uptime\n🚀 245ms average response time\n\nThrough API you can integrate our services into your applications. Check 'API' section in menu!",
+
+    "api key": "To generate API Key:\n1. Go to 'API' in Menu\n2. Click 'Generate New Key' button\n3. Copy and store key safely\n\nRate limits: Free plan gets 100 requests/hour.",
+
+    // Support related
+    "support contact": "Contact Support:\n📱 Telegram: @Indiasocialpainel_support_bot\n📞 Phone: +919431863716\n✉️ Email: indiasocialpanel@email.com\n📸 Instagram: @indiasocialpanel.official\n\n24/7 support available! 🕒",
+
+    "working hours": "We're available 24/7! Support team is always ready to help you. Get instant reply on Telegram.",
+
+    // General info
+    "about company": "India Social Panel:\n🇮🇳 Registered digital marketing agency\n📈 3+ years experience\n🏆 119+ million orders completed\n💯 99.8% success rate\n\nServices: Website Development, SMM,Graphic Design, Google/Meta Ads",
+
+    "delivery time": "Delivery Times:\n⚡ Start: 0-15 minutes\n🚀 Speed: 100K per day\n✅ Most orders complete in 24 hours\n\nSpeed may vary during high demand periods.",
+
+    "quality assurance": "Quality Guarantee:\n👥 Real & Active accounts\n💧 Low drop rate (max 10%)\n🔄 365-day refill guarantee\n🛡️ Secure & Safe process\n\nHigh-quality results with permanent growth!",
+
+    // Troubleshooting
+    "order not started": "If order hasn't started:\n1. Check link - must be public\n2. Wait 15 minutes\n3. Contact support if still issue\n\nMost orders start automatically.",
+
+    "account private": "To make account public:\n📸 Instagram: Settings > Privacy > Private Account OFF\n📺 YouTube: Check privacy in channel settings\n📘 Facebook: Enable public visibility\n\nServices don't work on private accounts.",
+
+    "wrong link": "No refund for wrong or non-working links. Always:\n✅ Paste correct link\n✅ Keep account public\n✅ Test link in browser\n\nDouble-check before placing order."
+};
+
+// Common customer questions for random responses
+const commonQuestions = [
+    "How to place an order?",
+    "What payment methods do you accept?",
+    "How to check order status?",
+    "What is refill guarantee?",
+    "Instagram followers price?",
+    "YouTube monetization cost?",
+    "API information needed",
+    "Support contact details",
+    "Delivery time for orders?",
+    "Account should be public?",
+    "Minimum order quantity?",
+    "Bulk order discounts?",
+    "WhatsApp verification price?",
+    "Facebook page likes cost?",
+    "Order not started yet?",
+    "Wrong link posted accidentally",
+    "Quality of followers?",
+    "Drop rate information",
+    "24/7 support available?",
+    "Company registration details?"
+];
+
+function openAISupport() {
+    const modal = document.getElementById('aiChatModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+
+        // Initialize chat if not already done
+        initializeAIChat();
+
+        // Focus on input after modal opens
+        setTimeout(() => {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) chatInput.focus();
+        }, 300);
+    }
+    toggleContactOptions(); // Close menu after click
+}
+
+function initializeAIChat() {
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages && chatMessages.children.length <= 1) {
+        // Add welcome message if not already present
+        const welcomeMessage = `
+            <div class="message ai-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
                 </div>
-                <div class="hindi-text">
-                    рдХреГрдкрдпрд╛ рдЕрдкрдирд╛ рдСрд░реНрдбрд░ рдХрдиреНрдлрд░реНрдо рдХрд░рдиреЗ рдХреЗ рд▓рд┐рдП рдиреАрдЪреЗ рджрд┐рдП рдЧрдП рдмрдЯрди рдкрд░ рдХреНрд▓рд┐рдХ рдХрд░реЗрдВ:
-                </div>
-                <a href="http://t.me/Indiasocialpainel_support_bot" class="telegram-button" target="_blank">
-                    <span class="telegram-icon">ЁЯУ▒</span>
-                    Order Confirm рдХрд░рдиреЗ рдХреЗ рд▓рд┐рдП Click рдХрд░реЗрдВ
-                </a>
-                <div class="note-section">
-                    <div class="note-title">ЁЯУЭ Important Note:</div>
-                    <div class="note-text">
-                        тАв рд╣рдорд╛рд░реА рдЯреАрдо 24/7 рдЖрдкрдХреА рд╕реЗрд╡рд╛ рдореЗрдВ рд╣реИ<br>
-                        тАв рдСрд░реНрдбрд░ рдХреА рд╕реНрдерд┐рддрд┐ рдХреЗ рд▓рд┐рдП Telegram рдкрд░ рд╕рдВрдкрд░реНрдХ рдХрд░реЗрдВ<br>
-                        тАв рдХреЛрдИ рднреА рд╕рдорд╕реНрдпрд╛ рд╣реЛ рддреЛ рд╣рдореЗрдВ рдмрддрд╛рдПрдВ
+                <div class="message-content">
+                    <p>Hello! 👋 I'm India Social Panel's AI Assistant. I can help you with SMM services, orders, payments and other queries.</p>
+                    <div class="quick-questions">
+                        <h4>Quick Questions:</h4>
+                        <button class="quick-btn" onclick="askQuickQuestion('How to place an order?')">How to place an order?</button>
+                        <button class="quick-btn" onclick="askQuickQuestion('What payment methods do you accept?')">Payment methods?</button>
+                        <button class="quick-btn" onclick="askQuickQuestion('How to check order status?')">Order status?</button>
+                        <button class="quick-btn" onclick="askQuickQuestion('What is API?')">API information?</button>
+                        <button class="quick-btn" onclick="askQuickQuestion('Instagram followers price?')">Instagram pricing?</button>
+                        <button class="quick-btn" onclick="askQuickQuestion('YouTube monetization cost?')">YouTube monetization?</button>
                     </div>
                 </div>
             </div>
-        </body>
-        </html>
-    `;
-
-    // Open new window with confirmation page
-    const confirmationWindow = window.open('', '_blank', 'width=700,height=800,scrollbars=yes,resizable=yes');
-    confirmationWindow.document.write(confirmationHTML);
-    confirmationWindow.document.close();
+        `;
+        chatMessages.innerHTML = welcomeMessage;
+    }
 }
 
-function handleSearch() {
-    const searchTerm = searchService.value.toLowerCase();
+function closeAIChat() {
+    const modal = document.getElementById('aiChatModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
 
-    if (searchTerm.length === 0) {
-        return;
+function handleChatKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+}
+
+function askQuickQuestion(question) {
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) {
+        chatInput.value = question;
+        sendMessage();
+    }
+}
+
+function sendMessage() {
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+
+    if (!chatInput || !chatMessages || !chatInput.value.trim()) return;
+
+    const userMessage = chatInput.value.trim();
+    chatInput.value = '';
+
+    // Add user message
+    addMessageToChat('user', userMessage);
+
+    // Show typing indicator
+    showTypingIndicator();
+
+    // Simulate AI thinking time and respond
+    setTimeout(() => {
+        hideTypingIndicator();
+        const aiResponse = getAIResponse(userMessage);
+        addMessageToChat('ai', aiResponse);
+    }, 1500);
+}
+
+function addMessageToChat(sender, message) {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar';
+    avatar.innerHTML = sender === 'ai' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+
+    const content = document.createElement('div');
+    content.className = 'message-content';
+
+    const messageP = document.createElement('p');
+    messageP.innerHTML = message.replace(/\n/g, '<br>');
+    content.appendChild(messageP);
+
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(content);
+
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.style.display = 'flex';
+    }
+}
+
+function hideTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.style.display = 'none';
+    }
+}
+
+function getAIResponse(userMessage) {
+    const message = userMessage.toLowerCase();
+
+    // Enhanced keyword matching
+    for (const [key, response] of Object.entries(aiKnowledgeBase)) {
+        const keywords = key.split(' ');
+        const messageWords = message.split(' ');
+
+        // Better keyword matching
+        const hasKeywords = keywords.some(keyword =>
+            messageWords.some(word =>
+                word.includes(keyword) ||
+                keyword.includes(word) ||
+                // Handle variations
+                (keyword === 'order' && (word.includes('order'))) ||
+                (keyword === 'payment' && (word.includes('payment') || word.includes('pay'))) ||
+                (keyword === 'price' && (word.includes('price') || word.includes('cost')))
+            )
+        );
+
+        if (hasKeywords) {
+            return response;
+        }
     }
 
-    // Filter services based on search term
-    const allPackages = [
-        ...servicePackages.youtube,
-        ...servicePackages.instagram,
-        ...servicePackages.facebook,
-        ...servicePackages.whatsapp
+    // Check for specific service mentions
+    if (message.includes('instagram') || message.includes('insta')) {
+        return aiKnowledgeBase["instagram services"];
+    }
+
+    if (message.includes('youtube') || message.includes('yt')) {
+        return aiKnowledgeBase["youtube services"];
+    }
+
+    if (message.includes('facebook') || message.includes('fb')) {
+        return aiKnowledgeBase["facebook services"];
+    }
+
+    if (message.includes('whatsapp') || message.includes('wa')) {
+        return aiKnowledgeBase["whatsapp services"];
+    }
+
+    if (message.includes('price') || message.includes('cost') || message.includes('rate')) {
+        return "Our service pricing:\n\n📸 Instagram Followers: ₹200/k\n📺 YouTube Subscribers: ₹400/k\n📘 Facebook Followers: ₹200/k\n💬 WhatsApp Blue Tick: ₹40,000\n\nCheck Services section for complete price list or ask about specific service!";
+    }
+
+    if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+        return "Hello! 🙏 Welcome to India Social Panel. I can help you with all queries:\n\n• Order placement\n• Payment methods\n• Service details\n• API information\n• Support contacts\n\nAsk me anything, I'm ready! 😊";
+    }
+
+    if (message.includes('thanks') || message.includes('thank you')) {
+        return "You're welcome! 😊 If you need any more help, feel free to ask. Our team is available 24/7 for your service.\n\nFor instant support: Message @Indiasocialpainel_support_bot! 🚀";
+    }
+
+    // Default responses
+    const defaultResponses = [
+        "I'm trying to understand your question! 🤔 I can help with these topics:\n\n🛒 Order placement guide\n💰 Pricing & payment info\n📱 Service details (Instagram, YouTube, Facebook, WhatsApp)\n🔧 API integration\n📞 Support contacts\n\nAny specific question?",
+
+        "I might not have understood your question completely. 😅 Popular topics:\n\n📊 Service rates and packages\n⏰ Delivery timeframes\n🔄 Refill guarantees\n💳 Payment methods\n📈 Order tracking\n\nInterested in any of these?",
+
+        "I'm India Social Panel's AI assistant and here to help! 🤖\n\nPopular questions:\n• Which service is best?\n• How to track orders?\n• What's refund policy?\n• How to use API?\n\nFor detailed help: @Indiasocialpainel_support_bot 💬"
     ];
 
-    const filteredPackages = allPackages.filter(pkg => 
-        pkg.name.toLowerCase().includes(searchTerm)
-    );
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+}
 
-    // Update package dropdown with filtered results
-    packageSelect.innerHTML = '<option value="">Select Package</option>';
+// Close contact options when clicking outside
+document.addEventListener('click', function(e) {
+    const contactWidget = e.target.closest('.contact-widget');
+    const contactOptions = document.getElementById('contactOptions');
+    const mainBtn = document.getElementById('contactMainBtn');
 
-    filteredPackages.forEach((pkg, index) => {
-        const option = document.createElement('option');
-        option.value = `search_${index}`;
-        option.textContent = `${pkg.name} - тВ╣${pkg.price}${pkg.priceType === 'per_k' ? '/k' : ''}${pkg.unit ? ` ${pkg.unit}` : ''}`;
-        option.dataset.package = JSON.stringify(pkg);
-        packageSelect.appendChild(option);
+    if (!contactWidget && contactOptions && mainBtn) {
+        contactOptions.classList.remove('active');
+        mainBtn.classList.remove('active');
+    }
+});
+
+function showPaymentPage(order) {
+    // Create payment modal instead of popup window for better mobile support
+    const paymentModal = document.createElement('div');
+    paymentModal.id = 'paymentModal';
+    paymentModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        overflow-y: auto;
+    `;
+
+    paymentModal.innerHTML = `
+        <div class="payment-container" style="
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            margin: auto;
+            max-height: 95vh;
+            overflow-y: auto;
+        ">
+            <div class="payment-header" style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 25px;
+                text-align: center;
+            ">
+                <h1 style="font-size: 22px; margin-bottom: 8px;">🎉 Order Placed Successfully!</h1>
+                <p style="margin: 0;">Complete your payment to activate the order</p>
+                <div class="order-id" style="
+                    background: rgba(255,255,255,0.2);
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    display: inline-block;
+                    font-weight: 600;
+                    margin-top: 10px;
+                    font-size: 14px;
+                ">Order ID: ${order.id}</div>
+            </div>
+
+            <div class="order-summary" style="
+                background: #f8f9fa;
+                padding: 20px;
+                border-bottom: 1px solid #e9ecef;
+            ">
+                <h3 style="margin-bottom: 15px; color: #333; font-size: 16px;">📋 Order Summary / ऑर्डर विवरण</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">
+                    <span>Order ID / ऑर्डर ID:</span>
+                    <strong style="color: #667eea;">#${order.id}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">
+                    <span>Service / सेवा:</span>
+                    <strong>${order.serviceName}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">
+                    <span>Service ID:</span>
+                    <strong>${order.serviceId}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">
+                    <span>Target Link / लिंक:</span>
+                    <strong style="word-break: break-all; font-size: 12px; color: #007bff;">${order.link}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">
+                    <span>Quantity / मात्रा:</span>
+                    <strong style="color: #28a745;">${order.quantity.toLocaleString()}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">
+                    <span>Status / स्थिति:</span>
+                    <strong style="color: #ff6b35;">Processing / प्रक्रिया में</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">
+                    <span>Estimated Time / अनुमानित समय:</span>
+                    <strong style="color: #667eea;">Start: 0-15 minutes</strong>
+                </div>
+                <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    border-top: 2px solid #667eea; 
+                    padding-top: 12px; 
+                    margin-top: 12px; 
+                    font-weight: 700; 
+                    font-size: 16px; 
+                    color: #667eea;
+                ">
+                    <span>Total Amount / कुल राशि:</span>
+                    <strong style="color: #dc3545; font-size: 18px;">₹${order.price.toFixed(2)}</strong>
+                </div>
+            </div>
+
+            <div class="payment-methods" style="padding: 25px;">
+                <h2 style="text-align: center; margin-bottom: 20px; color: #333; font-size: 18px; font-weight: 600;">💳 Choose Payment Method</h2>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px;">
+                    <div class="payment-method upi-apps" onclick="showUPIAppsPayment()" style="
+                        background: white;
+                        border: 2px solid #e9ecef;
+                        border-radius: 12px;
+                        padding: 15px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                    ">
+                        <div style="
+                            width: 45px;
+                            height: 45px;
+                            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                            color: white;
+                            border-radius: 10px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 20px;
+                            margin-bottom: 5px;
+                        ">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #333;">UPI Apps</h4>
+                        <p style="font-size: 11px; color: #666; margin: 0; line-height: 1.2;">GPay, PhonePe, Paytm & More</p>
+                    </div>
+
+                    <div class="payment-method qr" onclick="showQRCodePayment()" style="
+                        background: white;
+                        border: 2px solid #e9ecef;
+                        border-radius: 12px;
+                        padding: 15px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                    ">
+                        <div style="
+                            width: 45px;
+                            height: 45px;
+                            background: linear-gradient(135deg, #00c851 0%, #007e33 100%);
+                            color: white;
+                            border-radius: 10px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 20px;
+                            margin-bottom: 5px;
+                        ">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #333;">QR Code</h4>
+                        <p style="font-size: 11px; color: #666; margin: 0; line-height: 1.2;">Scan with any UPI app</p>
+                    </div>
+
+                    <div class="payment-method upi-id" onclick="showUPIIDPayment()" style="
+                        background: white;
+                        border: 2px solid #e9ecef;
+                        border-radius: 12px;
+                        padding: 15px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                    ">
+                        <div style="
+                            width: 45px;
+                            height: 45px;
+                            background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+                            color: white;
+                            border-radius: 10px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 20px;
+                            margin-bottom: 5px;
+                        ">
+                            <i class="fas fa-at"></i>
+                        </div>
+                        <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #333;">UPI ID</h4>
+                        <p style="font-size: 11px; color: #666; margin: 0; line-height: 1.2;">Manual UPI ID payment</p>
+                    </div>
+
+                    <div class="payment-method cards" onclick="showCardBankingPayment()" style="
+                        background: white;
+                        border: 2px solid #e9ecef;
+                        border-radius: 12px;
+                        padding: 15px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                    ">
+                        <div style="
+                            width: 45px;
+                            height: 45px;
+                            background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+                            color: white;
+                            border-radius: 10px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 20px;
+                            margin-bottom: 5px;
+                        ">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #333;">Card/Net Banking</h4>
+                        <p style="font-size: 11px; color: #666; margin: 0; line-height: 1.2;">Credit, Debit, Banking</p>
+                    </div>
+                </div>
+
+                <div style="
+                    background: #fff3cd;
+                    border: 1px solid #ffeaa7;
+                    border-radius: 10px;
+                    padding: 15px;
+                    margin: 20px 0;
+                    font-size: 13px;
+                ">
+                    <div style="font-weight: 600; color: #856404; margin-bottom: 8px;">📝 Important Instructions:</div>
+                    <div style="color: #856404; line-height: 1.5;">
+                        • Payment will be processed automatically<br>
+                        • Order starts within 0-15 minutes after payment<br>
+                        • Keep payment screenshot for reference<br>
+                        • Contact support if you face any issues
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="closePaymentModal()" style="
+                        background: #6c757d;
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        font-size: 14px;
+                    ">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- UPI Apps Payment Section -->
+        <div id="upiAppsSection" style="display: none; width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: auto; max-height: 95vh; overflow-y: auto;">
+            <div style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            ">
+                <button onclick="showMainPayment()" style="
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                ">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h3 style="margin: 0; flex: 1;">Select UPI App</h3>
+            </div>
+
+            <div style="padding: 25px;">
+                <p style="text-align: center; font-size: 18px; font-weight: 600; color: #28a745; margin-bottom: 20px;">Amount: ₹${order.price.toFixed(2)}</p>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">Order ID: ${order.id}</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                    <button onclick="openUPIApp('gpay')" style="
+                        background: white;
+                        border: 2px solid #4285f4;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fab fa-google-pay" style="font-size: 24px; color: #4285f4;"></i>
+                        <span style="font-weight: 600; color: #333;">Google Pay</span>
+                    </button>
+                    
+                    <button onclick="openUPIApp('phonepe')" style="
+                        background: white;
+                        border: 2px solid #5f259f;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fas fa-mobile-alt" style="font-size: 24px; color: #5f259f;"></i>
+                        <span style="font-weight: 600; color: #333;">PhonePe</span>
+                    </button>
+                    
+                    <button onclick="openUPIApp('paytm')" style="
+                        background: white;
+                        border: 2px solid #00baf2;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fas fa-wallet" style="font-size: 24px; color: #00baf2;"></i>
+                        <span style="font-weight: 600; color: #333;">Paytm</span>
+                    </button>
+                    
+                    <button onclick="openUPIApp('bhim')" style="
+                        background: white;
+                        border: 2px solid #ff6600;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fas fa-university" style="font-size: 24px; color: #ff6600;"></i>
+                        <span style="font-weight: 600; color: #333;">BHIM UPI</span>
+                    </button>
+                    
+                    <button onclick="openUPIApp('amazonpay')" style="
+                        background: white;
+                        border: 2px solid #ff9900;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fab fa-amazon" style="font-size: 24px; color: #ff9900;"></i>
+                        <span style="font-weight: 600; color: #333;">Amazon Pay</span>
+                    </button>
+                    
+                    <button onclick="openUPIApp('mobikwik')" style="
+                        background: white;
+                        border: 2px solid #d52b7a;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fas fa-mobile" style="font-size: 24px; color: #d52b7a;"></i>
+                        <span style="font-weight: 600; color: #333;">MobiKwik</span>
+                    </button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="cancelPaymentTransaction()" style="
+                        background: #dc3545;
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">Cancel Transaction</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code Payment Section -->
+        <div id="qrPaymentSection" style="display: none; width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: auto; max-height: 95vh; overflow-y: auto;">
+            <div style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            ">
+                <button onclick="showMainPayment()" style="
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                ">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h3 style="margin: 0; flex: 1;">Scan QR Code</h3>
+                <div style="
+                    background: #ff6b35;
+                    color: white;
+                    padding: 8px 15px;
+                    border-radius: 20px;
+                    font-weight: 600;
+                    font-size: 14px;
+                " id="paymentTimer">15:00</div>
+            </div>
+
+            <div style="
+                background: #f8f9fa;
+                border-radius: 15px;
+                padding: 25px;
+                text-align: center;
+                margin: 20px;
+                border: 2px solid #e9ecef;
+            ">
+                <h3 style="text-align: center; margin-bottom: 15px; color: #333;">India Social Panel</h3>
+                <p style="text-align: center; font-size: 18px; font-weight: 600; color: #28a745; margin-bottom: 20px;">Amount: ₹${order.price.toFixed(2)}</p>
+                <div style="display: flex; justify-content: center; margin: 20px 0;">
+                    <img src="https://i.postimg.cc/3NtWMHDh/IMG-20250724-115255.jpg" alt="QR Code" style="width: 250px; height: 250px; border: 2px solid #e9ecef; border-radius: 15px; max-width: 100%;"/>
+                </div>
+                <h4 style="text-align: center; margin: 15px 0;">Scan with any UPI app</h4>
+                <p style="text-align: center; color: #666;">Order ID: ${order.id}</p>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="cancelPaymentTransaction()" style="
+                        background: #dc3545;
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        margin-right: 10px;
+                    ">Cancel Transaction</button>
+                    <button onclick="markPaymentComplete()" style="
+                        background: #28a745;
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">Payment Done</button>
+                </div>
+            </div>
+
+            <div id="paymentSuccessMessage" style="
+                display: none;
+                background: #d4edda;
+                color: #155724;
+                padding: 15px;
+                border-radius: 10px;
+                text-align: center;
+                margin: 20px;
+                border: 1px solid #c3e6cb;
+            ">
+                <h4>🎉 Payment Successful!</h4>
+                <p>Your order is being processed. You will receive confirmation shortly.</p>
+            </div>
+        </div>
+
+        <!-- UPI ID Payment Section -->
+        <div id="upiIDSection" style="display: none; width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: auto; max-height: 95vh; overflow-y: auto;">
+            <div style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            ">
+                <button onclick="showMainPayment()" style="
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                ">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h3 style="margin: 0; flex: 1;">UPI ID Payment</h3>
+            </div>
+
+            <div style="padding: 25px; text-align: center;">
+                <p style="font-size: 18px; font-weight: 600; color: #28a745; margin-bottom: 20px;">Amount: ₹${order.price.toFixed(2)}</p>
+                <p style="color: #666; margin-bottom: 20px;">Order ID: ${order.id}</p>
+                
+                <div style="
+                    background: #f8f9fa;
+                    border-radius: 15px;
+                    padding: 25px;
+                    margin: 20px 0;
+                    border: 2px solid #e9ecef;
+                ">
+                    <h4 style="color: #333; margin-bottom: 15px;">Pay to UPI ID</h4>
+                    <div style="
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        background: white;
+                        padding: 15px;
+                        border-radius: 10px;
+                        border: 2px solid #667eea;
+                        margin-bottom: 15px;
+                    ">
+                        <input type="text" value="indiasocialpanel@upi" readonly style="
+                            flex: 1;
+                            border: none;
+                            outline: none;
+                            font-weight: 600;
+                            color: #667eea;
+                            font-size: 16px;
+                            background: transparent;
+                        ">
+                        <button onclick="copyUPIID()" style="
+                            background: #667eea;
+                            color: white;
+                            border: none;
+                            padding: 8px 15px;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            font-weight: 600;
+                        ">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 15px;">Copy the UPI ID and paste it in your UPI app to make payment</p>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button onclick="cancelPaymentTransaction()" style="
+                        background: #dc3545;
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        margin-right: 10px;
+                    ">Cancel Transaction</button>
+                    <button onclick="markPaymentComplete()" style="
+                        background: #28a745;
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">Payment Done</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card/Banking Payment Section -->
+        <div id="cardBankingSection" style="display: none; width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: auto; max-height: 95vh; overflow-y: auto;">
+            <div style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            ">
+                <button onclick="showMainPayment()" style="
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                ">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h3 style="margin: 0; flex: 1;">Card & Banking</h3>
+            </div>
+
+            <div style="padding: 25px;">
+                <p style="text-align: center; font-size: 18px; font-weight: 600; color: #28a745; margin-bottom: 20px;">Amount: ₹${order.price.toFixed(2)}</p>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">Order ID: ${order.id}</p>
+                
+                <div style="display: grid; gap: 15px; margin-bottom: 20px;">
+                    <button onclick="processCardPayment('credit')" style="
+                        background: white;
+                        border: 2px solid #dc3545;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fas fa-credit-card" style="font-size: 24px; color: #dc3545;"></i>
+                        <div style="text-align: left;">
+                            <h4 style="margin: 0; color: #333;">Credit Card</h4>
+                            <p style="margin: 0; color: #666; font-size: 12px;">Visa, Mastercard, RuPay</p>
+                        </div>
+                    </button>
+                    
+                    <button onclick="processCardPayment('debit')" style="
+                        background: white;
+                        border: 2px solid #28a745;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fas fa-credit-card" style="font-size: 24px; color: #28a745;"></i>
+                        <div style="text-align: left;">
+                            <h4 style="margin: 0; color: #333;">Debit Card</h4>
+                            <p style="margin: 0; color: #666; font-size: 12px;">All major banks supported</p>
+                        </div>
+                    </button>
+                    
+                    <button onclick="processCardPayment('netbanking')" style="
+                        background: white;
+                        border: 2px solid #007bff;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fas fa-university" style="font-size: 24px; color: #007bff;"></i>
+                        <div style="text-align: left;">
+                            <h4 style="margin: 0; color: #333;">Net Banking</h4>
+                            <p style="margin: 0; color: #666; font-size: 12px;">All major banks</p>
+                        </div>
+                    </button>
+                    
+                    <button onclick="processCardPayment('wallet')" style="
+                        background: white;
+                        border: 2px solid #9c27b0;
+                        border-radius: 12px;
+                        padding: 15px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        transition: all 0.3s;
+                    ">
+                        <i class="fas fa-wallet" style="font-size: 24px; color: #9c27b0;"></i>
+                        <div style="text-align: left;">
+                            <h4 style="margin: 0; color: #333;">Digital Wallets</h4>
+                            <p style="margin: 0; color: #666; font-size: 12px;">Paytm, Amazon Pay, etc.</p>
+                        </div>
+                    </button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="cancelPaymentTransaction()" style="
+                        background: #dc3545;
+                        color: white;
+                        border: none;
+                        padding: 12px 25px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">Cancel Transaction</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add event listener to close modal when clicking outside
+    paymentModal.addEventListener('click', function(e) {
+        if (e.target === paymentModal) {
+            closePaymentModal();
+        }
+    });
+
+    document.body.appendChild(paymentModal);
+    document.body.style.overflow = 'hidden';
+
+    // Add payment modal functions to window
+    window.closePaymentModal = function() {
+        if (paymentModal && paymentModal.parentElement) {
+            document.body.removeChild(paymentModal);
+        }
+        document.body.style.overflow = 'auto';
+    };
+
+    window.showUPIAppsPayment = function() {
+        document.querySelector('#paymentModal .payment-container').style.display = 'none';
+        document.getElementById('upiAppsSection').style.display = 'block';
+    };
+
+    window.showQRCodePayment = function() {
+        document.querySelector('#paymentModal .payment-container').style.display = 'none';
+        document.getElementById('qrPaymentSection').style.display = 'block';
+        startPaymentTimer();
+    };
+
+    window.showUPIIDPayment = function() {
+        document.querySelector('#paymentModal .payment-container').style.display = 'none';
+        document.getElementById('upiIDSection').style.display = 'block';
+    };
+
+    window.showCardBankingPayment = function() {
+        document.querySelector('#paymentModal .payment-container').style.display = 'none';
+        document.getElementById('cardBankingSection').style.display = 'block';
+    };
+
+    window.showMainPayment = function() {
+        document.querySelector('#paymentModal .payment-container').style.display = 'block';
+        document.getElementById('qrPaymentSection').style.display = 'none';
+        document.getElementById('upiAppsSection').style.display = 'none';
+        document.getElementById('upiIDSection').style.display = 'none';
+        document.getElementById('cardBankingSection').style.display = 'none';
+        clearInterval(window.paymentTimerInterval);
+    };
+
+    window.cancelPaymentTransaction = function() {
+        if (confirm('Are you sure you want to cancel this transaction?')) {
+            closePaymentModal();
+        }
+    };
+
+    window.openUPIApp = function(app) {
+        const amount = order.price.toFixed(2);
+        const upiID = 'indiasocialpanel@upi';
+        const orderRef = order.id;
+        
+        let upiUrl = '';
+        switch(app) {
+            case 'gpay':
+                upiUrl = `tez://upi/pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
+                break;
+            case 'phonepe':
+                upiUrl = `phonepe://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
+                break;
+            case 'paytm':
+                upiUrl = `paytmmp://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
+                break;
+            case 'bhim':
+                upiUrl = `bhim://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
+                break;
+            case 'amazonpay':
+                upiUrl = `amazonpay://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
+                break;
+            case 'mobikwik':
+                upiUrl = `mobikwik://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
+                break;
+            default:
+                upiUrl = `upi://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
+        }
+        
+        // Try to open UPI app
+        try {
+            window.open(upiUrl, '_blank');
+        } catch (error) {
+            alert('UPI app not found. Please install the app or use QR code payment.');
+        }
+    };
+
+    window.copyUPIID = function() {
+        const upiID = 'indiasocialpanel@upi';
+        navigator.clipboard.writeText(upiID).then(() => {
+            showNotification('UPI ID copied to clipboard!', 'success');
+        }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = upiID;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showNotification('UPI ID copied to clipboard!', 'success');
+        });
+    };
+
+    window.processCardPayment = function(type) {
+        const typeNames = {
+            'credit': 'Credit Card',
+            'debit': 'Debit Card',
+            'netbanking': 'Net Banking',
+            'wallet': 'Digital Wallet'
+        };
+        
+        alert(`${typeNames[type]} payment gateway will be available soon. Please use UPI payment for now.`);
+    };
+
+    window.markPaymentComplete = function() {
+        document.getElementById('paymentSuccessMessage').style.display = 'block';
+        clearInterval(window.paymentTimerInterval);
+        
+        // Update order status
+        updateOrderStatusAfterPayment(order.id);
+        
+        setTimeout(() => {
+            closePaymentModal();
+            showNotification('Order completed successfully! / ऑर्डर सफलतापूर्वक पूरा हुआ!', 'success');
+        }, 2000);
+    };
+
+    window.startPaymentTimer = function() {
+        let timeLeft = 900; // 15 minutes
+        const timerElement = document.getElementById('paymentTimer');
+
+        window.paymentTimerInterval = setInterval(() => {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+            if (timeLeft <= 0) {
+                clearInterval(window.paymentTimerInterval);
+                timerElement.textContent = 'Expired';
+                timerElement.style.background = '#dc3545';
+            }
+            timeLeft--;
+        }, 1000);
+    };
+
+
+// Update order status after payment
+function updateOrderStatusAfterPayment(orderId) {
+    const orderIndex = orderHistory.findIndex(order => order.id === orderId);
+    if (orderIndex !== -1) {
+        orderHistory[orderIndex].status = 'Processing';
+
+        // Simulate order progression
+        setTimeout(() => {
+            if (orderHistory[orderIndex]) {
+                orderHistory[orderIndex].status = 'Completed';
+                updateOrderHistoryPage();
+                showNotification('Order completed successfully! / ऑर्डर सफलतापूर्वक पूरा हुआ!', 'success');
+            }
+        }, 300000); // 5 minutes for demo
+
+        updateOrderHistoryPage();
+    }
+}
+
+                    
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
+    `;
+
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#28a745' : '#667eea'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        z-index: 9999;
+        animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 3000);
+}
+
+function setupProfileFunctionality() {
+    // Load saved user name
+    const savedName = localStorage.getItem('userName');
+    if (savedName) {
+        const profileNameInput = document.querySelector('input[placeholder="Enter your full name"]');
+        const profileDisplayName = document.getElementById('profileDisplayName');
+        const userAvatar = document.querySelector('.user-avatar .avatar-icon');
+
+        if (profileNameInput) profileNameInput.value = savedName;
+        if (profileDisplayName) profileDisplayName.textContent = savedName;
+        if (userAvatar) userAvatar.textContent = savedName.charAt(0).toUpperCase();
+    }
+
+    // Name input change handler
+    const nameInput = document.querySelector('input[placeholder="Enter your full name"]');
+    if (nameInput) {
+        nameInput.addEventListener('input', function() {
+            const name = this.value.trim();
+            const profileDisplayName = document.getElementById('profileDisplayName');
+            const userAvatar = document.querySelector('.user-avatar .avatar-icon');
+
+            if (name) {
+                if (profileDisplayName) profileDisplayName.textContent = name;
+                if (userAvatar) userAvatar.textContent = name.charAt(0).toUpperCase();
+                localStorage.setItem('userName', name);
+            } else {
+                if (profileDisplayName) profileDisplayName.textContent = 'Enter Your Name';
+                if (userAvatar) userAvatar.textContent = 'A';
+                localStorage.removeItem('userName');
+            }
+        });
+    }
+
+    // Add payment method button
+    const addPaymentBtn = document.getElementById('addPaymentMethodBtn');
+    if (addPaymentBtn) {
+        addPaymentBtn.addEventListener('click', showPaymentMethodOptions);
+    }
+
+    // Load saved payment methods
+    loadUserPaymentMethods();
+}
+
+function showPaymentMethodOptions() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    `;
+
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 15px; padding: 30px; max-width: 500px; width: 90%;">
+            <h3 style="margin-bottom: 20px; text-align: center;">Add Payment Method</h3>
+            <div style="display: grid; gap: 15px;">
+                <button class="payment-option-btn" data-type="upi" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; background: none; cursor: pointer; transition: all 0.3s;">
+                    <i class="fab fa-google-pay" style="font-size: 24px; color: #4285f4;"></i>
+                    <div style="text-align: left;">
+                        <h4 style="margin: 0;">UPI Payment</h4>
+                        <p style="margin: 0; color: #666; font-size: 14px;">Google Pay, PhonePe, Paytm</p>
+                    </div>
+                </button>
+                <button class="payment-option-btn" data-type="card" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; background: none; cursor: pointer; transition: all 0.3s;">
+                    <i class="fas fa-credit-card" style="font-size: 24px; color: #28a745;"></i>
+                    <div style="text-align: left;">
+                        <h4 style="margin: 0;">Credit/Debit Card</h4>
+                        <p style="margin: 0; color: #666; font-size: 14px;">Visa, Mastercard, RuPay</p>
+                    </div>
+                </button>
+                <button class="payment-option-btn" data-type="bank" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; background: none; cursor: pointer; transition: all 0.3s;">
+                    <i class="fas fa-university" style="font-size: 24px; color: #dc3545;"></i>
+                    <div style="text-align: left;">
+                        <h4 style="margin: 0;">Bank Account</h4>
+                        <p style="margin: 0; color: #666; font-size: 14px;">Net Banking, IMPS</p>
+                    </div>
+                </button>
+                <button class="payment-option-btn" data-type="wallet" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; background: none; cursor: pointer; transition: all 0.3s;">
+                    <i class="fas fa-wallet" style="font-size: 24px; color: #9c27b0;"></i>
+                    <div style="text-align: left;">
+                        <h4 style="margin: 0;">Digital Wallet</h4>
+                        <p style="margin: 0; color: #666; font-size: 14px;">Paytm, Amazon Pay</p>
+                    </div>
+                </button>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" style="width: 100%; margin-top: 20px; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+        </div>
+    `;
+
+    // Add event listeners to payment options
+    modal.querySelectorAll('.payment-option-btn').forEach(btn => {
+        btn.addEventListener('mouseover', function() {
+            this.style.borderColor = '#667eea';
+            this.style.background = '#f0f2ff';
+        });
+        btn.addEventListener('mouseout', function() {
+            this.style.borderColor = '#e9ecef';
+            this.style.background = 'none';
+        });
+        btn.addEventListener('click', function() {
+            const type = this.dataset.type;
+            addPaymentMethod(type);
+            modal.remove();
+        });
+    });
+
+    document.body.appendChild(modal);
+}
+
+function addPaymentMethod(type) {
+    const paymentMethods = JSON.parse(localStorage.getItem('userPaymentMethods') || '[]');
+    const methodId = Date.now().toString();
+
+    const methodData = {
+        id: methodId,
+        type: type,
+        name: getPaymentMethodName(type),
+        icon: getPaymentMethodIcon(type),
+        details: getPaymentMethodDetails(type),
+        addedDate: new Date().toLocaleDateString()
+    };
+
+    paymentMethods.push(methodData);
+    localStorage.setItem('userPaymentMethods', JSON.stringify(paymentMethods));
+
+    loadUserPaymentMethods();
+    showNotification(`${methodData.name} added successfully!`, 'success');
+}
+
+function getPaymentMethodName(type) {
+    const names = {
+        upi: 'UPI Payment',
+        card: 'Credit/Debit Card',
+        bank: 'Bank Account',
+        wallet: 'Digital Wallet'
+    };
+    return names[type] || 'Payment Method';
+}
+
+function getPaymentMethodIcon(type) {
+    const icons = {
+        upi: 'fab fa-google-pay',
+        card: 'fas fa-credit-card',
+        bank: 'fas fa-university',
+        wallet: 'fas fa-wallet'
+    };
+    return icons[type] || 'fas fa-credit-card';
+}
+
+function getPaymentMethodDetails(type) {
+    const details = {
+        upi: 'UPI ID configured',
+        card: '**** **** **** ****',
+        bank: 'Account linked',
+        wallet: 'Wallet connected'
+    };
+    return details[type] || 'Method added';
+}
+
+function loadUserPaymentMethods() {
+    const paymentMethodsList = document.getElementById('paymentMethodsList');
+    if (!paymentMethodsList) return;
+
+    const paymentMethods = JSON.parse(localStorage.getItem('userPaymentMethods') || '[]');
+
+    paymentMethodsList.innerHTML = '';
+
+    paymentMethods.forEach(method => {
+        const methodCard = document.createElement('div');
+        methodCard.className = 'payment-method-card';
+        methodCard.innerHTML = `
+            <div class="payment-method-info">
+                <div class="payment-method-icon">
+                    <i class="${method.icon}"></i>
+                </div>
+                <div class="payment-method-details">
+                    <h4>${method.name}</h4>
+                    <p>${method.details} • Added ${method.addedDate}</p>
+                </div>
+            </div>
+            <button class="profile-edit-btn" onclick="removePaymentMethod('${method.id}')">
+                <i class="fas fa-trash"></i>
+            </button>
+        `;
+        paymentMethodsList.appendChild(methodCard);
     });
 }
 
-function handleLanguageChange() {
-    const selectedLanguage = languageSelect.value;
-    currentLanguage = selectedLanguage;
-
-    // Update content based on language
-    updateContentLanguage();
+function removePaymentMethod(methodId) {
+    const paymentMethods = JSON.parse(localStorage.getItem('userPaymentMethods') || '[]');
+    const updatedMethods = paymentMethods.filter(method => method.id !== methodId);
+    localStorage.setItem('userPaymentMethods', JSON.stringify(updatedMethods));
+    loadUserPaymentMethods();
+    showNotification('Payment method removed successfully!', 'success');
 }
 
-function updateContentLanguage() {
-    const texts = content[currentLanguage];
+function getPackageIconAndType(packageName, price) {
+    const name = packageName.toLowerCase();
 
-    // Update specific text elements
-    if (currentLanguage === 'english') {
-        // Update guidelines text
-        const guidelinesText = document.querySelector('#userGuidePage .guide-content p');
-        if (guidelinesText) {
-            guidelinesText.textContent = texts.guidelinesText;
-        }
-
-        // Update other key texts
-        const whatsappGroupText = document.getElementById('whatsappGroupText');
-        if (whatsappGroupText) {
-            whatsappGroupText.textContent = "Check Other Services";
-        }
-    } else {
-        // Revert to Hindi
-        const guidelinesText = document.querySelector('#userGuidePage .guide-content p');
-        if (guidelinesText) {
-            guidelinesText.textContent = texts.guidelinesText;
-        }
+    // Monetization and Premium Services
+    if (name.includes('monetization')) {
+        return {
+            icon: 'fas fa-dollar-sign',
+            iconClass: 'monetization',
+            badge: { type: 'premium', text: 'Premium' }
+        };
     }
-}
 
-// Set up workflow to start the application
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('India Social Panel application started successfully!');
-});
+    if (name.includes('blue tick') || name.includes('verification')) {
+        return {
+            icon: 'fas fa-check-circle',
+            iconClass: 'verification',
+            badge: { type: 'premium', text: 'Verified' }
+        };
+    }
+
+    // Followers related
+    if (name.includes('followers') || name.includes('subscribe')) {
+        return {
+            icon: 'fas fa-users',
+            iconClass: 'followers',
+            badge: price < 300 ? { type: 'popular', text: 'Popular' } : null
+        };
+    }
+
+    // Likes related
+    if (name.includes('like')) {
+        return {
+            icon: 'fas fa-heart',
+            iconClass: 'likes',
+            badge: price < 50 ? { type: 'recommended', text: 'Best Deal' } : null
+        };
+    }
+
+    // Views related
+    if (name.includes('view') || name.includes('impression')) {
+        return {
+            icon: 'fas fa-eye',
+            iconClass: 'views',
+            badge: null
+        };
+    }
+
+    // Comments related
+    if (name.includes('comment') || name.includes('reply')) {
+        return {
+            icon: 'fas fa-comments',
+            iconClass: 'engagement',
+            badge: null
+        };
+    }
+
+    // Shares related
+    if (name.includes('share') || name.includes('repost') || name.includes('retweet')) {
+        return {
+            icon: 'fas fa-share-alt',
+            iconClass: 'growth',
+            badge: null
+        };
+    }
+
+    // Watch time related
+    if (name.includes('watchtime') || name.includes('watch time')) {
+        return {
+            icon: 'fas fa-clock',
+            iconClass: 'analytics',
+            badge: { type: 'premium', text: 'For Monetization' }
+        };
+    }
+
+    // Members related
+    if (name.includes('member') || name.includes('connection')) {
+        return {
+            icon: 'fas fa-user-plus',
+            iconClass: 'growth',
+            badge: null
+        };
+    }
+
+    // Votes/Polls related
+    if (name.includes('vote') || name.includes('poll')) {
+        return {
+            icon: 'fas fa-poll',
+            iconClass: 'engagement',
+            badge: null
+        };
+    }
+
+    // Saves related
+    if (name.includes('save')) {
+        return {
+            icon: 'fas fa-bookmark',
+            iconClass: 'engagement',
+            badge: null
+        };
+    }
+
+    // Live related
+    if (name.includes('live')) {
+        return {
+            icon: 'fas fa-broadcast-tower',
+            iconClass: 'premium',
+            badge: { type: 'popular', text: 'Live' }
+        };
+    }
+
+    // Traffic related
+    if (name.includes('traffic') || name.includes('visitor')) {
+        return {
+            icon: 'fas fa-chart-line',
+            iconClass: 'analytics',
+            badge: null
+        };
+    }
+
+    // Reviews related
+    if (name.includes('review') || name.includes('rating')) {
+        return {
+            icon: 'fas fa-star',
+            iconClass: 'premium',
+            badge: { type: 'recommended', text: '5 Star' }
+        };
+    }
+
+    // SEO related
+    if (name.includes('seo') || name.includes('backlink')) {
+        return {
+            icon: 'fas fa-search',
+            iconClass: 'growth',
+            badge: null
+        };
+    }
+
+    // Default case
+    return {
+        icon: 'fas fa-rocket',
+        iconClass: 'growth',
+        badge: price > 10000 ? { type: 'premium', text: 'Premium' } : null
+    };
+}
