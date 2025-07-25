@@ -1,3 +1,4 @@
+
 // Service packages data
 const servicePackages = {
     youtube: [
@@ -183,9 +184,79 @@ let orderHistory = [];
 let currentOrder = null;
 let currentBalance = 0.00;
 
+// Profile stats that update dynamically
+let profileStats = {
+    totalOrders: 0,
+    totalSpent: 0.00,
+    currentBalance: 0.00,
+    successRate: 100
+};
+
+// EmailJS Configuration for Real-time Order Notifications
+const EMAILJS_CONFIG = {
+    serviceId: 'service_isp2025',
+    templateId: 'template_order_notification',
+    publicKey: 'isp_public_key_2025'
+};
+
+// Initialize EmailJS when page loads
+function initializeEmailJS() {
+    // Initialize EmailJS with public key
+    emailjs.init(EMAILJS_CONFIG.publicKey);
+    console.log('EmailJS initialized successfully for order notifications');
+}
+
+// Send email notification when order is placed
+async function sendOrderNotificationEmail(orderData) {
+    try {
+        const emailTemplate = {
+            to_email: 'achakumar00@gmail.com', // Your email
+            order_id: orderData.id,
+            service_name: orderData.serviceName,
+            service_id: orderData.serviceId,
+            target_link: orderData.link,
+            quantity: orderData.quantity.toLocaleString(),
+            amount: `₹${orderData.price.toFixed(2)}`,
+            order_date: orderData.date,
+            order_time: orderData.time,
+            customer_ip: await getUserIP(),
+            order_status: 'Processing - Will start in 0-15 minutes'
+        };
+
+        const response = await emailjs.send(
+            EMAILJS_CONFIG.serviceId,
+            EMAILJS_CONFIG.templateId,
+            emailTemplate
+        );
+
+        console.log('Order notification email sent successfully:', response);
+        showNotification('📧 Order notification sent to admin email!', 'success');
+        
+        return true;
+    } catch (error) {
+        console.error('Email notification failed:', error);
+        // Don't show error to user, just log it
+        return false;
+    }
+}
+
+// Get user's IP address for tracking
+async function getUserIP() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        return 'Unknown';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     updateBalanceDisplay();
     showDashboard();
+    
+    // Initialize EmailJS for email notifications
+    initializeEmailJS();
 
     // Core event listeners
     document.getElementById('hamburgerMenu')?.addEventListener('click', toggleSideNav);
@@ -207,6 +278,107 @@ document.addEventListener('DOMContentLoaded', function() {
     setupSearchFunctionality();
     initializeAIChatListeners();
     setupProfileFunctionality();
+
+    // Show welcome popup for new users
+    showWelcomePopup();
+
+    // Fix scrolling issues
+    fixScrollingIssues();
+});
+
+// Fix scrolling and touch issues
+function fixScrollingIssues() {
+    // Enable smooth scrolling
+    document.documentElement.style.scrollBehavior = 'smooth';
+    
+    // Fix overflow and scrolling
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'auto';
+    
+    // Ensure proper touch scrolling on mobile
+    document.body.style.webkitOverflowScrolling = 'touch';
+    
+    // Fix any modal or popup that might be blocking scroll
+    const modals = document.querySelectorAll('.modal, .overlay, .popup');
+    modals.forEach(modal => {
+        if (modal.style.display !== 'none' && !modal.classList.contains('active')) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    // Ensure main content is scrollable
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+        mainContent.style.overflow = 'visible';
+        mainContent.style.height = 'auto';
+    }
+    
+    // Fix dashboard container
+    const dashboard = document.querySelector('.dashboard');
+    if (dashboard) {
+        dashboard.style.overflow = 'visible';
+        dashboard.style.height = 'auto';
+        dashboard.style.minHeight = '100vh';
+    }
+    
+    // Remove any fixed positioning that might interfere
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(page => {
+        page.style.position = 'relative';
+        page.style.overflow = 'visible';
+    });
+}
+
+// Welcome popup functionality
+function showWelcomePopup() {
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcomePopup');
+
+    if (!hasSeenWelcome) {
+        setTimeout(() => {
+            const welcomeOverlay = document.getElementById('welcomePopupOverlay');
+            if (welcomeOverlay) {
+                welcomeOverlay.classList.add('active');
+                // Don't block body scroll for welcome popup
+                // document.body.style.overflow = 'hidden';
+            }
+        }, 1000); // Show after 1 second delay
+    }
+}
+
+function closeWelcomePopup() {
+    const welcomeOverlay = document.getElementById('welcomePopupOverlay');
+    if (welcomeOverlay) {
+        welcomeOverlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+
+        // Mark as seen so it doesn't show again
+        localStorage.setItem('hasSeenWelcomePopup', 'true');
+
+        // Show success notification
+        showNotification('🎉 Welcome aboard! Ready to start your social media journey?', 'success');
+
+        // Smooth scroll to service selection
+        setTimeout(() => {
+            const serviceSection = document.querySelector('.search-section');
+            if (serviceSection) {
+                serviceSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 500);
+    }
+}
+
+// Close popup when clicking overlay
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'welcomePopupOverlay') {
+        closeWelcomePopup();
+    }
+});
+
+// Prevent popup from closing when clicking inside
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.welcome-popup-container')) {
+        e.stopPropagation();
+    }
 });
 
 function validateLink() {
@@ -498,7 +670,7 @@ function handlePlaceOrder() {
         link: linkInput.value.trim(),
         quantity: quantity,
         price: totalPrice,
-        status: 'Pending Payment',
+        status: 'Processing',
         date: new Date().toLocaleDateString(),
         time: new Date().toLocaleTimeString()
     };
@@ -509,8 +681,25 @@ function handlePlaceOrder() {
     // Add to order history
     orderHistory.push(order);
 
+    // Update profile stats
+    profileStats.totalOrders = orderHistory.length;
+    profileStats.totalSpent += totalPrice;
+
+    // Send email notification to admin
+    sendOrderNotificationEmail(order).then(emailSent => {
+        if (emailSent) {
+            console.log('Admin notified successfully via email');
+        }
+    });
+
+    // Update profile display
+    updateProfileStats();
+
     // Update order history page
     updateOrderHistoryPage();
+
+    // Show success notification
+    showNotification(`🎉 Order ${order.id} placed successfully! Admin will be notified via email.`, 'success');
 
     // Show payment page
     showPaymentPage(order);
@@ -575,7 +764,6 @@ function updateOrderHistoryPage() {
             <div class="order-filters">
                 <select class="filter-select">
                     <option>All Orders / सभी ऑर्डर</option>
-                    <option>Pending Payment / भुगतान बाकी</option>
                     <option>Processing / प्रक्रिया में</option>  
                     <option>Completed / पूर्ण</option>
                     <option>Cancelled / रद्द</option>
@@ -583,28 +771,20 @@ function updateOrderHistoryPage() {
             </div>
             <div class="orders-list">
                 ${orderHistory.map(order => {
-                    const statusClass = order.status.toLowerCase().replace(' ', '-');
-                    let displayStatus = order.status;
-                    let estimatedTime = '';
-
-                    if (order.status === 'Processing') {
-                        displayStatus = 'Processing / प्रक्रिया में';
-                        estimatedTime = '<div class="estimated-time">⏱️ Est. completion: 2-4 hours</div>';
-                    } else if (order.status === 'Pending Payment') {
-                        displayStatus = 'Payment Required / भुगतान आवश्यक';
-                        estimatedTime = '<div class="estimated-time">💳 Payment pending</div>';
-                    } else if (order.status === 'Completed') {
-                        displayStatus = 'Completed / पूर्ण';
-                        estimatedTime = '<div class="estimated-time">✅ Successfully delivered</div>';
-                    }
+                    // Always show orders as Processing initially
+                    const displayStatus = 'Processing / प्रक्रिया में';
+                    const statusClass = 'processing';
+                    const estimatedTime = '<div class="estimated-time">⏱️ Order is being processed • Start time: 0-15 minutes</div>';
 
                     return `
                     <div class="order-item">
                         <div class="order-details">
-                            <div class="order-id">#${order.id}</div>
-                            <div class="order-service">ID: ${order.serviceId} - ${order.serviceName}</div>
-                            <div class="order-link">🔗 ${order.link}</div>
+                            <div class="order-id">Order ID: #${order.id}</div>
+                            <div class="order-service">Service: ID ${order.serviceId} - ${order.serviceName}</div>
+                            <div class="order-link">🔗 Target Link: ${order.link}</div>
                             <div class="order-quantity">📊 Quantity: ${order.quantity.toLocaleString()}</div>
+                            <div class="order-amount-detail">💰 Amount Paid: ₹${order.price.toFixed(2)}</div>
+                            <div class="order-date-time">📅 Order Date: ${order.date} at ${order.time}</div>
                             ${estimatedTime}
                         </div>
                         <div class="order-status ${statusClass}">${displayStatus}</div>
@@ -758,7 +938,7 @@ function setupNavigationListeners() {
         { id: 'servicesNav', page: 'servicesPage' },
         { id: 'depositNav', page: 'addFundsPage' },
         { id: 'childPanelsNav', page: 'childPanelsPage' },
-        { id: 'ordersNav', page: 'ordersPage' },
+        { id: 'ordersNav', page: 'orderHistoryPage' },
         { id: 'refillHistoryNav', page: 'refillHistoryPage' },
         { id: 'addFundsNav', page: 'addFundsPage' },
         { id: 'ticketsNav', page: 'ticketsPage' },
@@ -891,33 +1071,46 @@ function setupServiceItemClickHandlers() {
     document.addEventListener('click', function(e) {
         if (e.target.closest('.service-item')) {
             const serviceItem = e.target.closest('.service-item');
-            const serviceName = serviceItem.querySelector('span').textContent;
+            const serviceCategory = serviceItem.dataset.service;
+            const searchTerm = serviceItem.dataset.search;
 
-            // Navigate to new order page and pre-select service
-            showPage('dashboardHome');
+            if (serviceCategory && searchTerm) {
+                // Navigate to new order page
+                showPage('dashboardHome');
 
-            // Pre-select the appropriate service category
-            const serviceSelect = document.getElementById('serviceSelect');
-            if (serviceName.includes('YouTube')) {
-                serviceSelect.value = 'youtube';
-            } else if (serviceName.includes('Instagram')) {
-                serviceSelect.value = 'instagram';
-            } else if (serviceName.includes('Facebook')) {
-                serviceSelect.value = 'facebook';
-            } else if (serviceName.includes('WhatsApp')) {
-                serviceSelect.value = 'whatsapp';
+                // Pre-select the service category
+                selectedService = serviceCategory;
+
+                // Update service dropdown display
+                const serviceSelected = document.getElementById('serviceSelected');
+                const serviceIcon = document.querySelector(`[data-value="${serviceCategory}"] .service-icon`);
+                if (serviceSelected && serviceIcon) {
+                    const iconHTML = serviceIcon.outerHTML;
+                    const serviceName = getServiceDisplayName(serviceCategory);
+                    serviceSelected.querySelector('.selected-text').innerHTML = iconHTML + ' ' + serviceName;
+                }
+
+                // Populate packages for the selected service
+                populatePackages(serviceCategory);
+
+                // Auto-search for the specific service in search box
+                const searchInput = document.getElementById('searchService');
+                if (searchInput) {
+                    searchInput.value = searchTerm;
+                    searchInput.dispatchEvent(new Event('input'));
+                }
+
+                // Show success message
+                showNotification(`${serviceItem.querySelector('span').textContent} service selected!`, 'success');
+
+                // Scroll to service selection
+                setTimeout(() => {
+                    document.getElementById('searchService').scrollIntoView({ behavior: 'smooth' });
+                }, 300);
             }
-
-            // Trigger service change
-            handleServiceChange();
-
-            // Scroll to service selection
-            document.getElementById('serviceSelect').scrollIntoView({ behavior: 'smooth' });
         }
     });
 }
-
-
 
 function selectPackageOption(option, packageData, value, text = null) {
     const packageSelected = document.getElementById('packageSelected');
@@ -959,8 +1152,6 @@ function selectPackageOption(option, packageData, value, text = null) {
     calculateTotal();
 }
 
-
-
 function toggleSideNav() {
     const sideNav = document.getElementById('sideNav');
     if (sideNav) {
@@ -991,7 +1182,14 @@ function showPage(pageId) {
         updateRefillHistoryPage();
     } else if (pageId === 'orderHistoryPage') {
         updateOrderHistoryPage();
+    } else if (pageId === 'ordersPage') {
+        // Redirect ordersPage to orderHistoryPage
+        showPage('orderHistoryPage');
+        return;
     }
+
+    // Scroll to top when switching pages
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function updateRefillHistoryPage() {
@@ -1162,8 +1360,6 @@ function handleSearch() {
     // This function is now handled by setupSearchFunctionality()
 }
 
-
-
 function showDashboard() {
     document.getElementById('userAvatar').textContent = 'A';
 }
@@ -1177,6 +1373,37 @@ function updateBalanceDisplay() {
 function openTelegramSupport() {
     window.open('https://t.me/Indiasocialpainel_support_bot?start=start', '_blank');
 }
+
+// Test Email Functionality
+async function sendTestEmail() {
+    try {
+        const testOrderData = {
+            id: 'TEST' + Date.now().toString().slice(-6),
+            serviceName: 'Instagram Followers - Test Order',
+            serviceId: '2001',
+            link: 'https://instagram.com/test_account',
+            quantity: 1000,
+            price: 150.00,
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString()
+        };
+
+        const emailSent = await sendOrderNotificationEmail(testOrderData);
+        
+        if (emailSent) {
+            showNotification('✅ Test email sent successfully to achakumar00@gmail.com!', 'success');
+        } else {
+            showNotification('❌ Test email failed. Please check console.', 'error');
+        }
+    } catch (error) {
+        console.error('Test email error:', error);
+        showNotification('❌ Test email failed. Check your internet connection.', 'error');
+    }
+}
+
+// Add test email button to developer console
+window.testEmail = sendTestEmail;
+console.log('📧 To test email notification, type: testEmail() in console');
 
 // Enhanced Contact Widget Functions
 function toggleContactOptions() {
@@ -1281,7 +1508,8 @@ function openAISupport() {
     const modal = document.getElementById('aiChatModal');
     if (modal) {
         modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
+        // Don't block body scroll
+        // document.body.style.overflow = 'hidden';
 
         // Initialize chat if not already done
         initializeAIChat();
@@ -1743,468 +1971,7 @@ function showPaymentPage(order) {
                 </div>
             </div>
         </div>
-
-        <!-- UPI Apps Payment Section -->
-        <div id="upiAppsSection" style="display: none; width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: auto; max-height: 95vh; overflow-y: auto;">
-            <div style="
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 20px;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-            ">
-                <button onclick="showMainPayment()" style="
-                    background: #667eea;
-                    color: white;
-                    border: none;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 16px;
-                ">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <h3 style="margin: 0; flex: 1;">Select UPI App</h3>
-            </div>
-
-            <div style="padding: 25px;">
-                <p style="text-align: center; font-size: 18px; font-weight: 600; color: #28a745; margin-bottom: 20px;">Amount: ₹${order.price.toFixed(2)}</p>
-                <p style="text-align: center; color: #666; margin-bottom: 20px;">Order ID: ${order.id}</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
-                    <button onclick="openUPIApp('gpay')" style="
-                        background: white;
-                        border: 2px solid #4285f4;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 8px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fab fa-google-pay" style="font-size: 24px; color: #4285f4;"></i>
-                        <span style="font-weight: 600; color: #333;">Google Pay</span>
-                    </button>
-                    
-                    <button onclick="openUPIApp('phonepe')" style="
-                        background: white;
-                        border: 2px solid #5f259f;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 8px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fas fa-mobile-alt" style="font-size: 24px; color: #5f259f;"></i>
-                        <span style="font-weight: 600; color: #333;">PhonePe</span>
-                    </button>
-                    
-                    <button onclick="openUPIApp('paytm')" style="
-                        background: white;
-                        border: 2px solid #00baf2;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 8px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fas fa-wallet" style="font-size: 24px; color: #00baf2;"></i>
-                        <span style="font-weight: 600; color: #333;">Paytm</span>
-                    </button>
-                    
-                    <button onclick="openUPIApp('bhim')" style="
-                        background: white;
-                        border: 2px solid #ff6600;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 8px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fas fa-university" style="font-size: 24px; color: #ff6600;"></i>
-                        <span style="font-weight: 600; color: #333;">BHIM UPI</span>
-                    </button>
-                    
-                    <button onclick="openUPIApp('amazonpay')" style="
-                        background: white;
-                        border: 2px solid #ff9900;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 8px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fab fa-amazon" style="font-size: 24px; color: #ff9900;"></i>
-                        <span style="font-weight: 600; color: #333;">Amazon Pay</span>
-                    </button>
-                    
-                    <button onclick="openUPIApp('mobikwik')" style="
-                        background: white;
-                        border: 2px solid #d52b7a;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 8px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fas fa-mobile" style="font-size: 24px; color: #d52b7a;"></i>
-                        <span style="font-weight: 600; color: #333;">MobiKwik</span>
-                    </button>
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px;">
-                    <button onclick="cancelPaymentTransaction()" style="
-                        background: #dc3545;
-                        color: white;
-                        border: none;
-                        padding: 12px 25px;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-weight: 600;
-                    ">Cancel Transaction</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- QR Code Payment Section -->
-        <div id="qrPaymentSection" style="display: none; width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: auto; max-height: 95vh; overflow-y: auto;">
-            <div style="
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 20px;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-            ">
-                <button onclick="showMainPayment()" style="
-                    background: #667eea;
-                    color: white;
-                    border: none;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 16px;
-                ">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <h3 style="margin: 0; flex: 1;">Scan QR Code</h3>
-                <div style="
-                    background: #ff6b35;
-                    color: white;
-                    padding: 8px 15px;
-                    border-radius: 20px;
-                    font-weight: 600;
-                    font-size: 14px;
-                " id="paymentTimer">15:00</div>
-            </div>
-
-            <div style="
-                background: #f8f9fa;
-                border-radius: 15px;
-                padding: 25px;
-                text-align: center;
-                margin: 20px;
-                border: 2px solid #e9ecef;
-            ">
-                <h3 style="text-align: center; margin-bottom: 15px; color: #333;">India Social Panel</h3>
-                <p style="text-align: center; font-size: 18px; font-weight: 600; color: #28a745; margin-bottom: 20px;">Amount: ₹${order.price.toFixed(2)}</p>
-                <div style="display: flex; justify-content: center; margin: 20px 0;">
-                    <img src="https://i.postimg.cc/3NtWMHDh/IMG-20250724-115255.jpg" alt="QR Code" style="width: 250px; height: 250px; border: 2px solid #e9ecef; border-radius: 15px; max-width: 100%;"/>
-                </div>
-                <h4 style="text-align: center; margin: 15px 0;">Scan with any UPI app</h4>
-                <p style="text-align: center; color: #666;">Order ID: ${order.id}</p>
-                <div style="text-align: center; margin-top: 20px;">
-                    <button onclick="cancelPaymentTransaction()" style="
-                        background: #dc3545;
-                        color: white;
-                        border: none;
-                        padding: 12px 25px;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-weight: 600;
-                        margin-right: 10px;
-                    ">Cancel Transaction</button>
-                    <button onclick="markPaymentComplete()" style="
-                        background: #28a745;
-                        color: white;
-                        border: none;
-                        padding: 12px 25px;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-weight: 600;
-                    ">Payment Done</button>
-                </div>
-            </div>
-
-            <div id="paymentSuccessMessage" style="
-                display: none;
-                background: #d4edda;
-                color: #155724;
-                padding: 15px;
-                border-radius: 10px;
-                text-align: center;
-                margin: 20px;
-                border: 1px solid #c3e6cb;
-            ">
-                <h4>🎉 Payment Successful!</h4>
-                <p>Your order is being processed. You will receive confirmation shortly.</p>
-            </div>
-        </div>
-
-        <!-- UPI ID Payment Section -->
-        <div id="upiIDSection" style="display: none; width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: auto; max-height: 95vh; overflow-y: auto;">
-            <div style="
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 20px;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-            ">
-                <button onclick="showMainPayment()" style="
-                    background: #667eea;
-                    color: white;
-                    border: none;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 16px;
-                ">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <h3 style="margin: 0; flex: 1;">UPI ID Payment</h3>
-            </div>
-
-            <div style="padding: 25px; text-align: center;">
-                <p style="font-size: 18px; font-weight: 600; color: #28a745; margin-bottom: 20px;">Amount: ₹${order.price.toFixed(2)}</p>
-                <p style="color: #666; margin-bottom: 20px;">Order ID: ${order.id}</p>
-                
-                <div style="
-                    background: #f8f9fa;
-                    border-radius: 15px;
-                    padding: 25px;
-                    margin: 20px 0;
-                    border: 2px solid #e9ecef;
-                ">
-                    <h4 style="color: #333; margin-bottom: 15px;">Pay to UPI ID</h4>
-                    <div style="
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-                        background: white;
-                        padding: 15px;
-                        border-radius: 10px;
-                        border: 2px solid #667eea;
-                        margin-bottom: 15px;
-                    ">
-                        <input type="text" value="indiasocialpanel@upi" readonly style="
-                            flex: 1;
-                            border: none;
-                            outline: none;
-                            font-weight: 600;
-                            color: #667eea;
-                            font-size: 16px;
-                            background: transparent;
-                        ">
-                        <button onclick="copyUPIID()" style="
-                            background: #667eea;
-                            color: white;
-                            border: none;
-                            padding: 8px 15px;
-                            border-radius: 6px;
-                            cursor: pointer;
-                            font-weight: 600;
-                        ">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <p style="color: #666; font-size: 14px; margin-bottom: 15px;">Copy the UPI ID and paste it in your UPI app to make payment</p>
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <button onclick="cancelPaymentTransaction()" style="
-                        background: #dc3545;
-                        color: white;
-                        border: none;
-                        padding: 12px 25px;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-weight: 600;
-                        margin-right: 10px;
-                    ">Cancel Transaction</button>
-                    <button onclick="markPaymentComplete()" style="
-                        background: #28a745;
-                        color: white;
-                        border: none;
-                        padding: 12px 25px;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-weight: 600;
-                    ">Payment Done</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card/Banking Payment Section -->
-        <div id="cardBankingSection" style="display: none; width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: auto; max-height: 95vh; overflow-y: auto;">
-            <div style="
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 20px;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-            ">
-                <button onclick="showMainPayment()" style="
-                    background: #667eea;
-                    color: white;
-                    border: none;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 16px;
-                ">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <h3 style="margin: 0; flex: 1;">Card & Banking</h3>
-            </div>
-
-            <div style="padding: 25px;">
-                <p style="text-align: center; font-size: 18px; font-weight: 600; color: #28a745; margin-bottom: 20px;">Amount: ₹${order.price.toFixed(2)}</p>
-                <p style="text-align: center; color: #666; margin-bottom: 20px;">Order ID: ${order.id}</p>
-                
-                <div style="display: grid; gap: 15px; margin-bottom: 20px;">
-                    <button onclick="processCardPayment('credit')" style="
-                        background: white;
-                        border: 2px solid #dc3545;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        gap: 15px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fas fa-credit-card" style="font-size: 24px; color: #dc3545;"></i>
-                        <div style="text-align: left;">
-                            <h4 style="margin: 0; color: #333;">Credit Card</h4>
-                            <p style="margin: 0; color: #666; font-size: 12px;">Visa, Mastercard, RuPay</p>
-                        </div>
-                    </button>
-                    
-                    <button onclick="processCardPayment('debit')" style="
-                        background: white;
-                        border: 2px solid #28a745;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        gap: 15px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fas fa-credit-card" style="font-size: 24px; color: #28a745;"></i>
-                        <div style="text-align: left;">
-                            <h4 style="margin: 0; color: #333;">Debit Card</h4>
-                            <p style="margin: 0; color: #666; font-size: 12px;">All major banks supported</p>
-                        </div>
-                    </button>
-                    
-                    <button onclick="processCardPayment('netbanking')" style="
-                        background: white;
-                        border: 2px solid #007bff;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        gap: 15px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fas fa-university" style="font-size: 24px; color: #007bff;"></i>
-                        <div style="text-align: left;">
-                            <h4 style="margin: 0; color: #333;">Net Banking</h4>
-                            <p style="margin: 0; color: #666; font-size: 12px;">All major banks</p>
-                        </div>
-                    </button>
-                    
-                    <button onclick="processCardPayment('wallet')" style="
-                        background: white;
-                        border: 2px solid #9c27b0;
-                        border-radius: 12px;
-                        padding: 15px;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        gap: 15px;
-                        transition: all 0.3s;
-                    ">
-                        <i class="fas fa-wallet" style="font-size: 24px; color: #9c27b0;"></i>
-                        <div style="text-align: left;">
-                            <h4 style="margin: 0; color: #333;">Digital Wallets</h4>
-                            <p style="margin: 0; color: #666; font-size: 12px;">Paytm, Amazon Pay, etc.</p>
-                        </div>
-                    </button>
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px;">
-                    <button onclick="cancelPaymentTransaction()" style="
-                        background: #dc3545;
-                        color: white;
-                        border: none;
-                        padding: 12px 25px;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-weight: 600;
-                    ">Cancel Transaction</button>
-                </div>
-            </div>
-        </div>
     `;
-
-    // Add event listener to close modal when clicking outside
-    paymentModal.addEventListener('click', function(e) {
-        if (e.target === paymentModal) {
-            closePaymentModal();
-        }
-    });
-
-    document.body.appendChild(paymentModal);
-    document.body.style.overflow = 'hidden';
 
     // Add payment modal functions to window
     window.closePaymentModal = function() {
@@ -2215,157 +1982,31 @@ function showPaymentPage(order) {
     };
 
     window.showUPIAppsPayment = function() {
-        document.querySelector('#paymentModal .payment-container').style.display = 'none';
-        document.getElementById('upiAppsSection').style.display = 'block';
+        showNotification('UPI Apps payment coming soon! Please use QR Code for now.', 'info');
     };
 
     window.showQRCodePayment = function() {
-        document.querySelector('#paymentModal .payment-container').style.display = 'none';
-        document.getElementById('qrPaymentSection').style.display = 'block';
-        startPaymentTimer();
+        showNotification('QR Code payment gateway will be available soon!', 'info');
     };
 
     window.showUPIIDPayment = function() {
-        document.querySelector('#paymentModal .payment-container').style.display = 'none';
-        document.getElementById('upiIDSection').style.display = 'block';
+        showNotification('UPI ID payment coming soon! Please use other methods.', 'info');
     };
 
     window.showCardBankingPayment = function() {
-        document.querySelector('#paymentModal .payment-container').style.display = 'none';
-        document.getElementById('cardBankingSection').style.display = 'block';
+        showNotification('Card/Banking payment gateway coming soon!', 'info');
     };
 
-    window.showMainPayment = function() {
-        document.querySelector('#paymentModal .payment-container').style.display = 'block';
-        document.getElementById('qrPaymentSection').style.display = 'none';
-        document.getElementById('upiAppsSection').style.display = 'none';
-        document.getElementById('upiIDSection').style.display = 'none';
-        document.getElementById('cardBankingSection').style.display = 'none';
-        clearInterval(window.paymentTimerInterval);
-    };
-
-    window.cancelPaymentTransaction = function() {
-        if (confirm('Are you sure you want to cancel this transaction?')) {
-            closePaymentModal();
+    // Add event listener to close modal when clicking outside
+    paymentModal.addEventListener('click', function(e) {
+        if (e.target === paymentModal) {
+            window.closePaymentModal();
         }
-    };
+    });
 
-    window.openUPIApp = function(app) {
-        const amount = order.price.toFixed(2);
-        const upiID = 'indiasocialpanel@upi';
-        const orderRef = order.id;
-        
-        let upiUrl = '';
-        switch(app) {
-            case 'gpay':
-                upiUrl = `tez://upi/pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
-                break;
-            case 'phonepe':
-                upiUrl = `phonepe://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
-                break;
-            case 'paytm':
-                upiUrl = `paytmmp://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
-                break;
-            case 'bhim':
-                upiUrl = `bhim://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
-                break;
-            case 'amazonpay':
-                upiUrl = `amazonpay://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
-                break;
-            case 'mobikwik':
-                upiUrl = `mobikwik://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
-                break;
-            default:
-                upiUrl = `upi://pay?pa=${upiID}&pn=India Social Panel&tn=Order ${orderRef}&am=${amount}&cu=INR`;
-        }
-        
-        // Try to open UPI app
-        try {
-            window.open(upiUrl, '_blank');
-        } catch (error) {
-            alert('UPI app not found. Please install the app or use QR code payment.');
-        }
-    };
-
-    window.copyUPIID = function() {
-        const upiID = 'indiasocialpanel@upi';
-        navigator.clipboard.writeText(upiID).then(() => {
-            showNotification('UPI ID copied to clipboard!', 'success');
-        }).catch(() => {
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = upiID;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            showNotification('UPI ID copied to clipboard!', 'success');
-        });
-    };
-
-    window.processCardPayment = function(type) {
-        const typeNames = {
-            'credit': 'Credit Card',
-            'debit': 'Debit Card',
-            'netbanking': 'Net Banking',
-            'wallet': 'Digital Wallet'
-        };
-        
-        alert(`${typeNames[type]} payment gateway will be available soon. Please use UPI payment for now.`);
-    };
-
-    window.markPaymentComplete = function() {
-        document.getElementById('paymentSuccessMessage').style.display = 'block';
-        clearInterval(window.paymentTimerInterval);
-        
-        // Update order status
-        updateOrderStatusAfterPayment(order.id);
-        
-        setTimeout(() => {
-            closePaymentModal();
-            showNotification('Order completed successfully! / ऑर्डर सफलतापूर्वक पूरा हुआ!', 'success');
-        }, 2000);
-    };
-
-    window.startPaymentTimer = function() {
-        let timeLeft = 900; // 15 minutes
-        const timerElement = document.getElementById('paymentTimer');
-
-        window.paymentTimerInterval = setInterval(() => {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerElement.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-
-            if (timeLeft <= 0) {
-                clearInterval(window.paymentTimerInterval);
-                timerElement.textContent = 'Expired';
-                timerElement.style.background = '#dc3545';
-            }
-            timeLeft--;
-        }, 1000);
-    };
-
-
-// Update order status after payment
-function updateOrderStatusAfterPayment(orderId) {
-    const orderIndex = orderHistory.findIndex(order => order.id === orderId);
-    if (orderIndex !== -1) {
-        orderHistory[orderIndex].status = 'Processing';
-
-        // Simulate order progression
-        setTimeout(() => {
-            if (orderHistory[orderIndex]) {
-                orderHistory[orderIndex].status = 'Completed';
-                updateOrderHistoryPage();
-                showNotification('Order completed successfully! / ऑर्डर सफलतापूर्वक पूरा हुआ!', 'success');
-            }
-        }, 300000); // 5 minutes for demo
-
-        updateOrderHistoryPage();
-    }
-}
-
-                    
+    document.body.appendChild(paymentModal);
+    // Don't block body scroll for payment modal
+    // document.body.style.overflow = 'hidden';
 }
 
 function showNotification(message, type = 'info') {
@@ -2400,6 +2041,17 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
+function updateProfileStats() {
+    // Update profile stats display
+    const statElements = document.querySelectorAll('.stat-item');
+    if (statElements.length >= 4) {
+        statElements[0].querySelector('.stat-value').textContent = profileStats.totalOrders;
+        statElements[1].querySelector('.stat-value').textContent = `₹${profileStats.totalSpent.toFixed(0)}`;
+        statElements[2].querySelector('.stat-value').textContent = `₹${profileStats.currentBalance.toFixed(0)}`;
+        statElements[3].querySelector('.stat-value').textContent = `${profileStats.successRate}%`;
+    }
+}
+
 function setupProfileFunctionality() {
     // Load saved user name
     const savedName = localStorage.getItem('userName');
@@ -2412,6 +2064,9 @@ function setupProfileFunctionality() {
         if (profileDisplayName) profileDisplayName.textContent = savedName;
         if (userAvatar) userAvatar.textContent = savedName.charAt(0).toUpperCase();
     }
+
+    // Initialize profile stats display
+    updateProfileStats();
 
     // Name input change handler
     const nameInput = document.querySelector('input[placeholder="Enter your full name"]');
@@ -2444,162 +2099,19 @@ function setupProfileFunctionality() {
 }
 
 function showPaymentMethodOptions() {
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    `;
-
-    modal.innerHTML = `
-        <div style="background: white; border-radius: 15px; padding: 30px; max-width: 500px; width: 90%;">
-            <h3 style="margin-bottom: 20px; text-align: center;">Add Payment Method</h3>
-            <div style="display: grid; gap: 15px;">
-                <button class="payment-option-btn" data-type="upi" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; background: none; cursor: pointer; transition: all 0.3s;">
-                    <i class="fab fa-google-pay" style="font-size: 24px; color: #4285f4;"></i>
-                    <div style="text-align: left;">
-                        <h4 style="margin: 0;">UPI Payment</h4>
-                        <p style="margin: 0; color: #666; font-size: 14px;">Google Pay, PhonePe, Paytm</p>
-                    </div>
-                </button>
-                <button class="payment-option-btn" data-type="card" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; background: none; cursor: pointer; transition: all 0.3s;">
-                    <i class="fas fa-credit-card" style="font-size: 24px; color: #28a745;"></i>
-                    <div style="text-align: left;">
-                        <h4 style="margin: 0;">Credit/Debit Card</h4>
-                        <p style="margin: 0; color: #666; font-size: 14px;">Visa, Mastercard, RuPay</p>
-                    </div>
-                </button>
-                <button class="payment-option-btn" data-type="bank" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; background: none; cursor: pointer; transition: all 0.3s;">
-                    <i class="fas fa-university" style="font-size: 24px; color: #dc3545;"></i>
-                    <div style="text-align: left;">
-                        <h4 style="margin: 0;">Bank Account</h4>
-                        <p style="margin: 0; color: #666; font-size: 14px;">Net Banking, IMPS</p>
-                    </div>
-                </button>
-                <button class="payment-option-btn" data-type="wallet" style="display: flex; align-items: center; gap: 15px; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; background: none; cursor: pointer; transition: all 0.3s;">
-                    <i class="fas fa-wallet" style="font-size: 24px; color: #9c27b0;"></i>
-                    <div style="text-align: left;">
-                        <h4 style="margin: 0;">Digital Wallet</h4>
-                        <p style="margin: 0; color: #666; font-size: 14px;">Paytm, Amazon Pay</p>
-                    </div>
-                </button>
-            </div>
-            <button onclick="this.parentElement.parentElement.remove()" style="width: 100%; margin-top: 20px; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
-        </div>
-    `;
-
-    // Add event listeners to payment options
-    modal.querySelectorAll('.payment-option-btn').forEach(btn => {
-        btn.addEventListener('mouseover', function() {
-            this.style.borderColor = '#667eea';
-            this.style.background = '#f0f2ff';
-        });
-        btn.addEventListener('mouseout', function() {
-            this.style.borderColor = '#e9ecef';
-            this.style.background = 'none';
-        });
-        btn.addEventListener('click', function() {
-            const type = this.dataset.type;
-            addPaymentMethod(type);
-            modal.remove();
-        });
-    });
-
-    document.body.appendChild(modal);
-}
-
-function addPaymentMethod(type) {
-    const paymentMethods = JSON.parse(localStorage.getItem('userPaymentMethods') || '[]');
-    const methodId = Date.now().toString();
-
-    const methodData = {
-        id: methodId,
-        type: type,
-        name: getPaymentMethodName(type),
-        icon: getPaymentMethodIcon(type),
-        details: getPaymentMethodDetails(type),
-        addedDate: new Date().toLocaleDateString()
-    };
-
-    paymentMethods.push(methodData);
-    localStorage.setItem('userPaymentMethods', JSON.stringify(paymentMethods));
-
-    loadUserPaymentMethods();
-    showNotification(`${methodData.name} added successfully!`, 'success');
-}
-
-function getPaymentMethodName(type) {
-    const names = {
-        upi: 'UPI Payment',
-        card: 'Credit/Debit Card',
-        bank: 'Bank Account',
-        wallet: 'Digital Wallet'
-    };
-    return names[type] || 'Payment Method';
-}
-
-function getPaymentMethodIcon(type) {
-    const icons = {
-        upi: 'fab fa-google-pay',
-        card: 'fas fa-credit-card',
-        bank: 'fas fa-university',
-        wallet: 'fas fa-wallet'
-    };
-    return icons[type] || 'fas fa-credit-card';
-}
-
-function getPaymentMethodDetails(type) {
-    const details = {
-        upi: 'UPI ID configured',
-        card: '**** **** **** ****',
-        bank: 'Account linked',
-        wallet: 'Wallet connected'
-    };
-    return details[type] || 'Method added';
+    showNotification('Payment method management coming soon!', 'info');
 }
 
 function loadUserPaymentMethods() {
     const paymentMethodsList = document.getElementById('paymentMethodsList');
     if (!paymentMethodsList) return;
 
-    const paymentMethods = JSON.parse(localStorage.getItem('userPaymentMethods') || '[]');
-
-    paymentMethodsList.innerHTML = '';
-
-    paymentMethods.forEach(method => {
-        const methodCard = document.createElement('div');
-        methodCard.className = 'payment-method-card';
-        methodCard.innerHTML = `
-            <div class="payment-method-info">
-                <div class="payment-method-icon">
-                    <i class="${method.icon}"></i>
-                </div>
-                <div class="payment-method-details">
-                    <h4>${method.name}</h4>
-                    <p>${method.details} • Added ${method.addedDate}</p>
-                </div>
-            </div>
-            <button class="profile-edit-btn" onclick="removePaymentMethod('${method.id}')">
-                <i class="fas fa-trash"></i>
-            </button>
-        `;
-        paymentMethodsList.appendChild(methodCard);
-    });
-}
-
-function removePaymentMethod(methodId) {
-    const paymentMethods = JSON.parse(localStorage.getItem('userPaymentMethods') || '[]');
-    const updatedMethods = paymentMethods.filter(method => method.id !== methodId);
-    localStorage.setItem('userPaymentMethods', JSON.stringify(updatedMethods));
-    loadUserPaymentMethods();
-    showNotification('Payment method removed successfully!', 'success');
+    paymentMethodsList.innerHTML = `
+        <div style="text-align: center; padding: 20px; color: #666;">
+            <i class="fas fa-credit-card" style="font-size: 48px; margin-bottom: 15px;"></i>
+            <p>Payment methods management will be available soon!</p>
+        </div>
+    `;
 }
 
 function getPackageIconAndType(packageName, price) {
