@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- EmailJS CDN for email notifications -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
     <!-- Main Dashboard -->
@@ -46,7 +48,7 @@
                 <ul class="nav-menu">
                     <li><a href="#" id="newOrderNav"><i class="fas fa-plus-circle"></i> New Order</a></li>
                     <li><a href="#" id="childPanelsNav"><i class="fas fa-users"></i> Child Panels</a></li>
-                    <li><a href="#" id="ordersNav"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="#" id="ordersNav"><i class="fas fa-shopping-cart"></i> Order History</a></li>
                     <li><a href="#" id="refillHistoryNav"><i class="fas fa-history"></i> Refill History</a></li>
                     <li><a href="#" id="servicesNav"><i class="fas fa-cogs"></i> Services</a></li>
                     <li><a href="#" id="addFundsNav"><i class="fas fa-wallet"></i> Add Funds</a></li>
@@ -360,33 +362,33 @@
                     <div class="service-category">
                         <h3>📺 YouTube Services</h3>
                         <div class="service-list">
-                            <div class="service-item">
-                                <span>YouTube Channel Monetization</span>
-                                <span class="service-price">₹17,000</span>
+                            <div class="service-item" data-service="youtube" data-search="youtube monetization">
+                                <span>YouTube Channel Monetization - Basic</span>
+                                <span class="service-price">₹15,000</span>
                             </div>
-                            <div class="service-item">
-                                <span>YouTube Subscribe</span>
-                                <span class="service-price">₹400/k</span>
+                            <div class="service-item" data-service="youtube" data-search="youtube monetization premium">
+                                <span>YouTube Channel Monetization - Premium</span>
+                                <span class="service-price">₹19,000</span>
                             </div>
-                            <div class="service-item">
+                            <div class="service-item" data-service="youtube" data-search="youtube subscribers">
+                                <span>YouTube Subscribers</span>
+                                <span class="service-price">₹350-520/k</span>
+                            </div>
+                            <div class="service-item" data-service="youtube" data-search="youtube views">
                                 <span>YouTube Views</span>
-                                <span class="service-price">₹250/k</span>
+                                <span class="service-price">₹200-350/k</span>
                             </div>
-                            <div class="service-item">
+                            <div class="service-item" data-service="youtube" data-search="youtube shorts views">
                                 <span>YouTube Shorts Views</span>
-                                <span class="service-price">₹200/k</span>
+                                <span class="service-price">₹150-280/k</span>
                             </div>
-                            <div class="service-item">
-                                <span>YouTube Like</span>
-                                <span class="service-price">₹170/k</span>
+                            <div class="service-item" data-service="youtube" data-search="youtube likes">
+                                <span>YouTube Likes</span>
+                                <span class="service-price">₹140-220/k</span>
                             </div>
-                            <div class="service-item">
-                                <span>YouTube Watchtime</span>
-                                <span class="service-price">₹6,000/k hours</span>
-                            </div>
-                            <div class="service-item">
-                                <span>YouTube Live Stream Views</span>
-                                <span class="service-price">₹250/k</span>
+                            <div class="service-item" data-service="youtube" data-search="youtube watch time">
+                                <span>YouTube Watch Time</span>
+                                <span class="service-price">₹5,500-6,500/k hours</span>
                             </div>
                         </div>
                     </div>
@@ -394,25 +396,37 @@
                     <div class="service-category">
                         <h3>📸 Instagram Services</h3>
                         <div class="service-list">
-                            <div class="service-item">
-                                <span>Instagram View</span>
-                                <span class="service-price">₹25/k</span>
-                            </div>
-                            <div class="service-item">
-                                <span>Instagram Story View</span>
-                                <span class="service-price">₹20/k</span>
-                            </div>
-                            <div class="service-item">
-                                <span>Instagram Story/Post Like</span>
-                                <span class="service-price">₹20/k</span>
-                            </div>
-                            <div class="service-item">
+                            <div class="service-item" data-service="instagram" data-search="instagram followers">
                                 <span>Instagram Followers</span>
-                                <span class="service-price">₹200/k</span>
+                                <span class="service-price">₹150-280/k</span>
                             </div>
-                            <div class="service-item">
-                                <span>Instagram Reels Share</span>
-                                <span class="service-price">₹15/k</span>
+                            <div class="service-item" data-service="instagram" data-search="instagram likes">
+                                <span>Instagram Likes</span>
+                                <span class="service-price">₹15-35/k</span>
+                            </div>
+                            <div class="service-item" data-service="instagram" data-search="instagram views">
+                                <span>Instagram Views</span>
+                                <span class="service-price">₹18-40/k</span>
+                            </div>
+                            <div class="service-item" data-service="instagram" data-search="instagram story views">
+                                <span>Instagram Story Views</span>
+                                <span class="service-price">₹15-30/k</span>
+                            </div>
+                            <div class="service-item" data-service="instagram" data-search="instagram reels likes">
+                                <span>Instagram Reels Likes</span>
+                                <span class="service-price">₹20-40/k</span>
+                            </div>
+                            <div class="service-item" data-service="instagram" data-search="instagram reels views">
+                                <span>Instagram Reels Views</span>
+                                <span class="service-price">₹22-45/k</span>
+                            </div>
+                            <div class="service-item" data-service="instagram" data-search="instagram comments">
+                                <span>Instagram Comments</span>
+                                <span class="service-price">₹450-600/k</span>
+                            </div>
+                            <div class="service-item" data-service="instagram" data-search="instagram saves">
+                                <span>Instagram Saves</span>
+                                <span class="service-price">₹80-120/k</span>
                             </div>
                         </div>
                     </div>
@@ -420,25 +434,25 @@
                     <div class="service-category">
                         <h3>📘 Facebook Services</h3>
                         <div class="service-list">
-                            <div class="service-item">
+                            <div class="service-item" data-service="facebook" data-search="facebook monetization">
                                 <span>Facebook Monetization</span>
-                                <span class="service-price">₹5,000</span>
+                                <span class="service-price">₹4,500-5,500</span>
                             </div>
-                            <div class="service-item">
-                                <span>Facebook Post Like</span>
-                                <span class="service-price">₹200/k</span>
+                            <div class="service-item" data-service="facebook" data-search="facebook page likes">
+                                <span>Facebook Page Likes</span>
+                                <span class="service-price">₹160-260/k</span>
                             </div>
-                            <div class="service-item">
+                            <div class="service-item" data-service="facebook" data-search="facebook followers">
                                 <span>Facebook Followers</span>
-                                <span class="service-price">₹200/k</span>
+                                <span class="service-price">₹170-270/k</span>
                             </div>
-                            <div class="service-item">
-                                <span>Facebook View</span>
-                                <span class="service-price">₹15/k</span>
+                            <div class="service-item" data-service="facebook" data-search="facebook post likes">
+                                <span>Facebook Post Likes</span>
+                                <span class="service-price">₹80-135/k</span>
                             </div>
-                            <div class="service-item">
-                                <span>Facebook Story View</span>
-                                <span class="service-price">₹150/k</span>
+                            <div class="service-item" data-service="facebook" data-search="facebook video views">
+                                <span>Facebook Video Views</span>
+                                <span class="service-price">₹12-22/k</span>
                             </div>
                         </div>
                     </div>
@@ -446,17 +460,109 @@
                     <div class="service-category">
                         <h3>💬 WhatsApp Services</h3>
                         <div class="service-list">
-                            <div class="service-item">
-                                <span>WhatsApp Blue Tick</span>
+                            <div class="service-item" data-service="whatsapp" data-search="whatsapp blue tick">
+                                <span>WhatsApp Blue Tick Verification</span>
                                 <span class="service-price">₹40,000</span>
                             </div>
-                            <div class="service-item">
-                                <span>WhatsApp Channel Member</span>
+                            <div class="service-item" data-service="whatsapp" data-search="whatsapp channel members">
+                                <span>WhatsApp Channel Members</span>
                                 <span class="service-price">₹300/k</span>
                             </div>
-                            <div class="service-item">
+                            <div class="service-item" data-service="whatsapp" data-search="whatsapp poll votes">
                                 <span>WhatsApp Poll Votes</span>
                                 <span class="service-price">₹500/k</span>
+                            </div>
+                            <div class="service-item" data-service="whatsapp" data-search="whatsapp status views">
+                                <span>WhatsApp Status Views</span>
+                                <span class="service-price">₹200/k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-category">
+                        <h3>🐦 Twitter/X Services</h3>
+                        <div class="service-list">
+                            <div class="service-item" data-service="twitter" data-search="twitter followers">
+                                <span>Twitter Followers</span>
+                                <span class="service-price">₹250/k</span>
+                            </div>
+                            <div class="service-item" data-service="twitter" data-search="twitter likes">
+                                <span>Twitter Likes</span>
+                                <span class="service-price">₹50/k</span>
+                            </div>
+                            <div class="service-item" data-service="twitter" data-search="twitter retweets">
+                                <span>Twitter Retweets</span>
+                                <span class="service-price">₹150/k</span>
+                            </div>
+                            <div class="service-item" data-service="twitter" data-search="twitter views">
+                                <span>Twitter Views</span>
+                                <span class="service-price">₹30/k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-category">
+                        <h3>🎵 TikTok Services</h3>
+                        <div class="service-list">
+                            <div class="service-item" data-service="tiktok" data-search="tiktok followers">
+                                <span>TikTok Followers</span>
+                                <span class="service-price">₹300/k</span>
+                            </div>
+                            <div class="service-item" data-service="tiktok" data-search="tiktok likes">
+                                <span>TikTok Likes</span>
+                                <span class="service-price">₹40/k</span>
+                            </div>
+                            <div class="service-item" data-service="tiktok" data-search="tiktok views">
+                                <span>TikTok Views</span>
+                                <span class="service-price">₹35/k</span>
+                            </div>
+                            <div class="service-item" data-service="tiktok" data-search="tiktok shares">
+                                <span>TikTok Shares</span>
+                                <span class="service-price">₹200/k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-category">
+                        <h3>💬 Telegram Services</h3>
+                        <div class="service-list">
+                            <div class="service-item" data-service="telegram" data-search="telegram channel members">
+                                <span>Telegram Channel Members</span>
+                                <span class="service-price">₹150/k</span>
+                            </div>
+                            <div class="service-item" data-service="telegram" data-search="telegram group members">
+                                <span>Telegram Group Members</span>
+                                <span class="service-price">₹200/k</span>
+                            </div>
+                            <div class="service-item" data-service="telegram" data-search="telegram post views">
+                                <span>Telegram Post Views</span>
+                                <span class="service-price">₹25/k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-category">
+                        <h3>🌐 Other Services</h3>
+                        <div class="service-list">
+                            <div class="service-item" data-service="linkedin" data-search="linkedin connections">
+                                <span>LinkedIn Connections</span>
+                                <span class="service-price">₹400/k</span>
+                            </div>
+                            <div class="service-item" data-service="snapchat" data-search="snapchat followers">
+                                <span>Snapchat Followers</span>
+                                <span class="service-price">₹400/k</span>
+                            </div>
+                            <div class="service-item" data-service="spotify" data-search="spotify plays">
+                                <span>Spotify Plays</span>
+                                <span class="service-price">₹100/k</span>
+                            </div>
+                            <div class="service-item" data-service="website-traffic" data-search="website traffic">
+                                <span>Website Traffic</span>
+                                <span class="service-price">₹300-1500/k</span>
+                            </div>
+                            <div class="service-item" data-service="google-reviews" data-search="google reviews">
+                                <span>Google 5 Star Reviews</span>
+                                <span class="service-price">₹1000/review</span>
                             </div>
                         </div>
                     </div>
@@ -508,7 +614,7 @@
             <!-- Orders Page -->
             <div id="ordersPage" class="page">
                 <div class="page-header">
-                    <h2>All Orders</h2>
+                    <h2>Order History</h2>
                 </div>
                 <div class="orders-content">
                     <div class="order-filters">
@@ -743,6 +849,132 @@
   ]
 }</code></pre>
                                 </div>
+
+
+    <!-- Welcome Popup Modal -->
+    <div id="welcomePopupOverlay" class="welcome-popup-overlay">
+        <div class="welcome-popup-container">
+            <div class="welcome-popup-header">
+                <div class="welcome-logo">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h1 class="welcome-title">🎉 Welcome to India Social Panel! 🎉</h1>
+                <p class="welcome-subtitle">Your Gateway to Social Media Success</p>
+            </div>
+            
+            <div class="welcome-popup-content">
+                <div class="welcome-message">
+                    <h2>🚀 Congratulations! You're Now a Member! 🚀</h2>
+                    <p class="welcome-description">
+                        Welcome to India's most trusted and reliable social media marketing platform! You've joined thousands of satisfied customers who have transformed their social media presence with our premium services.
+                    </p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3>Instant Results</h3>
+                        <p>Fast delivery starting in 0-15 minutes with guaranteed high-quality services across all major platforms.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>100% Safe & Secure</h3>
+                        <p>Your account safety is our priority. We use only secure methods with zero ban risk guarantee.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3>24/7 Support</h3>
+                        <p>Round-the-clock customer support via Telegram, WhatsApp, and phone to assist you anytime.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3>Best Prices</h3>
+                        <p>Competitive pricing with flexible payment options including UPI, cards, and net banking.</p>
+                    </div>
+                </div>
+
+                <div class="trust-section">
+                    <h3><i class="fas fa-certificate"></i> Why Choose India Social Panel?</h3>
+                    <div class="trust-stats">
+                        <div class="trust-stat">
+                            <div class="trust-stat-number">119M+</div>
+                            <div class="trust-stat-label">Orders Completed</div>
+                        </div>
+                        <div class="trust-stat">
+                            <div class="trust-stat-number">3+</div>
+                            <div class="trust-stat-label">Years Experience</div>
+                        </div>
+                        <div class="trust-stat">
+                            <div class="trust-stat-number">99.8%</div>
+                            <div class="trust-stat-label">Success Rate</div>
+                        </div>
+                        <div class="trust-stat">
+                            <div class="trust-stat-number">365</div>
+                            <div class="trust-stat-label">Days Guarantee</div>
+                        </div>
+                    </div>
+                    <ul class="trust-points">
+                        <li>Registered digital marketing agency with legal compliance</li>
+                        <li>Real and active followers/likes from genuine accounts</li>
+                        <li>365-day refill guarantee on all eligible services</li>
+                        <li>SSL secured platform with encrypted payment processing</li>
+                        <li>No password required - completely safe for your accounts</li>
+                        <li>Instant start and fastest delivery in the industry</li>
+                    </ul>
+                </div>
+
+                <div class="support-section">
+                    <h3><i class="fas fa-life-ring"></i> Get Instant Support</h3>
+                    <div class="support-links">
+                        <a href="https://t.me/Indiasocialpainel_support_bot?start=start" class="support-link telegram" target="_blank">
+                            <i class="fab fa-telegram"></i>
+                            <span>Telegram Support</span>
+                        </a>
+                        <a href="tel:+919431863716" class="support-link phone">
+                            <i class="fas fa-phone"></i>
+                            <span>+91 9431863716</span>
+                        </a>
+                        <a href="https://wa.me/919431863716?text=Hello! I need support from India Social Panel." class="support-link whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp Support</span>
+                        </a>
+                        <a href="https://instagram.com/indiasocialpanel.official" class="support-link instagram" target="_blank">
+                            <i class="fab fa-instagram"></i>
+                            <span>Follow Us</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="cta-section">
+                    <div class="cta-message">
+                        🎯 Ready to Boost Your Social Media Presence?
+                    </div>
+                    <button class="welcome-cta-btn" onclick="closeWelcomePopup()">
+                        <i class="fas fa-shopping-cart"></i>
+                        Start Your First Order Now!
+                    </button>
+                </div>
+            </div>
+            
+            <div class="popup-footer">
+                <p>🔒 Your privacy and account security are our top priorities. We never ask for passwords and use only safe, industry-standard methods.</p>
+                <p><strong>India Social Panel</strong> - Transforming Social Media Dreams into Reality Since 2022</p>
+            </div>
+        </div>
+    </div>
+
+
                             </div>
                         </div>
 
@@ -1037,19 +1269,19 @@ print(response.json())</code></pre>
                         <h3><i class="fas fa-chart-bar"></i> Account Statistics</h3>
                         <div class="stats-grid">
                             <div class="stat-item">
-                                <div class="stat-value">47</div>
+                                <div class="stat-value">0</div>
                                 <div class="stat-label">Total Orders</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-value">₹2,450</div>
+                                <div class="stat-value">₹0</div>
                                 <div class="stat-label">Total Spent</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-value">₹350</div>
+                                <div class="stat-value">₹0</div>
                                 <div class="stat-label">Current Balance</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-value">98%</div>
+                                <div class="stat-value">100%</div>
                                 <div class="stat-label">Success Rate</div>
                             </div>
                         </div>
