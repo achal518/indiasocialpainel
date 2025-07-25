@@ -1,4 +1,3 @@
-
 // Service packages data
 const servicePackages = {
     youtube: [
@@ -194,9 +193,9 @@ let profileStats = {
 
 // EmailJS Configuration for Real-time Order Notifications
 const EMAILJS_CONFIG = {
-    serviceId: 'service_isp2025',
-    templateId: 'template_order_notification',
-    publicKey: 'isp_public_key_2025'
+    serviceId: 'your_service_id', // Replace with actual EmailJS service ID
+    templateId: 'your_template_id', // Replace with actual template ID
+    publicKey: 'your_public_key' // Replace with actual EmailJS public key
 };
 
 // Initialize EmailJS when page loads
@@ -231,7 +230,7 @@ async function sendOrderNotificationEmail(orderData) {
 
         console.log('Order notification email sent successfully:', response);
         showNotification('📧 Order notification sent to admin email!', 'success');
-        
+
         return true;
     } catch (error) {
         console.error('Email notification failed:', error);
@@ -254,7 +253,7 @@ async function getUserIP() {
 document.addEventListener('DOMContentLoaded', function() {
     updateBalanceDisplay();
     showDashboard();
-    
+
     // Initialize EmailJS for email notifications
     initializeEmailJS();
 
@@ -290,14 +289,14 @@ document.addEventListener('DOMContentLoaded', function() {
 function fixScrollingIssues() {
     // Enable smooth scrolling
     document.documentElement.style.scrollBehavior = 'smooth';
-    
+
     // Fix overflow and scrolling
     document.body.style.overflowX = 'hidden';
     document.body.style.overflowY = 'auto';
-    
+
     // Ensure proper touch scrolling on mobile
     document.body.style.webkitOverflowScrolling = 'touch';
-    
+
     // Fix any modal or popup that might be blocking scroll
     const modals = document.querySelectorAll('.modal, .overlay, .popup');
     modals.forEach(modal => {
@@ -305,14 +304,14 @@ function fixScrollingIssues() {
             modal.style.display = 'none';
         }
     });
-    
+
     // Ensure main content is scrollable
     const mainContent = document.querySelector('.main-content');
     if (mainContent) {
         mainContent.style.overflow = 'visible';
         mainContent.style.height = 'auto';
     }
-    
+
     // Fix dashboard container
     const dashboard = document.querySelector('.dashboard');
     if (dashboard) {
@@ -320,7 +319,7 @@ function fixScrollingIssues() {
         dashboard.style.height = 'auto';
         dashboard.style.minHeight = '100vh';
     }
-    
+
     // Remove any fixed positioning that might interfere
     const pages = document.querySelectorAll('.page');
     pages.forEach(page => {
@@ -1389,7 +1388,7 @@ async function sendTestEmail() {
         };
 
         const emailSent = await sendOrderNotificationEmail(testOrderData);
-        
+
         if (emailSent) {
             showNotification('✅ Test email sent successfully to achakumar00@gmail.com!', 'success');
         } else {
@@ -1982,19 +1981,19 @@ function showPaymentPage(order) {
     };
 
     window.showUPIAppsPayment = function() {
-        showNotification('UPI Apps payment coming soon! Please use QR Code for now.', 'info');
+        showUPIAppsModal(order);
     };
 
     window.showQRCodePayment = function() {
-        showNotification('QR Code payment gateway will be available soon!', 'info');
+        showQRCodeModal(order);
     };
 
     window.showUPIIDPayment = function() {
-        showNotification('UPI ID payment coming soon! Please use other methods.', 'info');
+        showUPIIDModal(order);
     };
 
     window.showCardBankingPayment = function() {
-        showNotification('Card/Banking payment gateway coming soon!', 'info');
+        showCardBankingModal(order);
     };
 
     // Add event listener to close modal when clicking outside
@@ -2023,7 +2022,7 @@ function showNotification(message, type = 'info') {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: ${type === 'success' ? '#28a745' : '#667eea'};
+        background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#667eea'};
         color: white;
         padding: 15px 20px;
         border-radius: 10px;
@@ -2039,6 +2038,1505 @@ function showNotification(message, type = 'info') {
             notification.remove();
         }
     }, 3000);
+}
+
+// Clean UPI Apps Payment Modal - Website Style
+function showUPIAppsModal(order) {
+    const upiModal = document.createElement('div');
+    upiModal.id = 'upiAppsModal';
+    upiModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        animation: fadeIn 0.3s ease;
+        backdrop-filter: blur(5px);
+    `;
+
+    let timerInterval;
+    let timeLeft = 300; // 5 minutes
+
+    upiModal.innerHTML = `
+        <div style="
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            max-height: 95vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        ">
+            <!-- Header Section -->
+            <div style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 25px;
+                text-align: center;
+                border-radius: 18px 18px 0 0;
+                position: relative;
+                overflow: hidden;
+            ">
+                <div style="
+                    width: 60px;
+                    height: 60px;
+                    background: rgba(255,255,255,0.25);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 18px;
+                    font-size: 28px;
+                    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+                ">📱</div>
+                <h2 style="margin: 0 0 10px 0; font-size: 22px; font-weight: 700;">UPI Payment Gateway</h2>
+                <p style="margin: 0; font-size: 15px; opacity: 0.95;">Pay ₹${order.price.toFixed(2)} for Order ${order.id}</p>
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+                    animation: shimmer 3s infinite;
+                "></div>
+            </div>
+
+            <!-- Timer -->
+            <div style="
+                background: linear-gradient(135deg, #fff3cd 0%, #fef9e7 100%);
+                color: #856404;
+                padding: 12px 20px;
+                text-align: center;
+                font-size: 14px;
+                font-weight: 600;
+                border-bottom: 1px solid #f0c14b;
+            ">
+                ⏰ Session expires in: <span id="upiTimer" style="color: #b8860b; font-weight: 700;">05:00</span>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 30px;">
+                <h3 style="margin: 0 0 25px 0; color: #333; font-size: 18px; text-align: center; font-weight: 600;">🚀 Choose Your UPI App</h3>
+
+                <!-- UPI Apps Grid -->
+                <div style="
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 15px;
+                    margin-bottom: 30px;
+                ">
+                    <button onclick="openUPIApp('googlepay')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 2px solid #e9ecef;
+                        border-radius: 15px;
+                        padding: 20px 10px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                        transition: all 0.3s ease;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    " onmouseover="this.style.borderColor='#4285f4'; this.style.background='linear-gradient(145deg, #f8f9ff 0%, #e8f0ff 100%)'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(66, 133, 244, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.1)'">
+                        <div style="font-size: 32px;">📱</div>
+                        <span>Google Pay</span>
+                    </button>
+
+                    <button onclick="openUPIApp('phonepe')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 2px solid #e9ecef;
+                        border-radius: 15px;
+                        padding: 20px 10px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                        transition: all 0.3s ease;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    " onmouseover="this.style.borderColor='#5f259f'; this.style.background='linear-gradient(145deg, #f8f5ff 0%, #e8e0ff 100%)'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(95, 37, 159, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.1)'">
+                        <div style="font-size: 32px;">💜</div>
+                        <span>PhonePe</span>
+                    </button>
+
+                    <button onclick="openUPIApp('paytm')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 2px solid #e9ecef;
+                        border-radius: 15px;
+                        padding: 20px 10px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                        transition: all 0.3s ease;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    " onmouseover="this.style.borderColor='#00baf2'; this.style.background='linear-gradient(145deg, #f0fbff 0%, #e0f7ff 100%)'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(0, 186, 242, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.1)'">
+                        <div style="font-size: 32px;">💙</div>
+                        <span>Paytm</span>
+                    </button>
+
+                    <button onclick="openUPIApp('amazonpay')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 2px solid #e9ecef;
+                        border-radius: 15px;
+                        padding: 20px 10px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                        transition: all 0.3s ease;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    " onmouseover="this.style.borderColor='#ff9900'; this.style.background='linear-gradient(145deg, #fffbf0 0%, #fff0d9 100%)'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(255, 153, 0, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.1)'">
+                        <div style="font-size: 32px;">🛒</div>
+                        <span>Amazon Pay</span>
+                    </button>
+
+                    <button onclick="openUPIApp('bhim')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 2px solid #e9ecef;
+                        border-radius: 15px;
+                        padding: 20px 10px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                        transition: all 0.3s ease;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    " onmouseover="this.style.borderColor='#2e7d32'; this.style.background='linear-gradient(145deg, #f1f8f1 0%, #e8f5e8 100%)'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(46, 125, 50, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.1)'">
+                        <div style="font-size: 32px;">🇮🇳</div>
+                        <span>BHIM UPI</span>
+                    </button>
+
+                    <button onclick="openUPIApp('other')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 2px solid #e9ecef;
+                        border-radius: 15px;
+                        padding: 20px 10px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                        transition: all 0.3s ease;
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    " onmouseover="this.style.borderColor='#667eea'; this.style.background='linear-gradient(145deg, #f8f9ff 0%, #e8f0ff 100%)'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.1)'">
+                        <div style="font-size: 32px;">📱</div>
+                        <span>Any UPI App</span>
+                    </button>
+                </div>
+
+                <!-- Security Info -->
+                <div style="
+                    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+                    border: 2px solid #28a745;
+                    border-radius: 12px;
+                    padding: 15px;
+                    text-align: center;
+                    margin-bottom: 25px;
+                    font-size: 14px;
+                    color: #155724;
+                    font-weight: 600;
+                ">
+                    🔒 Bank-Grade Security • SSL Encrypted • 100% Safe Payment
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="cancelTransaction()" style="
+                        flex: 1;
+                        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+                        color: white;
+                        border: none;
+                        padding: 15px;
+                        border-radius: 12px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        font-size: 15px;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(108, 117, 125, 0.3)'" 
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                       Cancel Transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(upiModal);
+
+    // Start timer
+    timerInterval = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const timerElement = document.getElementById('upiTimer');
+        if (timerElement) {
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            cancelTransaction();
+        }
+        timeLeft--;
+    }, 1000);
+
+    // Add functions to window
+    window.openUPIApp = function(app) {
+        const upiID = 'kavita.5049-49@waicici'; // Updated with correct UPI ID
+        const amount = order.price.toFixed(2);
+        const note = `Payment for Order ${order.id} - India Social Panel`;
+        
+        const upiUrl = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+        
+        // Try to open the UPI app
+        window.location.href = upiUrl;
+        
+        showNotification(`✅ Opening ${app.toUpperCase()}... Complete payment of ₹${amount}`, 'success');
+        
+        setTimeout(() => {
+            clearInterval(timerInterval);
+            closeUPIModal();
+            showPaymentConfirmation(order);
+        }, 3000);
+    };
+
+    window.cancelTransaction = function() {
+        clearInterval(timerInterval);
+        closeUPIModal();
+        showNotification('❌ Transaction cancelled successfully!', 'info');
+        showPage('dashboardHome');
+    };
+
+    window.closeUPIModal = function() {
+        clearInterval(timerInterval);
+        if (upiModal && upiModal.parentElement) {
+            document.body.removeChild(upiModal);
+        }
+    };
+}
+
+// Enhanced QR Code Payment Modal - Premium Design
+function showQRCodeModal(order) {
+    const qrModal = document.createElement('div');
+    qrModal.id = 'qrCodeModal';
+    qrModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        animation: fadeIn 0.3s ease;
+        backdrop-filter: blur(8px);
+    `;
+
+    let timerInterval;
+    let timeLeft = 300; // 5 minutes
+
+    qrModal.innerHTML = `
+        <div style="
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 25px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 95vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        ">
+            <!-- Animated Border -->
+            <div style="
+                position: absolute;
+                top: -3px;
+                left: -3px;
+                right: -3px;
+                bottom: -3px;
+                background: linear-gradient(135deg, #28a745 0%, #20c997 50%, #28a745 100%);
+                border-radius: 25px;
+                z-index: -1;
+                animation: borderGlow 3s ease-in-out infinite;
+            "></div>
+
+            <!-- Header Section -->
+            <div style="
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                color: white;
+                padding: 30px;
+                text-align: center;
+                border-radius: 22px 22px 0 0;
+                position: relative;
+                overflow: hidden;
+            ">
+                <div style="
+                    width: 70px;
+                    height: 70px;
+                    background: rgba(255,255,255,0.25);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 20px;
+                    font-size: 32px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                    animation: qrIconFloat 3s ease-in-out infinite;
+                ">📱</div>
+                <h2 style="margin: 0 0 12px 0; font-size: 24px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">QR Code Payment</h2>
+                <p style="margin: 0; font-size: 16px; opacity: 0.95;">Scan & Pay ₹${order.price.toFixed(2)} for Order ${order.id}</p>
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                    animation: shimmer 2s infinite;
+                "></div>
+            </div>
+
+            <!-- Timer -->
+            <div style="
+                background: linear-gradient(135deg, #fff3cd 0%, #fef9e7 100%);
+                color: #856404;
+                padding: 12px 25px;
+                text-align: center;
+                font-size: 15px;
+                font-weight: 600;
+                border-bottom: 2px solid #f0c14b;
+            ">
+                ⏰ QR expires in: <span id="qrTimer" style="color: #b8860b; font-weight: 700; font-size: 16px;">05:00</span>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 35px;">
+                <!-- QR Code Container -->
+                <div style="
+                    background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+                    border-radius: 20px;
+                    padding: 25px;
+                    text-align: center;
+                    margin-bottom: 25px;
+                    border: 3px solid #e9ecef;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                ">
+                    <div id="qrCodeContainer" style="
+                        width: 220px;
+                        height: 220px;
+                        background: white;
+                        margin: 0 auto 20px;
+                        border-radius: 15px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border: 2px solid #dee2e6;
+                        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+                        position: relative;
+                        overflow: hidden;
+                    ">
+                        <div style="text-align: center;">
+                            <div style="
+                                font-size: 60px; 
+                                margin-bottom: 15px;
+                                animation: pulse 2s infinite;
+                            ">📱</div>
+                            <div style="
+                                font-size: 16px; 
+                                color: #28a745; 
+                                font-weight: 700;
+                                text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                            ">Click Generate QR Code</div>
+                        </div>
+                    </div>
+                    
+                    <div style="
+                        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                        color: white;
+                        padding: 12px 20px;
+                        border-radius: 25px;
+                        display: inline-block;
+                        font-weight: 700;
+                        font-size: 20px;
+                        margin-bottom: 15px;
+                        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+                        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+                    ">₹${order.price.toFixed(2)}</div>
+                    
+                    <p style="
+                        color: #666; 
+                        font-size: 14px; 
+                        margin: 0;
+                        font-weight: 500;
+                    ">💳 Pay with any UPI app • 100% Secure</p>
+                </div>
+
+                <!-- Instructions -->
+                <div style="
+                    background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 100%);
+                    border-radius: 15px;
+                    padding: 20px;
+                    margin-bottom: 25px;
+                    border-left: 4px solid #2196f3;
+                ">
+                    <h4 style="
+                        color: #1976d2; 
+                        margin: 0 0 15px 0; 
+                        font-size: 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    ">
+                        📋 How to Pay:
+                    </h4>
+                    <ol style="
+                        color: #1976d2; 
+                        margin: 0; 
+                        padding-left: 20px; 
+                        font-size: 14px; 
+                        line-height: 1.8;
+                        font-weight: 500;
+                    ">
+                        <li>Open any UPI app (GPay, PhonePe, Paytm)</li>
+                        <li>Tap "Scan & Pay" or QR Scanner</li>
+                        <li>Scan the QR code above</li>
+                        <li>Verify amount and complete payment</li>
+                    </ol>
+                </div>
+
+                <!-- Order Details -->
+                <div style="
+                    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+                    border-radius: 15px;
+                    padding: 20px;
+                    margin-bottom: 25px;
+                    font-size: 14px;
+                    color: #155724;
+                    border-left: 4px solid #28a745;
+                ">
+                    <div style="
+                        font-weight: 700; 
+                        margin-bottom: 12px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        font-size: 16px;
+                    ">🔒 Payment Details:</div>
+                    <div style="margin-bottom: 6px;">Order ID: <strong style="color: #0d4520;">${order.id}</strong></div>
+                    <div style="margin-bottom: 6px;">UPI ID: <strong style="color: #0d4520;">kavita.5049-49@waicici</strong></div>
+                    <div style="margin-bottom: 6px;">Amount: <strong style="color: #0d4520; font-size: 16px;">₹${order.price.toFixed(2)}</strong></div>
+                    <div style="margin-top: 10px; font-size: 12px; opacity: 0.8;">🛡️ Bank-grade security • SSL encrypted</div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 15px;">
+                    <button onclick="generateActualQRCode()" style="
+                        flex: 1;
+                        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                        color: white;
+                        border: none;
+                        padding: 18px;
+                        border-radius: 15px;
+                        cursor: pointer;
+                        font-weight: 700;
+                        font-size: 16px;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 35px rgba(40, 167, 69, 0.4)'" 
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(40, 167, 69, 0.3)'">
+                       🎯 Generate QR Code
+                    </button>
+                    
+                    <button onclick="cancelQRTransaction()" style="
+                        flex: 1;
+                        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+                        color: white;
+                        border: none;
+                        padding: 18px;
+                        border-radius: 15px;
+                        cursor: pointer;
+                        font-weight: 700;
+                        font-size: 16px;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 35px rgba(108, 117, 125, 0.4)'" 
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(108, 117, 125, 0.3)'">
+                       ❌ Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(qrModal);
+
+    // Start timer
+    timerInterval = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const timerElement = document.getElementById('qrTimer');
+        if (timerElement) {
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            cancelQRTransaction();
+        }
+        timeLeft--;
+    }, 1000);
+
+    window.generateActualQRCode = function() {
+        const qrContainer = document.getElementById('qrCodeContainer');
+        if (qrContainer) {
+            const upiID = 'kavita.5049-49@waicici'; // Updated with correct UPI ID
+            const amount = order.price.toFixed(2);
+            const note = `Order ${order.id} - India Social Panel`;
+            const upiString = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+            
+            qrContainer.innerHTML = `
+                <div style="
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                ">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}" 
+                    style="
+                        width: 200px; 
+                        height: 200px; 
+                        border-radius: 12px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    " 
+                    alt="UPI QR Code" />
+                    <div style="
+                        position: absolute;
+                        bottom: -15px;
+                        right: -15px;
+                        background: #28a745;
+                        color: white;
+                        border-radius: 50%;
+                        width: 30px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 16px;
+                        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+                    ">✓</div>
+                </div>
+            `;
+        }
+        showNotification('✅ QR Code generated successfully! Scan with any UPI app to pay.', 'success');
+    };
+
+    window.cancelQRTransaction = function() {
+        clearInterval(timerInterval);
+        closeQRModal();
+        showNotification('❌ QR payment cancelled successfully!', 'info');
+        showPage('dashboardHome');
+    };
+
+    window.closeQRModal = function() {
+        clearInterval(timerInterval);
+        if (qrModal && qrModal.parentElement) {
+            document.body.removeChild(qrModal);
+        }
+    };
+}
+
+// Enhanced UPI ID Payment Modal - Premium Design with Masked Display
+function showUPIIDModal(order) {
+    const upiIDModal = document.createElement('div');
+    upiIDModal.id = 'upiIDModal';
+    upiIDModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        animation: fadeIn 0.3s ease;
+        backdrop-filter: blur(8px);
+    `;
+
+    let timerInterval;
+    let timeLeft = 300; // 5 minutes
+    const actualUPIID = 'kavita.5049-49@waicici';
+    const maskedUPIID = 'kavita.•••••••@waicici'; // Show only first part and bank
+
+    upiIDModal.innerHTML = `
+        <div style="
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 25px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 95vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        ">
+            <!-- Animated Border -->
+            <div style="
+                position: absolute;
+                top: -3px;
+                left: -3px;
+                right: -3px;
+                bottom: -3px;
+                background: linear-gradient(135deg, #4285f4 0%, #667eea 50%, #4285f4 100%);
+                border-radius: 25px;
+                z-index: -1;
+                animation: borderGlow 3s ease-in-out infinite;
+            "></div>
+
+            <!-- Header Section -->
+            <div style="
+                background: linear-gradient(135deg, #4285f4 0%, #667eea 100%);
+                color: white;
+                padding: 30px;
+                text-align: center;
+                border-radius: 22px 22px 0 0;
+                position: relative;
+                overflow: hidden;
+            ">
+                <div style="
+                    width: 70px;
+                    height: 70px;
+                    background: rgba(255,255,255,0.25);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 20px;
+                    font-size: 32px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                    animation: upiIconFloat 3s ease-in-out infinite;
+                ">💳</div>
+                <h2 style="margin: 0 0 12px 0; font-size: 24px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">UPI ID Payment</h2>
+                <p style="margin: 0; font-size: 16px; opacity: 0.95;">Pay ₹${order.price.toFixed(2)} for Order ${order.id}</p>
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                    animation: shimmer 2s infinite;
+                "></div>
+            </div>
+
+            <!-- Timer -->
+            <div style="
+                background: linear-gradient(135deg, #fff3cd 0%, #fef9e7 100%);
+                color: #856404;
+                padding: 12px 25px;
+                text-align: center;
+                font-size: 15px;
+                font-weight: 600;
+                border-bottom: 2px solid #f0c14b;
+            ">
+                ⏰ Session expires in: <span id="upiIdTimer" style="color: #b8860b; font-weight: 700; font-size: 16px;">05:00</span>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 35px;">
+                <!-- UPI ID Section -->
+                <div style="
+                    background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+                    border-radius: 20px;
+                    padding: 25px;
+                    text-align: center;
+                    margin-bottom: 25px;
+                    border: 3px solid #e9ecef;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                ">
+                    <h3 style="
+                        color: #333; 
+                        margin-bottom: 20px; 
+                        font-size: 18px;
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
+                    ">💳 Our UPI ID</h3>
+                    
+                    <!-- UPI ID Display with Masked View -->
+                    <div style="
+                        background: white;
+                        padding: 20px;
+                        border-radius: 15px;
+                        border: 3px solid #4285f4;
+                        margin-bottom: 20px;
+                        position: relative;
+                        overflow: hidden;
+                    ">
+                        <div style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            height: 3px;
+                            background: linear-gradient(90deg, #4285f4, #667eea, #4285f4);
+                            animation: borderGlow 2s infinite;
+                        "></div>
+                        
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                            gap: 15px;
+                        ">
+                            <div style="text-align: left; flex: 1; min-width: 200px;">
+                                <div id="displayedUPIID" style="
+                                    font-size: 18px; 
+                                    font-weight: 700; 
+                                    color: #4285f4; 
+                                    margin-bottom: 5px; 
+                                    word-break: break-all;
+                                    font-family: 'Courier New', monospace;
+                                ">${maskedUPIID}</div>
+                                <div style="
+                                    font-size: 12px; 
+                                    color: #666;
+                                    font-weight: 500;
+                                ">🔒 Click copy to reveal full UPI ID</div>
+                            </div>
+                            <button onclick="copyUPIID()" style="
+                                background: linear-gradient(135deg, #4285f4 0%, #667eea 100%);
+                                color: white;
+                                border: none;
+                                padding: 12px 20px;
+                                border-radius: 25px;
+                                cursor: pointer;
+                                font-weight: 700;
+                                font-size: 14px;
+                                display: flex;
+                                align-items: center;
+                                gap: 8px;
+                                transition: all 0.3s ease;
+                                box-shadow: 0 6px 20px rgba(66, 133, 244, 0.3);
+                            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(66, 133, 244, 0.4)'" 
+                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(66, 133, 244, 0.3)'">
+                                📋 Copy UPI ID
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Amount Display -->
+                    <div style="
+                        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                        color: white;
+                        padding: 15px 25px;
+                        border-radius: 25px;
+                        display: inline-block;
+                        font-weight: 700;
+                        font-size: 22px;
+                        margin-bottom: 15px;
+                        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+                        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+                    ">₹${order.price.toFixed(2)}</div>
+
+                    <p style="
+                        color: #666; 
+                        font-size: 14px; 
+                        margin: 0;
+                        font-weight: 500;
+                    ">💳 Compatible with all UPI apps • Instant transfer</p>
+                </div>
+
+                <!-- Instructions -->
+                <div style="
+                    background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 100%);
+                    border-radius: 15px;
+                    padding: 20px;
+                    margin-bottom: 25px;
+                    border-left: 4px solid #2196f3;
+                ">
+                    <h4 style="
+                        color: #1976d2; 
+                        margin: 0 0 15px 0; 
+                        font-size: 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    ">
+                        📋 Payment Steps:
+                    </h4>
+                    <ol style="
+                        color: #1976d2; 
+                        margin: 0; 
+                        padding-left: 20px; 
+                        font-size: 14px; 
+                        line-height: 1.8;
+                        font-weight: 500;
+                    ">
+                        <li>Open your UPI app (GPay, PhonePe, Paytm)</li>
+                        <li>Select "Send Money" or "Pay to Contact"</li>
+                        <li>Choose "UPI ID" payment option</li>
+                        <li>Copy & paste: <strong>${actualUPIID}</strong></li>
+                        <li>Enter amount: <strong>₹${order.price.toFixed(2)}</strong></li>
+                        <li>Add note: <strong>Order ${order.id}</strong></li>
+                        <li>Complete payment with UPI PIN</li>
+                    </ol>
+                </div>
+
+                <!-- Security Info -->
+                <div style="
+                    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+                    border-radius: 15px;
+                    padding: 20px;
+                    margin-bottom: 25px;
+                    font-size: 14px;
+                    color: #155724;
+                    border-left: 4px solid #28a745;
+                ">
+                    <div style="
+                        font-weight: 700; 
+                        margin-bottom: 12px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        font-size: 16px;
+                    ">🔒 Secure Payment Details:</div>
+                    <div style="margin-bottom: 6px;">Order ID: <strong style="color: #0d4520;">${order.id}</strong></div>
+                    <div style="margin-bottom: 6px;">Recipient: <strong style="color: #0d4520;">India Social Panel</strong></div>
+                    <div style="margin-bottom: 6px;">Amount: <strong style="color: #0d4520; font-size: 16px;">₹${order.price.toFixed(2)}</strong></div>
+                    <div style="margin-top: 10px; font-size: 12px; opacity: 0.8;">🛡️ Protected by bank-grade security • SSL encrypted • RBI regulated</div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 15px;">
+                    <button onclick="markUPIPaid()" style="
+                        flex: 1;
+                        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                        color: white;
+                        border: none;
+                        padding: 18px;
+                        border-radius: 15px;
+                        cursor: pointer;
+                        font-weight: 700;
+                        font-size: 16px;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 35px rgba(40, 167, 69, 0.4)'" 
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(40, 167, 69, 0.3)'">
+                       ✅ Payment Completed
+                    </button>
+                    
+                    <button onclick="cancelUPIIDTransaction()" style="
+                        flex: 1;
+                        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+                        color: white;
+                        border: none;
+                        padding: 18px;
+                        border-radius: 15px;
+                        cursor: pointer;
+                        font-weight: 700;
+                        font-size: 16px;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 35px rgba(108, 117, 125, 0.4)'" 
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(108, 117, 125, 0.3)'">
+                       ❌ Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(upiIDModal);
+
+    // Start timer
+    timerInterval = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const timerElement = document.getElementById('upiIdTimer');
+        if (timerElement) {
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            cancelUPIIDTransaction();
+        }
+        timeLeft--;
+    }, 1000);
+
+    window.copyUPIID = function() {
+        navigator.clipboard.writeText(actualUPIID).then(() => {
+            // Show full UPI ID briefly when copied
+            const displayElement = document.getElementById('displayedUPIID');
+            const copyBtn = event.target.closest('button');
+            
+            if (displayElement) {
+                displayElement.style.color = '#28a745';
+                displayElement.textContent = actualUPIID;
+            }
+            
+            showNotification('✅ UPI ID copied to clipboard!', 'success');
+            
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '✅ Copied!';
+            copyBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+                copyBtn.style.background = 'linear-gradient(135deg, #4285f4 0%, #667eea 100%)';
+                if (displayElement) {
+                    displayElement.style.color = '#4285f4';
+                    displayElement.textContent = maskedUPIID;
+                }
+            }, 3000);
+        }).catch(() => {
+            showNotification('❌ Failed to copy. Please copy manually: ' + actualUPIID, 'error');
+        });
+    };
+
+    window.markUPIPaid = function() {
+        clearInterval(timerInterval);
+        showNotification('✅ Payment confirmed! Order will start processing shortly.', 'success');
+        closeUPIIDModal();
+        showPaymentConfirmation(order);
+    };
+
+    window.cancelUPIIDTransaction = function() {
+        clearInterval(timerInterval);
+        closeUPIIDModal();
+        showNotification('❌ UPI payment cancelled successfully!', 'info');
+        showPage('dashboardHome');
+    };
+
+    window.closeUPIIDModal = function() {
+        clearInterval(timerInterval);
+        if (upiIDModal && upiIDModal.parentElement) {
+            document.body.removeChild(upiIDModal);
+        }
+    };
+}
+
+// Enhanced Card & Banking Payment Modal - Premium Design
+function showCardBankingModal(order) {
+    const cardModal = document.createElement('div');
+    cardModal.id = 'cardBankingModal';
+    cardModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        animation: fadeIn 0.3s ease;
+        backdrop-filter: blur(8px);
+    `;
+
+    let timerInterval;
+    let timeLeft = 300; // 5 minutes
+
+    cardModal.innerHTML = `
+        <div style="
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 25px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 95vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        ">
+            <!-- Animated Border -->
+            <div style="
+                position: absolute;
+                top: -3px;
+                left: -3px;
+                right: -3px;
+                bottom: -3px;
+                background: linear-gradient(135deg, #9c27b0 0%, #673ab7 50%, #9c27b0 100%);
+                border-radius: 25px;
+                z-index: -1;
+                animation: borderGlow 3s ease-in-out infinite;
+            "></div>
+
+            <!-- Header Section -->
+            <div style="
+                background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+                color: white;
+                padding: 30px;
+                text-align: center;
+                border-radius: 22px 22px 0 0;
+                position: relative;
+                overflow: hidden;
+            ">
+                <div style="
+                    width: 70px;
+                    height: 70px;
+                    background: rgba(255,255,255,0.25);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 20px;
+                    font-size: 32px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                    animation: cardIconFloat 3s ease-in-out infinite;
+                ">💳</div>
+                <h2 style="margin: 0 0 12px 0; font-size: 24px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Card & Net Banking</h2>
+                <p style="margin: 0; font-size: 16px; opacity: 0.95;">Pay ₹${order.price.toFixed(2)} for Order ${order.id}</p>
+                <div style="
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                    animation: shimmer 2s infinite;
+                "></div>
+            </div>
+
+            <!-- Timer -->
+            <div style="
+                background: linear-gradient(135deg, #fff3cd 0%, #fef9e7 100%);
+                color: #856404;
+                padding: 12px 25px;
+                text-align: center;
+                font-size: 15px;
+                font-weight: 600;
+                border-bottom: 2px solid #f0c14b;
+            ">
+                ⏰ Session expires in: <span id="cardTimer" style="color: #b8860b; font-weight: 700; font-size: 16px;">05:00</span>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 35px;">
+                <h3 style="
+                    margin: 0 0 25px 0; 
+                    color: #333; 
+                    font-size: 20px; 
+                    text-align: center;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                ">🏦 Choose Payment Method</h3>
+
+                <!-- Payment Methods Grid -->
+                <div style="
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 20px;
+                    margin-bottom: 30px;
+                ">
+                    <button onclick="processCardPayment('credit')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 3px solid #e9ecef;
+                        border-radius: 20px;
+                        padding: 25px 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 12px;
+                        transition: all 0.3s ease;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                        position: relative;
+                        overflow: hidden;
+                    " onmouseover="this.style.borderColor='#667eea'; this.style.background='linear-gradient(145deg, #f8f9ff 0%, #e8f0ff 100%)'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 35px rgba(102, 126, 234, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'">
+                        <div style="
+                            font-size: 40px; 
+                            margin-bottom: 5px;
+                            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+                        ">💳</div>
+                        <span style="font-weight: 700;">Credit Card</span>
+                        <small style="
+                            font-size: 11px; 
+                            color: #666;
+                            text-align: center;
+                            line-height: 1.3;
+                        ">Visa • Mastercard • Rupay<br>American Express</small>
+                    </button>
+
+                    <button onclick="processCardPayment('debit')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 3px solid #e9ecef;
+                        border-radius: 20px;
+                        padding: 25px 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 12px;
+                        transition: all 0.3s ease;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                        position: relative;
+                        overflow: hidden;
+                    " onmouseover="this.style.borderColor='#28a745'; this.style.background='linear-gradient(145deg, #f1f8f1 0%, #e8f5e8 100%)'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 35px rgba(40, 167, 69, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'">
+                        <div style="
+                            font-size: 40px; 
+                            margin-bottom: 5px;
+                            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+                        ">💳</div>
+                        <span style="font-weight: 700;">Debit Card</span>
+                        <small style="
+                            font-size: 11px; 
+                            color: #666;
+                            text-align: center;
+                            line-height: 1.3;
+                        ">All Major Banks<br>Instant Processing</small>
+                    </button>
+
+                    <button onclick="processCardPayment('netbanking')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 3px solid #e9ecef;
+                        border-radius: 20px;
+                        padding: 25px 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 12px;
+                        transition: all 0.3s ease;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                        position: relative;
+                        overflow: hidden;
+                    " onmouseover="this.style.borderColor='#ffc107'; this.style.background='linear-gradient(145deg, #fffbf0 0%, #fff0d9 100%)'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 35px rgba(255, 193, 7, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'">
+                        <div style="
+                            font-size: 40px; 
+                            margin-bottom: 5px;
+                            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+                        ">🏦</div>
+                        <span style="font-weight: 700;">Net Banking</span>
+                        <small style="
+                            font-size: 11px; 
+                            color: #666;
+                            text-align: center;
+                            line-height: 1.3;
+                        ">50+ Banks Available<br>Secure Login</small>
+                    </button>
+
+                    <button onclick="processCardPayment('wallet')" style="
+                        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                        border: 3px solid #e9ecef;
+                        border-radius: 20px;
+                        padding: 25px 15px;
+                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 12px;
+                        transition: all 0.3s ease;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #333;
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                        position: relative;
+                        overflow: hidden;
+                    " onmouseover="this.style.borderColor='#e83e8c'; this.style.background='linear-gradient(145deg, #fdf2f6 0%, #f8e5f0 100%)'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 35px rgba(232, 62, 140, 0.3)'" 
+                       onmouseout="this.style.borderColor='#e9ecef'; this.style.background='linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'">
+                        <div style="
+                            font-size: 40px; 
+                            margin-bottom: 5px;
+                            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+                        ">👛</div>
+                        <span style="font-weight: 700;">Digital Wallet</span>
+                        <small style="
+                            font-size: 11px; 
+                            color: #666;
+                            text-align: center;
+                            line-height: 1.3;
+                        ">MobiKwik • Airtel Money<br>Quick & Easy</small>
+                    </button>
+                </div>
+
+                <!-- Security Info -->
+                <div style="
+                    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+                    border: 2px solid #28a745;
+                    border-radius: 15px;
+                    padding: 18px;
+                    text-align: center;
+                    margin-bottom: 25px;
+                    font-size: 14px;
+                    color: #155724;
+                    font-weight: 600;
+                ">
+                    🔒 Bank-Grade Security • SSL Encrypted • PCI DSS Compliant • RBI Approved
+                </div>
+
+                <!-- Payment Summary -->
+                <div style="
+                    background: linear-gradient(135deg, #fff3cd 0%, #fef9e7 100%);
+                    border-radius: 15px;
+                    padding: 20px;
+                    text-align: center;
+                    margin-bottom: 25px;
+                    font-size: 14px;
+                    color: #856404;
+                    border-left: 4px solid #ffc107;
+                ">
+                    <div style="
+                        font-weight: 700; 
+                        margin-bottom: 12px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        font-size: 16px;
+                    ">💰 Payment Summary</div>
+                    <div style="margin-bottom: 6px;">Order ID: <strong style="color: #b8860b;">${order.id}</strong></div>
+                    <div style="margin-bottom: 6px;">Amount: <strong style="color: #b8860b; font-size: 16px;">₹${order.price.toFixed(2)}</strong></div>
+                    <div style="margin-bottom: 6px;">Processing Fee: <strong style="color: #28a745;">₹0 (FREE)</strong></div>
+                    <div style="margin-top: 10px; font-size: 12px; opacity: 0.8;">🛡️ Zero hidden charges • Instant processing</div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 15px;">
+                    <button onclick="cancelCardTransaction()" style="
+                        flex: 1;
+                        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+                        color: white;
+                        border: none;
+                        padding: 18px;
+                        border-radius: 15px;
+                        cursor: pointer;
+                        font-weight: 700;
+                        font-size: 16px;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                    " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 35px rgba(108, 117, 125, 0.4)'" 
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(108, 117, 125, 0.3)'">
+                       ❌ Cancel Transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(cardModal);
+
+    // Start timer
+    timerInterval = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const timerElement = document.getElementById('cardTimer');
+        if (timerElement) {
+            timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            cancelCardTransaction();
+        }
+        timeLeft--;
+    }, 1000);
+
+    window.processCardPayment = function(type) {
+        let message = '';
+        let icon = '';
+        switch(type) {
+            case 'credit':
+                message = '🔄 Opening secure credit card gateway...';
+                icon = '💳';
+                break;
+            case 'debit':
+                message = '🔄 Redirecting to debit card payment...';
+                icon = '💳';
+                break;
+            case 'netbanking':
+                message = '🔄 Loading net banking portal...';
+                icon = '🏦';
+                break;
+            case 'wallet':
+                message = '🔄 Opening digital wallet gateway...';
+                icon = '👛';
+                break;
+        }
+        
+        showNotification(`${icon} ${message}`, 'info');
+        
+        setTimeout(() => {
+            clearInterval(timerInterval);
+            closeCardModal();
+            showPaymentConfirmation(order);
+        }, 3000);
+    };
+
+    window.cancelCardTransaction = function() {
+        clearInterval(timerInterval);
+        closeCardModal();
+        showNotification('❌ Card payment cancelled successfully!', 'info');
+        showPage('dashboardHome');
+    };
+
+    window.closeCardModal = function() {
+        clearInterval(timerInterval);
+        if (cardModal && cardModal.parentElement) {
+            document.body.removeChild(cardModal);
+        }
+    };
+}
+
+// Payment Confirmation Modal
+function showPaymentConfirmation(order) {
+    const confirmModal = document.createElement('div');
+    confirmModal.id = 'paymentConfirmModal';
+    confirmModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 10002;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    `;
+
+    confirmModal.innerHTML = `
+        <div style="
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        ">
+            <div style="
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 20px;
+                color: white;
+                font-size: 36px;
+            ">
+                ✓
+            </div>
+            
+            <h2 style="color: #28a745; margin-bottom: 15px;">Payment Initiated!</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                Your payment for Order #${order.id} has been initiated.<br>
+                Amount: ₹${order.price.toFixed(2)}
+            </p>
+            
+            <div style="background: #e8f5e8; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <p style="color: #155724; font-weight: 600; margin: 0 0 10px 0;">📱 What's Next?</p>
+                <ul style="text-align: left; color: #155724; font-size: 14px; margin: 0; padding-left: 20px;">
+                    <li>Payment verification in progress</li>
+                    <li>Order will start in 0-15 minutes</li>
+                    <li>Check order status in "Order History"</li>
+                    <li>Contact support if any issues</li>
+                </ul>
+            </div>
+            
+            <button onclick="closeConfirmModal()" style="
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 15px 30px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-weight: 600;
+            ">Got It!</button>
+        </div>
+    `;
+
+    document.body.appendChild(confirmModal);
+
+    window.closeConfirmModal = function() {
+        if (confirmModal && confirmModal.parentElement) {
+            document.body.removeChild(confirmModal);
+        }
+        // Close main payment modal too
+        const paymentModal = document.getElementById('paymentModal');
+        if (paymentModal && paymentModal.parentElement) {
+            document.body.removeChild(paymentModal);
+        }
+        document.body.style.overflow = 'auto';
+    };
 }
 
 function updateProfileStats() {
