@@ -2307,7 +2307,7 @@ function showUPIAppsModal(order) {
         if (timerElement) {
             timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-        
+
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             cancelTransaction();
@@ -2320,14 +2320,14 @@ function showUPIAppsModal(order) {
         const upiID = 'kavita.5049-49@waicici'; // Updated with correct UPI ID
         const amount = order.price.toFixed(2);
         const note = `Payment for Order ${order.id} - India Social Panel`;
-        
+
         const upiUrl = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-        
+
         // Try to open the UPI app
         window.location.href = upiUrl;
-        
+
         showNotification(`✅ Opening ${app.toUpperCase()}... Complete payment of ₹${amount}`, 'success');
-        
+
         setTimeout(() => {
             clearInterval(timerInterval);
             closeUPIModal();
@@ -2488,7 +2488,7 @@ function showQRCodeModal(order) {
                             ">Click Generate QR Code</div>
                         </div>
                     </div>
-                    
+
                     <div style="
                         background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
                         color: white;
@@ -2501,7 +2501,7 @@ function showQRCodeModal(order) {
                         box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
                         text-shadow: 0 1px 2px rgba(0,0,0,0.2);
                     ">₹${order.price.toFixed(2)}</div>
-                    
+
                     <p style="
                         color: #666; 
                         font-size: 14px; 
@@ -2587,7 +2587,7 @@ function showQRCodeModal(order) {
                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(40, 167, 69, 0.3)'">
                        🎯 Generate QR Code
                     </button>
-                    
+
                     <button onclick="cancelQRTransaction()" style="
                         flex: 1;
                         background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
@@ -2621,7 +2621,7 @@ function showQRCodeModal(order) {
         if (timerElement) {
             timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-        
+
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             cancelQRTransaction();
@@ -2636,7 +2636,7 @@ function showQRCodeModal(order) {
             const amount = order.price.toFixed(2);
             const note = `Order ${order.id} - India Social Panel`;
             const upiString = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-            
+
             qrContainer.innerHTML = `
                 <div style="
                     width: 100%;
@@ -2812,7 +2812,7 @@ function showUPIIDModal(order) {
                         justify-content: center;
                         gap: 10px;
                     ">💳 Our UPI ID</h3>
-                    
+
                     <!-- UPI ID Display with Masked View -->
                     <div style="
                         background: white;
@@ -2832,7 +2832,7 @@ function showUPIIDModal(order) {
                             background: linear-gradient(90deg, #4285f4, #667eea, #4285f4);
                             animation: borderGlow 2s infinite;
                         "></div>
-                        
+
                         <div style="
                             display: flex;
                             align-items: center;
@@ -2978,7 +2978,7 @@ function showUPIIDModal(order) {
                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(40, 167, 69, 0.3)'">
                        ✅ Payment Completed
                     </button>
-                    
+
                     <button onclick="cancelUPIIDTransaction()" style="
                         flex: 1;
                         background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
@@ -3012,7 +3012,7 @@ function showUPIIDModal(order) {
         if (timerElement) {
             timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-        
+
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             cancelUPIIDTransaction();
@@ -3025,18 +3025,18 @@ function showUPIIDModal(order) {
             // Show full UPI ID briefly when copied
             const displayElement = document.getElementById('displayedUPIID');
             const copyBtn = event.target.closest('button');
-            
+
             if (displayElement) {
                 displayElement.style.color = '#28a745';
                 displayElement.textContent = actualUPIID;
             }
-            
+
             showNotification('✅ UPI ID copied to clipboard!', 'success');
-            
+
             const originalText = copyBtn.innerHTML;
             copyBtn.innerHTML = '✅ Copied!';
             copyBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-            
+
             setTimeout(() => {
                 copyBtn.innerHTML = originalText;
                 copyBtn.style.background = 'linear-gradient(135deg, #4285f4 0%, #667eea 100%)';
@@ -3400,7 +3400,7 @@ function showCardBankingModal(order) {
         if (timerElement) {
             timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-        
+
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             cancelCardTransaction();
@@ -3429,9 +3429,9 @@ function showCardBankingModal(order) {
                 icon = '👛';
                 break;
         }
-        
+
         showNotification(`${icon} ${message}`, 'info');
-        
+
         setTimeout(() => {
             clearInterval(timerInterval);
             closeCardModal();
@@ -3495,13 +3495,13 @@ function showPaymentConfirmation(order) {
             ">
                 ✓
             </div>
-            
+
             <h2 style="color: #28a745; margin-bottom: 15px;">Payment Initiated!</h2>
             <p style="color: #666; margin-bottom: 20px;">
                 Your payment for Order #${order.id} has been initiated.<br>
                 Amount: ₹${order.price.toFixed(2)}
             </p>
-            
+
             <div style="background: #e8f5e8; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
                 <p style="color: #155724; font-weight: 600; margin: 0 0 10px 0;">📱 What's Next?</p>
                 <ul style="text-align: left; color: #155724; font-size: 14px; margin: 0; padding-left: 20px;">
@@ -3511,7 +3511,7 @@ function showPaymentConfirmation(order) {
                     <li>Contact support if any issues</li>
                 </ul>
             </div>
-            
+
             <button onclick="closeConfirmModal()" style="
                 background: #667eea;
                 color: white;
