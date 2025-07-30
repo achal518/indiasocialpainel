@@ -3141,10 +3141,7 @@ function openAddFundsUPIApp(amount) {
   
   const upiID = 'kavita.5049-49@waicici';
   const note = `Add Funds - India Social Panel`;
-  const upiUrl = `upi://pay?pa=${upiID}&am=${amount.toFixed(2)}&tn=${encodeURIComponent(note)}&cu=INR`;
-  
-  window.location.href = upiUrl;
-  showNotification('✅ Opening UPI app... Complete your payment', 'success');
+  const upiUrl = `upi://pay?pa=${upiID}&am=${amount.toFixed(2)}&tn=${encodeURIComponent(note)}&cu=INR
 }
 
 // Open UPI App Generally (for Google Pay button)
