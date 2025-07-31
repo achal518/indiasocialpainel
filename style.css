@@ -8,11 +8,8 @@ body {
   font-family: 'Inter', sans-serif;
   background: linear-gradient(145deg, #4a5fb8 0%, #5a6fd8 15%, #667eea 30%, #764ba2 50%, #8e44ad 70%, #9b59b6 85%, #a569bd 100%);
   min-height: 100vh;
-  max-height: none;
   color: #333;
   transition: all 0.3s ease;
-  margin: 0;
-  padding: 0;
   overflow-x: hidden;
   overflow-y: auto;
   position: relative;
@@ -464,8 +461,6 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
   padding: 8px;
   border-radius: 8px;
   transition: all 0.3s ease;
-  backdrop-filter: none;
-  border: none;
 }
 
 .hamburger-btn:hover {
@@ -485,20 +480,11 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
   align-items: center;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
-  padding: 0;
   cursor: pointer;
-  background: transparent;
-  border: none;
-  backdrop-filter: none;
-  box-shadow: none;
 }
 
 .logo-container:hover {
   transform: translateY(-2px) scale(1.02);
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  backdrop-filter: none;
 }
 
 /* Premium Professional Logo Design */
@@ -706,10 +692,6 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
 
   .logo-container {
     padding: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    backdrop-filter: none;
   }
 
   .logo-main {
@@ -2862,21 +2844,12 @@ body.dark-mode .order-stat-item {
 .footer-logo-container {
   display: flex;
   align-items: center;
-  transition: none;
   position: relative;
-  padding: 0;
   cursor: pointer;
-  background: transparent;
-  backdrop-filter: none;
-  border: none;
-  box-shadow: none;
 }
 
 .footer-logo-container:hover {
   transform: none;
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
 }
 
 .footer-logo-icon {
