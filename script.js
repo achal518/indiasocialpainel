@@ -8,6 +8,295 @@ function toggleContactOptions() {
   }
 }
 
+// Performance optimization - Clear all timers on page change
+let activeTimers = [];
+let activeIntervals = [];
+
+function clearAllTimers() {
+  activeTimers.forEach(timer => clearTimeout(timer));
+  activeIntervals.forEach(interval => clearInterval(interval));
+  activeTimers = [];
+  activeIntervals = [];
+}
+
+// Optimized event listener setup - reduces lag
+function setupOptimizedEventListeners() {
+  // Debounce function for input events
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      activeTimers.push(timeout);
+    };
+  }
+  
+  // Fast click handlers - no debouncing needed
+  const clickHandlers = [
+    ['hamburgerMenu', toggleSideNav],
+    ['closeNav', closeSideNav],
+    ['navOverlay', closeSideNav],
+    ['balanceBtn', () => showPage('addFundsPage')],
+    ['userAvatar', () => showPage('userProfilePage')],
+    ['darkModeToggle', toggleDarkMode],
+    ['placeOrderBtn', handlePlaceOrder],
+    ['termsCheckbox', updatePlaceOrderButtonState]
+  ];
+  
+  clickHandlers.forEach(([id, handler]) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.addEventListener('click', handler);
+    }
+  });
+  
+  // Debounced input handlers for better performance
+  const inputHandlers = [
+    ['searchService', debounce(setupSearchFunctionality, 300)],
+    ['linkInput', debounce(validateLink, 250)],
+    ['couponInput', debounce(validateCoupon, 400)]
+  ];
+  
+  inputHandlers.forEach(([id, handler]) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.addEventListener('input', handler);
+    }
+  });
+  
+  // Special optimized handler for quantity input
+  const quantityInput = document.getElementById('quantityInput');
+  if (quantityInput) {
+    quantityInput.addEventListener('input', debounce(function() {
+      calculateTotal();
+      updatePlaceOrderButtonState();
+      showCouponSection();
+    }, 200));
+  }
+  
+  // Select change handlers
+  const serviceSelect = document.getElementById('serviceSelect');
+  const packageSelect = document.getElementById('packageSelect');
+  
+  if (serviceSelect) {
+    serviceSelect.addEventListener('change', handleServiceChange);
+  }
+  if (packageSelect) {
+    packageSelect.addEventListener('change', handlePackageChange);
+  }
+}
+
+// Make all functions globally accessible immediately
+window.setQuickAmount = function(amount) {
+  const amountInput = document.getElementById('addFundsAmountInput');
+  if (amountInput) {
+    amountInput.value = amount;
+    validateAddFundsAmount();
+    document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+      btn.classList.remove('selected');
+    });
+    event.target.classList.add('selected');
+  }
+};
+
+window.closeAddFundsModal = function() {
+  const modal = document.getElementById('addFundsOptionsModal');
+  if (modal && modal.parentElement) {
+    document.body.removeChild(modal);
+  }
+  showPage('addFundsPage');
+};
+
+window.openUPIAppGeneral = function() {
+  const amountInput = document.getElementById('addFundsAmountInput');
+  const amount = parseFloat(amountInput.value) || 0;
+
+  if (amount >= 100 && amount <= 100000) {
+    openAddFundsUPIApp(amount);
+  } else {
+    const upiID = 'kavita.5049-49@waicici';
+    const note = 'Add Funds - India Social Panel';
+    const upiUrl = 'upi://pay?pa=' + upiID + '&tn=' + encodeURIComponent(note) + '&cu=INR';
+    window.location.href = upiUrl;
+  }
+};
+
+// Most important - showPaymentPage function for the beautiful payment page
+window.showPaymentPage = function(order) {
+  const paymentModal = document.createElement('div');
+  paymentModal.id = 'paymentModal';
+  paymentModal.style.cssText = 
+      'position: fixed;' +
+      'top: 0;' +
+      'left: 0;' +
+      'right: 0;' +
+      'bottom: 0;' +
+      'background: rgba(0,0,0,0.8);' +
+      'z-index: 10000;' +
+      'display: flex;' +
+      'align-items: center;' +
+      'justify-content: center;' +
+      'padding: 20px;' +
+      'overflow-y: auto;' +
+      'animation: modalFadeIn 0.3s ease;';
+
+  paymentModal.innerHTML = 
+      '<div class="payment-container" style="' +
+          'width: 100%;' +
+          'max-width: 450px;' +
+          'background: white;' +
+          'border-radius: 20px;' +
+          'overflow: hidden;' +
+          'box-shadow: 0 20px 40px rgba(0,0,0,0.3);' +
+          'margin: auto;' +
+          'max-height: 95vh;' +
+          'overflow-y: auto;' +
+      '">' +
+          '<div class="payment-header" style="' +
+              'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);' +
+              'color: white;' +
+              'padding: 25px;' +
+              'text-align: center;' +
+          '">' +
+              '<h1 style="font-size: 22px; margin-bottom: 8px;">🎉 Order Placed Successfully!</h1>' +
+              '<p style="margin: 0;">Complete your payment to activate the order</p>' +
+              '<div class="order-id" style="' +
+                  'background: rgba(255,255,255,0.2);' +
+                  'padding: 8px 16px;' +
+                  'border-radius: 20px;' +
+                  'display: inline-block;' +
+                  'font-weight: 600;' +
+                  'margin-top: 10px;' +
+                  'font-size: 14px;' +
+              '">Order ID: ' + order.id + '</div>' +
+          '</div>' +
+          '<div class="order-summary" style="' +
+              'background: #f8f9fa;' +
+              'padding: 20px;' +
+              'border-bottom: 1px solid #e9ecef;' +
+          '">' +
+              '<h3 style="margin-bottom: 15px; color: #333; font-size: 16px;">📋 Order Summary / ऑर्डर विवरण</h3>' +
+              '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">' +
+                  '<span>Service ID / सेवा आईडी:</span>' +
+                  '<strong>' + order.serviceId + '</strong>' +
+              '</div>' +
+              '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">' +
+                  '<span>Service / सेवा:</span>' +
+                  '<strong>' + order.serviceName + '</strong>' +
+              '</div>' +
+              '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">' +
+                  '<span>Target Link / लिंक:</span>' +
+                  '<strong style="word-break: break-all; max-width: 200px; display: inline-block;">' + order.link + '</strong>' +
+              '</div>' +
+              '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">' +
+                  '<span>Quantity / मात्रा:</span>' +
+                  '<strong>' + order.quantity + '</strong>' +
+              '</div>' +
+              '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">' +
+                  '<span>Order Date / दिनांक:</span>' +
+                  '<strong>' + order.date + '</strong>' +
+              '</div>' +
+              '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">' +
+                  '<span>Order Time / समय:</span>' +
+                  '<strong>' + order.time + '</strong>' +
+              '</div>' +
+              '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">' +
+                  '<span>Status / स्थिति:</span>' +
+                  '<strong style="color: #007bff;">🔄 Processing / प्रक्रिया में</strong>' +
+              '</div>' +
+              '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;">' +
+                  '<span>Start Time / शुरुआत:</span>' +
+                  '<strong style="color: #28a745;">⏱️ 0-15 Minutes / मिनट</strong>' +
+              '</div>' +
+              '<div style="border-top: 2px solid #007bff; padding-top: 15px; margin-top: 15px; text-align: center;">' +
+                  '<div style="font-size: 18px; font-weight: 700; color: #007bff;">💰 Total Amount / कुल राशि: ₹' + (order.charge || order.price || 0).toFixed(2) + '</div>' +
+              '</div>' +  
+          '</div>' +
+          '<div class="payment-methods" style="padding: 25px;">' +
+              '<h3 style="margin-bottom: 20px; color: #333; text-align: center; font-size: 18px;">💳 Choose Payment Method / भुगतान विधि चुनें</h3>' +
+              '<div class="payment-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">' +
+                  '<button onclick="showUPIAppsPayment()" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; height: 60px; box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);">' +
+                      '<i class="fab fa-google-pay" style="font-size: 18px;"></i>' +
+                      '<span style="font-size: 11px; font-weight: 600;">UPI Apps</span>' +
+                  '</button>' +
+                  '<button onclick="showQRCodePayment()" style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; border: none; padding: 12px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; height: 60px; box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);">' +
+                      '<i class="fas fa-qrcode" style="font-size: 18px;"></i>' +
+                      '<span style="font-size: 11px; font-weight: 600;">QR Code</span>' +
+                  '</button>' +
+                  '<button onclick="showUPIIDPayment()" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); color: white; border: none; padding: 12px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; height: 60px; box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);">' +
+                      '<i class="fas fa-at" style="font-size: 18px;"></i>' +
+                      '<span style="font-size: 11px; font-weight: 600;">UPI ID</span>' +
+                  '</button>' +
+                  '<button onclick="showCardBankingPayment()" style="background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); color: white; border: none; padding: 12px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; height: 60px; box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);">' +
+                      '<i class="fas fa-credit-card" style="font-size: 18px;"></i>' +
+                      '<span style="font-size: 11px; font-weight: 600;">Card/Bank</span>' +
+                  '</button>' +
+              '</div>' +
+              '<div style="text-align: center; margin-bottom: 15px;">' +
+                  '<p style="margin: 0; font-size: 12px; color: #666;">Choose your preferred payment method</p>' +
+              '</div>' +
+              '<div class="payment-note" style="background: #e3f2fd; border-left: 4px solid #2196F3; padding: 15px; border-radius: 8px; margin-bottom: 20px;">' +
+                  '<p style="margin: 0; font-size: 14px; color: #1565C0;"><strong>📌 Payment Instructions / भुगतान निर्देश:</strong></p>' +
+                  '<ul style="margin: 10px 0 0 20px; font-size: 13px; color: #1565C0;">' +
+                      '<li>Complete payment within 10 minutes / 10 मिनट में भुगतान पूरा करें</li>' +
+                      '<li>Order will start automatically after payment / भुगतान के बाद ऑर्डर अपने आप शुरू हो जाएगा</li>' +
+                      '<li>Save screenshot of payment for reference / भुगतान का स्क्रीनशॉट संदर्भ के लिए सेव करें</li>' +
+                  '</ul>' +
+              '</div>' +
+              '<div class="action-buttons" style="display: flex; gap: 12px; justify-content: space-between;">' +
+                  '<button onclick="cancelTransaction()" style="background: #f44336; color: white; border: none; padding: 15px 25px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; flex: 1;">❌ Cancel Transaction</button>' +
+                  '<button onclick="showQRCodePayment()" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); color: white; border: none; padding: 15px 25px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; flex: 2;">⚡ Quick Pay</button>' +
+              '</div>' +
+          '</div>' +
+      '</div>';
+
+  window.closePaymentModal = function() {
+      if (paymentModal && paymentModal.parentElement) {
+          document.body.removeChild(paymentModal);
+      }
+      document.body.style.overflow = 'auto';
+      showPage('dashboardHome');
+  };
+
+  window.showUPIAppsPayment = function() {
+      showUPIAppsModal(order);
+  };
+
+  window.showQRCodePayment = function() {
+      showQRCodeModal(order);
+  };
+
+  window.showUPIIDPayment = function() {
+      showUPIIDModal(order);
+  };
+
+  window.showCardBankingPayment = function() {
+      showCardBankingModal(order);
+  };
+
+  window.cancelTransaction = function() {
+      showCancelConfirmationPopup(() => {
+          if (paymentModal && paymentModal.parentElement) {
+              document.body.removeChild(paymentModal);
+          }
+          document.body.style.overflow = 'auto';
+          showPage('dashboardHome');
+      });
+  };
+
+  paymentModal.addEventListener('click', function(e) {
+      if (e.target === paymentModal) {
+          window.cancelTransaction();
+      }
+  });
+
+  document.body.appendChild(paymentModal);
+};
+
 function navigateToHomePage() {
   showPage('dashboardHome');
   forceEnableScrolling();
@@ -43,7 +332,7 @@ function showNotification(message, type = 'info') {
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     animation: slideInRight 0.3s ease;
   `;
-  
+
   switch(type) {
     case 'success':
       notification.style.background = '#28a745';
@@ -58,7 +347,7 @@ function showNotification(message, type = 'info') {
     default:
       notification.style.background = '#007bff';
   }
-  
+
   notification.innerHTML = `
     <div class="notification-content">
       <span>${message}</span>
@@ -72,14 +361,15 @@ function showNotification(message, type = 'info') {
       ">×</button>
     </div>
   `;
-  
+
   document.body.appendChild(notification);
-  
-  setTimeout(() => {
+
+  const timer = setTimeout(() => {
     if (notification && notification.parentElement) {
       notification.remove();
     }
   }, 5000);
+  activeTimers.push(timer);
 }
 
 // Disable welcome popup functionality completely
@@ -87,7 +377,7 @@ function showWelcomePopup() {
   // Welcome popup disabled - ensure scrolling works
   document.body.style.overflow = 'auto';
   document.documentElement.style.overflow = 'auto';
-  console.log('Welcome popup disabled - proceeding to dashboard');
+
 }
 
 function navigateToHomePage() {
@@ -273,7 +563,7 @@ const content = {
       orderHistory: "Order History",
       refillHistory: "Refill History",
       addFunds: "Add Funds",
-      
+
       // Main Navigation Menu
       childPanels: "Child Panels",
       services: "Services",
@@ -283,7 +573,7 @@ const content = {
       referEarn: "Refer & Earn",
       tutorialVideo: "Tutorial Video",
       signOut: "Sign Out",
-      
+
       // Pages
       allServices: "All Services",
       userGuidelines: "User Guidelines",
@@ -291,14 +581,14 @@ const content = {
       frequentlyAskedQuestions: "Frequently Asked Questions",
       apiDocumentation: "API Documentation",
       myProfile: "My Profile",
-      
+
       // Forms and Inputs
       linkInput: "Link (Must be Public)",
       quantity: "Quantity",
       couponCode: "Coupon Code (Optional)",
       youWillPay: "You will pay",
       termsConditions: "Yes, I have confirmed the Terms & Conditions",
-      
+
       // Payment and Balance
       enterAmount: "Enter Amount to Add",
       minimum: "Minimum",
@@ -314,7 +604,7 @@ const content = {
       directBankTransfer: "Direct bank account transfer",
       comingSoon: "Coming Soon",
       securePayment: "Secure payment with SSL encryption",
-      
+
       // Service Categories
       instagramServices: "Instagram Services",
       facebookServices: "Facebook Services", 
@@ -335,7 +625,7 @@ const content = {
       googleReviews: "Google Reviews",
       seoServices: "SEO Services",
       newOffers: "New Service Offers",
-      
+
       // Status and Messages
       processing: "Processing",
       completed: "Completed",
@@ -343,7 +633,7 @@ const content = {
       pending: "Pending",
       success: "Success",
       failed: "Failed",
-      
+
       // Common Actions
       create: "Create",
       edit: "Edit",
@@ -357,7 +647,7 @@ const content = {
       copy: "Copy",
       generate: "Generate",
       test: "Test",
-      
+
       // Order related
       orderId: "Order ID",
       serviceName: "Service Name",
@@ -370,21 +660,21 @@ const content = {
       dropRate: "Drop Rate",
       startTime: "Start Time",
       speed: "Speed",
-      
+
       // Empty states
       noOrdersYet: "You haven't placed any orders yet.",
       startJourney: "Start your journey to social media success by placing your first order now!",
       placeFirstOrder: "Place Your First Order",
       noRefillsRequired: "No Refills Required",
       excellentRetention: "Excellent! All your orders are performing well with high retention rates. No refills have been necessary.",
-      
+
       // Footer
       premiumSocialMedia: "Premium Social Media Services",
       registeredAgency: "India Social Panel is a registered digital marketing agency specializing in Website Development, Social Media Marketing, Graphic Design, and Meta & Google Ads services.",
       support: "Support",
       language: "Language",
       allRightsReserved: "All rights reserved.",
-      
+
       // Contact and Support
       contactSupport: "Contact Support",
       phoneSupport: "Call Support", 
@@ -414,7 +704,7 @@ const content = {
       orderHistory: "ऑर्डर इतिहास",
       refillHistory: "रिफिल इतिहास",
       addFunds: "फंड जोड़ें",
-      
+
       // Main Navigation Menu
       childPanels: "चाइल्ड पैनल",
       services: "सेवाएं",
@@ -424,7 +714,7 @@ const content = {
       referEarn: "रेफर करें और कमाएं",
       tutorialVideo: "ट्यूटोरियल वीडियो",
       signOut: "साइन आउट",
-      
+
       // Pages
       allServices: "सभी सेवाएं",
       userGuidelines: "उपयोगकर्ता दिशानिर्देश",
@@ -432,14 +722,14 @@ const content = {
       frequentlyAskedQuestions: "अक्सर पूछे जाने वाले प्रश्न",
       apiDocumentation: "एपीआई प्रलेखन",
       myProfile: "मेरी प्रोफाइल",
-      
+
       // Forms and Inputs
       linkInput: "लिंक (पब्लिक होना चाहिए)",
       quantity: "मात्रा",
       couponCode: "कूपन कोड (वैकल्पिक)",
       youWillPay: "आप भुगतान करेंगे",
       termsConditions: "हां, मैंने नियम और शर्तों की पुष्टि की है",
-      
+
       // Payment and Balance
       enterAmount: "जोड़ने के लिए राशि दर्ज करें",
       minimum: "न्यूनतम",
@@ -455,7 +745,7 @@ const content = {
       directBankTransfer: "सीधे बैंक खाता स्थानांतरण",
       comingSoon: "जल्द आ रहा है",
       securePayment: "SSL एन्क्रिप्शन के साथ सुरक्षित भुगतान",
-      
+
       // Service Categories
       instagramServices: "इंस्टाग्राम सेवाएं",
       facebookServices: "फेसबुक सेवाएं", 
@@ -476,7 +766,7 @@ const content = {
       googleReviews: "गूगल रिव्यू",
       seoServices: "एसईओ सेवाएं",
       newOffers: "नई सेवा ऑफर",
-      
+
       // Status and Messages
       processing: "प्रक्रिया में",
       completed: "पूर्ण",
@@ -484,7 +774,7 @@ const content = {
       pending: "लंबित",
       success: "सफल",
       failed: "असफल",
-      
+
       // Common Actions
       create: "बनाएं",
       edit: "संपादित करें",
@@ -498,7 +788,7 @@ const content = {
       copy: "कॉपी करें",
       generate: "जेनरेट करें",
       test: "टेस्ट करें",
-      
+
       // Order related
       orderId: "ऑर्डर आईडी",
       serviceName: "सेवा का नाम",
@@ -511,21 +801,21 @@ const content = {
       dropRate: "ड्रॉप दर",
       startTime: "शुरुआत का समय",
       speed: "गति",
-      
+
       // Empty states
       noOrdersYet: "आपने अभी तक कोई ऑर्डर नहीं दिया है।",
       startJourney: "अभी अपना पहला ऑर्डर देकर सोशल मीडिया सफलता की यात्रा शुरू करें!",
       placeFirstOrder: "अपना पहला ऑर्डर दें",
       noRefillsRequired: "कोई रिफिल आवश्यक नहीं",
       excellentRetention: "बेहतरीन! आपके सभी ऑर्डर उच्च रिटेंशन दर के साथ अच्छा प्रदर्शन कर रहे हैं। कोई रिफिल आवश्यक नहीं रहा है।",
-      
+
       // Footer
       premiumSocialMedia: "प्रीमियम सोशल मीडिया सेवाएं",
       registeredAgency: "इंडिया सोशल पैनल एक पंजीकृत डिजिटल मार्केटिंग एजेंसी है जो वेबसाइट डेवलपमेंट, सोशल मीडिया मार्केटिंग, ग्राफिक डिज़ाइन और मेटा और गूगल विज्ञापन सेवाओं में विशेषज्ञता रखती है।",
       support: "सहायता",
       language: "भाषा",
       allRightsReserved: "सभी अधिकार सुरक्षित।",
-      
+
       // Contact and Support
       contactSupport: "संपर्क सहायता",
       phoneSupport: "फोन सहायता", 
@@ -540,45 +830,45 @@ let currentLanguage = 'english'; // Default to English
 
 function updateLanguage(language) {
     currentLanguage = language;
-    
+
     // Update all text content based on selected language
     const langContent = content[language];
-    
+
     // Update tab buttons
     const newOrderTab = document.getElementById('newOrderTab');
     const massOrderTab = document.getElementById('massOrderTab');
     if (newOrderTab) newOrderTab.textContent = `🛒 ${langContent.newOrder}`;
     if (massOrderTab) massOrderTab.textContent = `📦 ${langContent.massOrder}`;
-    
+
     // Update form labels
     const searchLabel = document.querySelector('label[for="searchService"]');
     if (searchLabel) searchLabel.textContent = langContent.searchService;
-    
+
     const serviceLabel = document.querySelector('label[for="serviceSelect"]');
     if (serviceLabel) serviceLabel.textContent = langContent.selectService;
-    
+
     const packageLabel = document.querySelector('label[for="packageSelect"]');
     if (packageLabel) packageLabel.textContent = langContent.selectPackage;
-    
+
     const linkLabel = document.querySelector('label[for="linkInput"]');
     if (linkLabel) linkLabel.textContent = langContent.linkInput;
-    
+
     const quantityLabel = document.querySelector('label[for="quantityInput"]');
     if (quantityLabel) quantityLabel.textContent = langContent.quantity;
-    
+
     const couponLabel = document.querySelector('label[for="couponInput"]');
     if (couponLabel) couponLabel.textContent = langContent.couponCode;
-    
+
     // Update buttons
     const placeOrderBtn = document.getElementById('placeOrderBtn');
     if (placeOrderBtn) placeOrderBtn.textContent = langContent.placeOrder;
-    
+
     const depositBtn = document.getElementById('depositBtnMain');
     if (depositBtn) depositBtn.textContent = langContent.deposit;
-    
+
     const addFundsBtn = document.getElementById('dynamicAddFundsBtn');
     if (addFundsBtn) addFundsBtn.innerHTML = `<i class="fas fa-plus-circle"></i> ${langContent.addFunds}`;
-    
+
     // Update navigation menu
     const navLinks = {
         'newOrderNav': langContent.newOrder,
@@ -593,7 +883,7 @@ function updateLanguage(language) {
         'referEarnNav': langContent.referEarn,
         'tutorialVideoNav': langContent.tutorialVideo
     };
-    
+
     Object.entries(navLinks).forEach(([id, text]) => {
         const element = document.getElementById(id);
         if (element) {
@@ -602,7 +892,7 @@ function updateLanguage(language) {
             element.innerHTML = iconHTML + ' ' + text;
         }
     });
-    
+
     // Update page headings
     const pageHeadings = {
         'orderHistoryPage': langContent.orderHistory,
@@ -618,7 +908,7 @@ function updateLanguage(language) {
         'tutorialVideoPage': langContent.tutorialVideo,
         'userProfilePage': langContent.myProfile
     };
-    
+
     Object.entries(pageHeadings).forEach(([pageId, heading]) => {
         const page = document.getElementById(pageId);
         if (page) {
@@ -626,19 +916,19 @@ function updateLanguage(language) {
             if (h2) h2.textContent = heading;
         }
     });
-    
+
     // Update balance section
     const balanceText = document.querySelector('.balance-card p');
     if (balanceText) balanceText.textContent = langContent.lookingToDeposit;
-    
+
     const balanceHeading = document.querySelector('.balance-info h4');
     if (balanceHeading) balanceHeading.textContent = langContent.currentBalance;
-    
+
     const spendingsText = document.querySelector('.balance-info p:last-child');
     if (spendingsText && (spendingsText.textContent.includes('spendings') || spendingsText.textContent.includes('खर्च'))) {
         spendingsText.textContent = `${langContent.totalSpendings} : ₹0.00`;
     }
-    
+
     // Update service categories in dropdown
     const serviceOptions = document.querySelectorAll('.dropdown-option');
     serviceOptions.forEach(option => {
@@ -706,17 +996,17 @@ function updateLanguage(language) {
             }
         }
     });
-    
+
     // Update price section
     const priceHeading = document.querySelector('.price-box h4');
     if (priceHeading) priceHeading.textContent = language === 'hindi' ? 'मूल्य' : 'Price';
-    
+
     const descriptionHeading = document.querySelector('.description-box h4');
     if (descriptionHeading) descriptionHeading.textContent = language === 'hindi' ? 'विवरण' : 'Description';
-    
+
     const paymentHeading = document.querySelector('.payment-section h4');
     if (paymentHeading) paymentHeading.textContent = langContent.youWillPay;
-    
+
     // Update terms checkbox
     const termsLabel = document.querySelector('.checkbox-label');
     if (termsLabel) {
@@ -727,40 +1017,40 @@ function updateLanguage(language) {
         const linkHTML = link ? `<a href="#" class="terms-link">${language === 'hindi' ? 'नियम और शर्तें' : 'Terms & Conditions'}</a>` : '';
         termsLabel.innerHTML = checkboxHTML + checkmarkHTML + langContent.termsConditions.replace('Terms & Conditions', linkHTML);
     }
-    
+
     // Update news section
     const congratulationsText = document.getElementById('congratulationsText');
     if (congratulationsText) congratulationsText.textContent = `🎉 ${langContent.congratulations} 🎉`;
-    
+
     const memberText = document.getElementById('memberText');
     if (memberText) memberText.textContent = langContent.memberText;
-    
+
     const membershipText = document.getElementById('membershipText');
     if (membershipText) {
         membershipText.innerHTML = language === 'hindi' ? 
             `अब आप India Social Panel.in के <span class="member-text" id="memberText">${langContent.memberText}</span> हैं` :
             `Now You are a <span class="member-text" id="memberText">${langContent.memberText}</span> of India Social Panel.in`;
     }
-    
+
     // Update footer
     const footerLogoSub = document.querySelector('.footer-logo-sub');
     if (footerLogoSub) footerLogoSub.textContent = langContent.premiumSocialMedia;
-    
+
     const footerDescription = document.querySelector('.footer-section p');
     if (footerDescription && footerDescription.textContent.includes('India Social Panel')) {
         footerDescription.textContent = langContent.registeredAgency;
     }
-    
+
     const supportHeading = document.querySelector('.footer-section h4');
     if (supportHeading && supportHeading.textContent === 'Support') {
         supportHeading.textContent = langContent.support;
     }
-    
+
     const languageOption = document.querySelector('.support-item:last-child');
     if (languageOption && languageOption.querySelector('i.fa-language')) {
         languageOption.childNodes[1].textContent = langContent.language;
     }
-    
+
     // Update contact widget tooltips
     const contactOptions = document.querySelectorAll('.contact-option');
     contactOptions.forEach(option => {
@@ -776,23 +1066,23 @@ function updateLanguage(language) {
             option.setAttribute('data-tooltip', langContent.aiAssistant);
         }
     });
-    
+
     // Update payment page elements
     const enterAmountHeading = document.querySelector('.amount-section h3');
     if (enterAmountHeading && enterAmountHeading.textContent.includes('Enter Amount')) {
         enterAmountHeading.textContent = langContent.enterAmount;
     }
-    
+
     const quickSelectHeading = document.querySelector('.quick-amounts h4');
     if (quickSelectHeading && quickSelectHeading.textContent.includes('Quick Select')) {
         quickSelectHeading.textContent = `💡 ${langContent.quickSelect}`;
     }
-    
+
     const paymentMethodsHeading = document.querySelector('.payment-methods h4');
     if (paymentMethodsHeading && paymentMethodsHeading.textContent === 'Payment Methods') {
         paymentMethodsHeading.textContent = langContent.paymentMethods;
     }
-    
+
     // Update method cards
     const methodCards = document.querySelectorAll('.method-card');
     methodCards.forEach(card => {
@@ -809,7 +1099,7 @@ function updateLanguage(language) {
             if (p) p.textContent = langContent.directBankTransfer;
         }
     });
-    
+
     // Update badges
     const instantBadges = document.querySelectorAll('.instant-badge');
     instantBadges.forEach(badge => {
@@ -817,37 +1107,37 @@ function updateLanguage(language) {
             badge.textContent = `⚡ ${langContent.instant}`;
         }
     });
-    
+
     const comingSoonBadges = document.querySelectorAll('.coming-soon-badge');
     comingSoonBadges.forEach(badge => {
         if (badge.textContent.includes('Coming Soon')) {
             badge.textContent = langContent.comingSoon;
         }
     });
-    
+
     // Update security info
     const securityInfo = document.querySelector('.security-info span');
     if (securityInfo && securityInfo.textContent.includes('Secure payment')) {
         securityInfo.textContent = langContent.securePayment;
     }
-    
+
     // Update empty states
     const emptyStates = document.querySelectorAll('.empty-state');
     emptyStates.forEach(state => {
         const h3 = state.querySelector('h3');
         const p = state.querySelector('p');
         const button = state.querySelector('button');
-        
+
         if (h3 && h3.textContent.includes("haven't placed any orders")) {
             h3.textContent = langContent.noOrdersYet;
             if (p) p.textContent = langContent.startJourney;
             if (button) button.textContent = langContent.placeFirstOrder;
         }
     });
-    
+
     // Save language preference
     localStorage.setItem('preferredLanguage', language);
-    
+
     // Update any remaining static text based on language
     updateRemainingText(language, langContent);
 }
@@ -921,52 +1211,37 @@ async function getUserIP() {
 document.addEventListener('DOMContentLoaded', function() {
   // Force enable scrolling first
   forceEnableScrolling();
-  
+
   // Initialize language system
   initializeLanguageSystem();
-  
+
   // Initialize everything
   updateBalanceDisplay();
   showDashboard();
   initializeEmailJS();
-  
+
   // Show welcome popup on first load (if needed)
   // Removed welcome popup functionality as requested
-  document.getElementById('hamburgerMenu')?.addEventListener('click', toggleSideNav);
-  document.getElementById('closeNav')?.addEventListener('click', closeSideNav);
-  document.getElementById('navOverlay')?.addEventListener('click', closeSideNav);
-  document.getElementById('balanceBtn')?.addEventListener('click', () => showPage('addFundsPage'));
-  document.getElementById('userAvatar')?.addEventListener('click', () => showPage('userProfilePage'));
-  document.getElementById('darkModeToggle')?.addEventListener('click', toggleDarkMode);
-  document.getElementById('serviceSelect')?.addEventListener('change', handleServiceChange);
-  document.getElementById('packageSelect')?.addEventListener('change', handlePackageChange);
-  document.getElementById('searchService')?.addEventListener('input', setupSearchFunctionality);
-  document.getElementById('quantityInput')?.addEventListener('input', function() {
-      calculateTotal();
-      updatePlaceOrderButtonState();
-      showCouponSection();
-  });
+  // Setup optimized event listeners
+  setupOptimizedEventListeners();
   
-  document.getElementById('couponInput')?.addEventListener('input', validateCoupon);
-  document.getElementById('placeOrderBtn')?.addEventListener('click', handlePlaceOrder);
-  document.getElementById('linkInput')?.addEventListener('input', validateLink);
-  document.getElementById('termsCheckbox')?.addEventListener('change', updatePlaceOrderButtonState);
+  // Setup remaining functionality
   setupCustomDropdowns();
   setupNavigationListeners();
   loadDarkModePreference();
   setupSearchFunctionality();
   initializeAIChatListeners();
   setupProfileFunctionality();
-  
+
   // Ensure scrolling works properly on load
   forceEnableScrolling();
-  console.log('Website loaded successfully - all functionality enabled');
+
 });
 
 // Profile functionality
 function setupProfileFunctionality() {
   // Profile functions would go here
-  console.log('Profile functionality initialized');
+
 }
 
 function updateProfileStats() {
@@ -990,20 +1265,20 @@ function forceEnableScrolling() {
   document.body.style.setProperty('max-height', 'none', 'important');
   document.documentElement.style.setProperty('max-height', 'none', 'important');
   document.body.style.setProperty('position', 'relative', 'important');
-  
+
   const welcomeOverlay = document.getElementById('welcomePopupOverlay');
   if (welcomeOverlay) {
       welcomeOverlay.style.display = 'none';
       welcomeOverlay.classList.remove('active');
   }
-  
+
   // Remove any modal overlays that might be stuck
   const modals = document.querySelectorAll('.modal, .overlay, .popup-overlay, .welcome-popup-overlay');
   modals.forEach(modal => {
       modal.style.display = 'none';
       modal.classList.remove('active');
   });
-  
+
   // Fix main content containers
   const mainContent = document.querySelector('.main-content');
   if (mainContent) {
@@ -1011,7 +1286,7 @@ function forceEnableScrolling() {
       mainContent.style.setProperty('height', 'auto', 'important');
       mainContent.style.setProperty('max-height', 'none', 'important');
   }
-  
+
   const dashboard = document.querySelector('.dashboard');
   if (dashboard) {
       dashboard.style.setProperty('overflow', 'visible', 'important');
@@ -1019,7 +1294,7 @@ function forceEnableScrolling() {
       dashboard.style.setProperty('min-height', '100vh', 'important');
       dashboard.style.setProperty('max-height', 'none', 'important');
   }
-  
+
   // Fix all pages
   const pages = document.querySelectorAll('.page');
   pages.forEach(page => {
@@ -1027,8 +1302,8 @@ function forceEnableScrolling() {
       page.style.setProperty('height', 'auto', 'important');
       page.style.setProperty('max-height', 'none', 'important');
   });
-  
-  console.log('Emergency scroll fix applied - scrolling should work now');
+
+
 }
 
 // Make function available globally for debugging
@@ -1040,14 +1315,14 @@ function fixScrollingIssues() {
   document.body.style.height = 'auto !important';
   document.documentElement.style.height = 'auto !important';
   document.body.style.position = 'relative !important';
-  
+
   // Ensure smooth scrolling
   document.documentElement.style.scrollBehavior = 'smooth';
   document.body.style.overflowX = 'hidden';
   document.body.style.overflowY = 'auto';
   document.body.style.webkitOverflowScrolling = 'touch';
   document.body.style.minHeight = '100vh';
-  
+
   // Close any stuck modals that might be preventing scroll
   const modals = document.querySelectorAll('.modal, .overlay, .popup, .welcome-popup-overlay');
   modals.forEach(modal => {
@@ -1056,7 +1331,7 @@ function fixScrollingIssues() {
           modal.classList.remove('active');
       }
   });
-  
+
   // Fix main content areas to allow scrolling
   const mainContent = document.querySelector('.main-content');
   if (mainContent) {
@@ -1065,7 +1340,7 @@ function fixScrollingIssues() {
       mainContent.style.position = 'relative';
       mainContent.style.maxHeight = 'none';
   }
-  
+
   const dashboard = document.querySelector('.dashboard');
   if (dashboard) {
       dashboard.style.overflow = 'visible';
@@ -1074,7 +1349,7 @@ function fixScrollingIssues() {
       dashboard.style.position = 'relative';
       dashboard.style.maxHeight = 'none';
   }
-  
+
   const pages = document.querySelectorAll('.page');
   pages.forEach(page => {
       page.style.position = 'relative';
@@ -1082,13 +1357,13 @@ function fixScrollingIssues() {
       page.style.height = 'auto';
       page.style.maxHeight = 'none';
   });
-  
+
   // Ensure welcome popup is properly hidden if not needed
   const welcomeOverlay = document.getElementById('welcomePopupOverlay');
   if (welcomeOverlay && !welcomeOverlay.classList.contains('active')) {
       welcomeOverlay.style.display = 'none';
   }
-  
+
   // Remove any CSS that might be blocking scroll
   const allElements = document.querySelectorAll('*');
   allElements.forEach(element => {
@@ -1101,8 +1376,8 @@ function fixScrollingIssues() {
           element.style.overflow = 'visible';
       }
   });
-  
-  console.log('Scrolling issues fixed - page should scroll normally now');
+
+
 }
 // Welcome popup completely disabled and removed
 function validateLink() {
@@ -1110,12 +1385,12 @@ function validateLink() {
   const linkValidationMessage = document.getElementById('linkValidationMessage');
   const placeOrderBtn = document.getElementById('placeOrderBtn');
   if (!linkInput || !linkValidationMessage || !placeOrderBtn) return;
-  
+
   const linkValue = linkInput.value.trim();
-  
+
   // Check if link starts with "https://" and has at least 8 additional characters
   const isValidLink = linkValue.startsWith('https://') && linkValue.length >= 16; // "https://".length = 8, so total minimum is 16
-  
+
   if (linkValue === '') {
       // No validation message when field is empty
       linkValidationMessage.style.display = 'none';
@@ -1144,14 +1419,14 @@ function showCouponSection() {
   const linkInput = document.getElementById('linkInput');
   const quantityInput = document.getElementById('quantityInput');
   const couponSection = document.getElementById('couponSection');
-  
+
   if (!linkInput || !quantityInput || !couponSection) return;
-  
+
   const linkValue = linkInput.value.trim();
   const quantity = parseInt(quantityInput.value) || 0;
   const isLinkValid = linkValue.startsWith('https://') && linkValue.length >= 16;
   const isQuantityValid = quantity >= 100;
-  
+
   if (isLinkValid && isQuantityValid) {
       couponSection.classList.remove('hidden');
   } else {
@@ -1182,9 +1457,9 @@ function validateCoupon() {
   const couponInput = document.getElementById('couponInput');
   const couponValidationMessage = document.getElementById('couponValidationMessage');
   if (!couponInput || !couponValidationMessage) return;
-  
+
   const couponValue = couponInput.value.trim();
-  
+
   if (couponValue === '') {
       // No validation message when field is empty
       couponValidationMessage.style.display = 'none';
@@ -1196,7 +1471,7 @@ function validateCoupon() {
       couponValidationMessage.textContent = 'Invalid coupon code. Please check and try again.';
       couponValidationMessage.className = 'validation-message error';
   }
-  
+
   updatePlaceOrderButtonState();
 }
 function toggleDarkMode() {
@@ -1233,68 +1508,68 @@ function updateRemainingText(language, langContent) {
             text.textContent = langContent.selectPackage;
         }
     });
-    
+
     // Update input placeholders
     const searchInput = document.getElementById('searchService');
     if (searchInput) {
         searchInput.placeholder = langContent.searchService;
     }
-    
+
     const linkInput = document.getElementById('linkInput');
     if (linkInput) {
         linkInput.placeholder = language === 'hindi' ? 'https://instagram.com/उपयोगकर्ता नाम' : 'https://instagram.com/username';
     }
-    
+
     const quantityInput = document.getElementById('quantityInput');
     if (quantityInput) {
         quantityInput.placeholder = language === 'hindi' ? '100' : '100';
     }
-    
+
     const couponInput = document.getElementById('couponInput');
     if (couponInput) {
         couponInput.placeholder = language === 'hindi' ? 'कूपन कोड दर्ज करें' : 'Enter coupon code';
     }
-    
+
     // Update amount input
     const amountInput = document.getElementById('addFundsAmountInput');
     if (amountInput) {
         amountInput.placeholder = language === 'hindi' ? 'राशि दर्ज करें (न्यूनतम: ₹100)' : 'Enter amount (Min: ₹100)';
     }
-    
+
     // Update validation messages
     const quantityInfo = document.querySelector('.quantity-info');
     if (quantityInfo) {
         quantityInfo.textContent = language === 'hindi' ? 'न्यूनतम: 100 - अधिकतम: 1000000' : 'Min: 100 - Max: 1000000';
     }
-    
+
     const amountNote = document.querySelector('.amount-note');
     if (amountNote) {
         amountNote.textContent = language === 'hindi' ? 'न्यूनतम: ₹100 | अधिकतम: ₹100,000' : 'Minimum: ₹100 | Maximum: ₹100,000';
     }
-    
+
     // Update stats card
     const statsHeading = document.querySelector('.stats-card h3');
     if (statsHeading && statsHeading.textContent.includes('TOTAL ORDERS')) {
         statsHeading.textContent = language === 'hindi' ? 'INDIASOCIALPANEL.IN पर कुल ऑर्डर' : 'TOTAL ORDERS AT INDIASOCIALPANEL.IN';
     }
-    
+
     const statsDescription = document.querySelector('.stats-card p');
     if (statsDescription && statsDescription.textContent.includes('3+ years experience')) {
         statsDescription.textContent = language === 'hindi' ? 'एसएमएम सेवाएं प्रदान करने में 3+ वर्षों का अनुभव!' : '3+ years experience providing SMM services!';
     }
-    
+
     // Update warning texts
     const warningIcon = document.querySelector('.warning-icon');
     if (warningIcon && warningIcon.textContent.includes('Please Read')) {
         warningIcon.textContent = language === 'hindi' ? '⚠️ कृपया ऑर्डर करने से पहले पढ़ें' : '⚠️ Please Read Before Ordering';
     }
-    
+
     // Update balance error
     const balanceError = document.querySelector('.balance-error');
     if (balanceError && balanceError.textContent.includes('Houston we have problem')) {
         balanceError.textContent = language === 'hindi' ? '😭 समस्या है! बैलेंस में पर्याप्त फंड नहीं हैं' : '😭 Houston we have problem! And its... Not enough funds on balance';
     }
-    
+
     // Update must read section
     const mustReadItems = document.querySelectorAll('.must-read li');
     const hindiMustRead = [
@@ -1306,7 +1581,7 @@ function updateRemainingText(language, langContent) {
         '📚 उपयोगकर्ता गाइड पढ़ें ➤ यहां क्लिक करें',
         '📱 अन्य सेवाएं देखें ➤ यहां क्लिक करें'
     ];
-    
+
     const englishMustRead = [
         'Read description before adding an order.',
         'Do not place a second order on the same link before completion.',
@@ -1316,7 +1591,7 @@ function updateRemainingText(language, langContent) {
         '📚 Read User Guide ➤ Click Here',
         '📱 Check Other Services ➤ Click Here'
     ];
-    
+
     mustReadItems.forEach((item, index) => {
         if (index < (language === 'hindi' ? hindiMustRead : englishMustRead).length) {
             const link = item.querySelector('a');
@@ -1330,7 +1605,7 @@ function updateRemainingText(language, langContent) {
 function initializeLanguageSystem() {
     // Get saved language preference or default to English
     const savedLanguage = localStorage.getItem('preferredLanguage') || 'english';
-    
+
     // Set the language select dropdown to the saved/default language
     const languageSelect = document.getElementById('languageSelect');
     if (languageSelect) {
@@ -1339,7 +1614,7 @@ function initializeLanguageSystem() {
             updateLanguage(this.value);
         });
     }
-    
+
     // Apply the language immediately
     updateLanguage(savedLanguage);
 }
@@ -1477,9 +1752,9 @@ function updatePlaceOrderButtonState() {
   const couponInput = document.getElementById('couponInput');
   const termsCheckbox = document.getElementById('termsCheckbox');
   const placeOrderBtn = document.getElementById('placeOrderBtn');
-  
+
   if (!placeOrderBtn) return;
-  
+
   const linkValue = linkInput ? linkInput.value.trim() : '';
   const quantity = quantityInput ? parseInt(quantityInput.value.trim()) || 0 : 0;
   const couponValue = couponInput ? couponInput.value.trim() : '';
@@ -1488,11 +1763,11 @@ function updatePlaceOrderButtonState() {
   const isLinkValid = linkValue.startsWith('https://') && linkValue.length >= 16;
   const isQuantityValid = quantity >= 100 && quantity <= 1000000;
   const isTermsAccepted = termsCheckbox ? termsCheckbox.checked : false;
-  
+
   // Coupon is valid if it's empty (optional) or if no validation error is shown
   const couponValidationMessage = document.getElementById('couponValidationMessage');
   const isCouponValid = couponValue === '' || (couponValidationMessage && couponValidationMessage.style.display === 'none');
-  
+
   // Enable button only if ALL conditions are met
   const allValid = isServiceSelected && isPackageSelected && isLinkValid && isQuantityValid && isCouponValid && isTermsAccepted;
   placeOrderBtn.disabled = !allValid;
@@ -1503,17 +1778,17 @@ function generateUniqueOrderId() {
   const timestamp = Date.now().toString();
   const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase();
   const moreRandomChars = Math.random().toString(36).substring(2, 6).toUpperCase();
-  
+
   // Create a unique ID: ISP + last 6 digits of timestamp + 8 random alphanumeric characters
   const orderId = 'ISP' + timestamp.slice(-6) + randomChars + moreRandomChars.slice(0, 2);
-  
+
   // Ensure uniqueness by checking against existing orders
   const existingIds = orderHistory.map(order => order.id);
   if (existingIds.includes(orderId)) {
       // If somehow duplicate (very unlikely), add more randomness
       return 'ISP' + timestamp.slice(-6) + Math.random().toString(36).substring(2, 10).toUpperCase();
   }
-  
+
   return orderId;
 }
 
@@ -1535,67 +1810,67 @@ function createEnhancedTimer(timerId, duration, onUpdate, onComplete) {
   const timerContainer = document.createElement('div');
   timerContainer.className = 'timer-container-fixed';
   timerContainer.id = `${timerId}-container`;
-  
+
   // Create timer label
   const timerLabel = document.createElement('div');
   timerLabel.className = 'timer-label';
   timerLabel.textContent = 'Session Expires In';
-  
+
   // Create progress container
   const progressContainer = document.createElement('div');
   progressContainer.className = 'timer-progress-container';
   const progressFill = document.createElement('div');
   progressFill.className = 'timer-progress-fill';
   progressContainer.appendChild(progressFill);
-  
+
   // Remove timer from original position and add to fixed container
   const originalParent = timerElement.parentNode;
   timerContainer.appendChild(timerLabel);
   timerContainer.appendChild(timerElement);
   timerContainer.appendChild(progressContainer);
-  
+
   // Add to body for fixed positioning
   document.body.appendChild(timerContainer);
 
   // Initialize timer display
   updateTimerDisplay(timerElement, timeLeft);
-  
+
   // Set initial animation state
   timerElement.className = 'timer-normal';
 
   // Main timer interval
   timerInstances[timerId] = setInterval(() => {
       timeLeft--;
-      
+
       // Update display with enhanced animation
       updateEnhancedTimerDisplay(timerElement, timeLeft);
-      
+
       // Update progress bar with smooth animation
       const progressPercent = (timeLeft / totalDuration) * 100;
       progressFill.style.width = progressPercent + '%';
-      
+
       // Update progress bar color based on time left
       updateProgressBarColor(progressFill, timeLeft, totalDuration);
-      
+
       // Change container animation based on time left
       updateTimerContainerState(timerContainer, timeLeft, totalDuration);
-      
+
       // Create enhanced visual effects
       if (Math.random() < 0.15) {
           createEnhancedFloatingEffect(timerContainer, timeLeft);
       }
-      
+
       // Callback for updates
       if (onUpdate) onUpdate(timeLeft);
-      
+
       // Timer completed
       if (timeLeft <= 0) {
           clearInterval(timerInstances[timerId]);
           clearInterval(timerAnimationIntervals[timerId]);
-          
+
           // Enhanced completion animation
           timerContainer.style.animation = 'timerExpired 1s ease-in-out';
-          
+
           setTimeout(() => {
               // Remove fixed timer
               if (timerContainer && timerContainer.parentElement) {
@@ -1618,12 +1893,12 @@ function updateEnhancedTimerDisplay(element, seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   const newTimeString = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  
+
   if (element.textContent !== newTimeString) {
       // Enhanced digit change animation
       element.style.transform = 'scale(1.1)';
       element.style.filter = 'brightness(1.3)';
-      
+
       setTimeout(() => {
           element.textContent = newTimeString;
           element.style.transform = 'scale(1)';
@@ -1634,7 +1909,7 @@ function updateEnhancedTimerDisplay(element, seconds) {
 
 function updateProgressBarColor(progressFill, timeLeft, totalDuration) {
   const percentageLeft = (timeLeft / totalDuration) * 100;
-  
+
   if (percentageLeft > 50) {
       progressFill.style.background = 'linear-gradient(90deg, #28a745, #20c997)';
       progressFill.style.boxShadow = '0 0 20px rgba(40, 167, 69, 0.5)';
@@ -1652,10 +1927,10 @@ function updateProgressBarColor(progressFill, timeLeft, totalDuration) {
 
 function updateTimerContainerState(container, timeLeft, totalDuration) {
   const percentageLeft = (timeLeft / totalDuration) * 100;
-  
+
   // Remove all state classes
   container.classList.remove('timer-warning', 'timer-danger', 'timer-critical');
-  
+
   if (percentageLeft <= 10) {
       container.classList.add('timer-critical');
       container.style.animation = 'backgroundPulse 1s infinite ease-in-out, timerGlow 1.5s infinite ease-in-out';
@@ -1673,7 +1948,7 @@ function updateTimerContainerState(container, timeLeft, totalDuration) {
 function createEnhancedFloatingEffect(container, timeLeft) {
   const effects = ['⭐', '✨', '💫', '🔥', '⚡'];
   const effect = effects[Math.floor(Math.random() * effects.length)];
-  
+
   const floatingElement = document.createElement('div');
   floatingElement.textContent = effect;
   floatingElement.style.cssText = `
@@ -1686,9 +1961,9 @@ function createEnhancedFloatingEffect(container, timeLeft) {
       left: ${Math.random() * 50}%;
       color: rgba(255,255,255,0.9);
   `;
-  
+
   container.appendChild(floatingElement);
-  
+
   setTimeout(() => {
       if (floatingElement.parentNode) {
           floatingElement.parentNode.removeChild(floatingElement);
@@ -1712,9 +1987,9 @@ function addEnhancedTimerEffects(container, timeLeft) {
           pointer-events: none;
           z-index: -1;
       `;
-      
+
       container.appendChild(glowEffect);
-      
+
       setTimeout(() => {
           if (glowEffect.parentNode) {
               glowEffect.parentNode.removeChild(glowEffect);
@@ -1760,11 +2035,11 @@ function updateTimerDisplayAnimated(element, seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   const newTimeString = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  
+
   if (element.textContent !== newTimeString) {
       // Add digit change animation
       element.classList.add('changing');
-      
+
       setTimeout(() => {
           element.textContent = newTimeString;
           element.classList.remove('changing');
@@ -1774,10 +2049,10 @@ function updateTimerDisplayAnimated(element, seconds) {
 
 function updateTimerAnimationState(element, timeLeft, totalDuration) {
   const percentageLeft = (timeLeft / totalDuration) * 100;
-  
+
   // Remove all timer state classes
   element.classList.remove('timer-normal', 'timer-warning', 'timer-danger', 'timer-critical');
-  
+
   if (percentageLeft > 50) {
       element.classList.add('timer-normal');
   } else if (percentageLeft > 25) {
@@ -1793,16 +2068,16 @@ function createFloatingNumber(container, number) {
   const floatingNum = document.createElement('div');
   floatingNum.className = 'floating-number';
   floatingNum.textContent = number;
-  
+
   // Random position around timer
   const randomX = Math.random() * 100 - 50;
   const randomY = Math.random() * 20 - 10;
-  
+
   floatingNum.style.left = `calc(50% + ${randomX}px)`;
   floatingNum.style.top = `calc(50% + ${randomY}px)`;
-  
+
   container.appendChild(floatingNum);
-  
+
   // Remove after animation
   setTimeout(() => {
       if (floatingNum.parentNode) {
@@ -1820,16 +2095,16 @@ function addTimerSparkles(container) {
           sparkle.style.fontSize = '12px';
           sparkle.style.pointerEvents = 'none';
           sparkle.style.zIndex = '1001';
-          
+
           const randomX = Math.random() * container.offsetWidth;
           const randomY = Math.random() * container.offsetHeight;
-          
+
           sparkle.style.left = randomX + 'px';
           sparkle.style.top = randomY + 'px';
           sparkle.style.animation = 'floatingNumbers 1.5s ease-out';
-          
+
           container.appendChild(sparkle);
-          
+
           setTimeout(() => {
               if (sparkle.parentNode) {
                   sparkle.parentNode.removeChild(sparkle);
@@ -1845,7 +2120,7 @@ function cleanupTimer(timerId) {
       clearInterval(timerInstances[timerId]);
       delete timerInstances[timerId];
   }
-  
+
   if (timerAnimationIntervals[timerId]) {
       clearInterval(timerAnimationIntervals[timerId]);
       delete timerAnimationIntervals[timerId];
@@ -1858,18 +2133,18 @@ function handlePlaceOrder() {
   const termsCheckbox = document.getElementById('termsCheckbox');
   const errorMessage = document.getElementById('errorMessage');
   const placeOrderBtn = document.getElementById('placeOrderBtn');
-  
+
   // If button is disabled, don't proceed
   if (placeOrderBtn && placeOrderBtn.disabled) {
       return;
   }
-  
+
   const isServiceSelected = selectedService !== '';
   const isPackageSelected = selectedPackage !== null;
   const linkValue = linkInput ? linkInput.value.trim() : '';
   const quantity = quantityInput ? parseInt(quantityInput.value.trim()) || 0 : 0;
   const isTermsAccepted = termsCheckbox && termsCheckbox.checked;
-  
+
   // Final validation checks with specific error messages
   if (!isServiceSelected) {
       showNotification('Please select a service first!', 'error');
@@ -1895,16 +2170,16 @@ function handlePlaceOrder() {
       showNotification('Please accept Terms & Conditions!', 'error');
       return;
   }
-  
+
   if (errorMessage) {
       errorMessage.classList.add('hidden');
   }
-  
+
   // Generate unique Order ID
   const orderId = generateUniqueOrderId();
   const totalPrice = selectedPackage.priceType === 'per_k' ? 
       (selectedPackage.price * quantity) / 1000 : selectedPackage.price;
-  
+
   const order = {
       id: orderId,
       serviceId: selectedPackage.id,
@@ -1916,16 +2191,16 @@ function handlePlaceOrder() {
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString()
   };
-  
+
   currentOrder = order;
   orderHistory.push(order);
   profileStats.totalOrders = orderHistory.length;
   profileStats.totalSpent += totalPrice;
-  
+
   sendOrderNotificationEmail(order);
   updateProfileStats();
   updateOrderHistoryPage();
-  
+
   showNotification(`🎉 Order ${order.id} placed successfully! Admin will be notified via email.`, 'success');
   showPaymentPage(order);
   clearOrderForm();
@@ -1969,7 +2244,7 @@ function clearOrderForm() {
 function updateOrderHistoryPage() {
   const orderHistoryContent = document.getElementById('orderHistoryContent');
   if (!orderHistoryContent) return;
-  
+
   if (orderHistory.length === 0) {
       orderHistoryContent.innerHTML = `
           <div class="empty-state">
@@ -1987,7 +2262,7 @@ function updateOrderHistoryPage() {
       const processingOrders = orderHistory.filter(order => order.status === 'Processing').length;
       const completedOrders = orderHistory.filter(order => order.status === 'Completed').length;
       const totalSpent = orderHistory.reduce((sum, order) => sum + order.price, 0);
-      
+
       orderHistoryContent.innerHTML = `
           <!-- Enhanced Order Filters and Search -->
           <div class="order-filters-enhanced">
@@ -2003,7 +2278,7 @@ function updateOrderHistoryPage() {
                       <i class="fas fa-times"></i> Clear
                   </button>
               </div>
-              
+
               <div class="order-filters-row">
                   <select class="filter-select-enhanced" id="orderStatusFilter" onchange="filterOrders()">
                       <option value="">All Status / सभी स्थिति</option>
@@ -2011,7 +2286,7 @@ function updateOrderHistoryPage() {
                       <option value="Completed">Completed / पूर्ण</option>
                       <option value="Cancelled">Cancelled / रद्द</option>
                   </select>
-                  
+
                   <select class="filter-select-enhanced" id="orderServiceFilter" onchange="filterOrders()">
                       <option value="">All Services / सभी सेवाएं</option>
                       <option value="Instagram">Instagram Services</option>
@@ -2020,7 +2295,7 @@ function updateOrderHistoryPage() {
                       <option value="WhatsApp">WhatsApp Services</option>
                       <option value="Twitter">Twitter Services</option>
                   </select>
-                  
+
                   <select class="filter-select-enhanced" id="orderSortFilter" onchange="filterOrders()">
                       <option value="newest">Newest First / नवीनतम पहले</option>
                       <option value="oldest">Oldest First / पुराने पहले</option>
@@ -2029,7 +2304,7 @@ function updateOrderHistoryPage() {
                   </select>
               </div>
           </div>
-          
+
           <!-- Order Statistics Summary -->
           <div class="order-stats-summary">
               <div class="order-stat-item">
@@ -2049,13 +2324,13 @@ function updateOrderHistoryPage() {
                   <div class="order-stat-label">Total Spent</div>
               </div>
           </div>
-          
+
           <!-- Orders List -->
           <div class="orders-list" id="ordersList">
               ${renderOrderItems(orderHistory)}
           </div>
       `;
-      
+
       // Initialize filters
       setupOrderFilters();
   }
@@ -2076,7 +2351,7 @@ function renderOrderItems(orders) {
                   <div class="order-amount-display">₹${order.price.toFixed(2)}</div>
               </div>
           </div>
-          
+
           <!-- Compact Order Details -->
           <div class="order-details-compact">
               <div class="order-detail-compact">
@@ -2096,7 +2371,7 @@ function renderOrderItems(orders) {
                   </div>
               </div>
           </div>
-          
+
           <!-- Full-width Target Link -->
           <div class="order-link-section">
               <div class="order-detail-label">
@@ -2104,7 +2379,7 @@ function renderOrderItems(orders) {
               </div>
               <a href="${order.link}" target="_blank" class="link-detail-value">${order.link}</a>
           </div>
-          
+
           <!-- Compact Progress Section -->
           <div class="progress-section-compact">
               <div class="progress-header">
@@ -2137,9 +2412,9 @@ function filterOrders() {
   const statusFilter = document.getElementById('orderStatusFilter')?.value || '';
   const serviceFilter = document.getElementById('orderServiceFilter')?.value || '';
   const sortFilter = document.getElementById('orderSortFilter')?.value || 'newest';
-  
+
   let filteredOrders = [...(window.originalOrderHistory || orderHistory)];
-  
+
   // Apply search filter
   if (searchTerm) {
       filteredOrders = filteredOrders.filter(order => {
@@ -2148,18 +2423,18 @@ function filterOrders() {
                  order.link.toLowerCase().includes(searchTerm);
       });
   }
-  
+
   // Apply status filter
   if (statusFilter) {
       filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
   }
-  
+
   // Apply service filter
   if (serviceFilter) {
       filteredOrders = filteredOrders.filter(order => 
           order.serviceName.toLowerCase().includes(serviceFilter.toLowerCase()));
   }
-  
+
   // Apply sorting
   switch(sortFilter) {
       case 'oldest':
@@ -2176,7 +2451,7 @@ function filterOrders() {
           filteredOrders.sort((a, b) => new Date(b.date + ' ' + b.time) - new Date(a.date + ' ' + a.time));
           break;
   }
-  
+
   // Update the orders list
   const ordersList = document.getElementById('ordersList');
   if (ordersList) {
@@ -2200,12 +2475,12 @@ function clearOrderSearch() {
   const statusFilter = document.getElementById('orderStatusFilter');
   const serviceFilter = document.getElementById('orderServiceFilter');
   const sortFilter = document.getElementById('orderSortFilter');
-  
+
   if (searchInput) searchInput.value = '';
   if (statusFilter) statusFilter.value = '';
   if (serviceFilter) serviceFilter.value = '';
   if (sortFilter) sortFilter.value = 'newest';
-  
+
   filterOrders();
 }
 function populatePackages(service) {
@@ -2489,6 +2764,9 @@ function closeSideNav() {
   }
 }
 function showPage(pageId) {
+  // Clear any running timers when changing pages for better performance
+  clearAllTimers();
+  
   const pages = document.querySelectorAll('.page');
   pages.forEach(page => page.classList.remove('active'));
   const targetPage = document.getElementById(pageId);
@@ -2503,22 +2781,28 @@ function showPage(pageId) {
       showPage('orderHistoryPage');
       return;
   }
+  
+  // Close side navigation when showing a page
+  closeSideNav();
+  
+  // Force enable scrolling and scroll to top
+  forceEnableScrolling();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function updateRefillHistoryPage() {
   const refillContent = document.querySelector('#refillHistoryPage .refill-content');
   if (refillContent) {
       const hasOrders = orderHistory.length > 0;
-      
+
       // Check for legitimate refills - only count actual service drops that required refills
       const legitimateRefills = orderHistory.filter(order => {
           // In a real scenario, this would check if the order had significant drops (>10%)
           // and if a refill was actually provided. For now, we assume no legitimate refills exist.
           return false; // No legitimate refills have occurred yet
       });
-      
+
       const hasLegitimateRefills = legitimateRefills.length > 0;
-      
+
       if (!hasOrders) {
           // No orders placed yet - show informational content
           refillContent.innerHTML = `
@@ -2799,26 +3083,26 @@ function validateAddFundsAmount() {
   const amountInput = document.getElementById('addFundsAmountInput');
   const addFundsBtn = document.getElementById('dynamicAddFundsBtn');
   const googlePayBtn = document.getElementById('googlePayUPIBtn');
-  
+
   if (!amountInput || !addFundsBtn) return;
-  
+
   const amount = parseFloat(amountInput.value) || 0;
   const isValidAmount = amount >= 100 && amount <= 100000;
-  
+
   if (isValidAmount) {
     // Enable buttons
     addFundsBtn.disabled = false;
     addFundsBtn.style.opacity = '1';
     addFundsBtn.style.cursor = 'pointer';
     addFundsBtn.classList.add('active');
-    
+
     if (googlePayBtn) {
       googlePayBtn.disabled = false;
       googlePayBtn.style.opacity = '1';
       googlePayBtn.style.cursor = 'pointer';
       googlePayBtn.classList.add('active');
     }
-    
+
     // Update input styling
     amountInput.classList.add('valid');
     amountInput.classList.remove('invalid');
@@ -2828,14 +3112,14 @@ function validateAddFundsAmount() {
     addFundsBtn.style.opacity = '0.6';
     addFundsBtn.style.cursor = 'not-allowed';
     addFundsBtn.classList.remove('active');
-    
+
     if (googlePayBtn) {
       googlePayBtn.disabled = true;
       googlePayBtn.style.opacity = '0.6';
       googlePayBtn.style.cursor = 'not-allowed';
       googlePayBtn.classList.remove('active');
     }
-    
+
     // Update input styling
     amountInput.classList.remove('valid');
     if (amountInput.value) {
@@ -2847,12 +3131,12 @@ function validateAddFundsAmount() {
 // Show Add Funds Payment Options
 function showAddFundsPaymentOptions() {
   const amount = parseFloat(document.getElementById('addFundsAmountInput').value) || 0;
-  
+
   if (amount < 100 || amount > 100000) {
     showNotification('Please enter amount between ₹100 - ₹100,000', 'error');
     return;
   }
-  
+
   // Create modal with two options
   const modal = document.createElement('div');
   modal.id = 'addFundsOptionsModal';
@@ -2869,7 +3153,7 @@ function showAddFundsPaymentOptions() {
     justify-content: center;
     padding: 20px;
   `;
-  
+
   modal.innerHTML = `
     <div style="
       background: white;
@@ -2882,7 +3166,7 @@ function showAddFundsPaymentOptions() {
     ">
       <h2 style="margin-bottom: 10px; color: #333;">💰 Add ₹${amount.toFixed(2)}</h2>
       <p style="color: #666; margin-bottom: 30px;">Choose your payment method</p>
-      
+
       <div style="display: grid; gap: 15px; margin-bottom: 25px;">
         <button onclick="showAddFundsQRCode(${amount})" style="
           padding: 15px 20px;
@@ -2902,7 +3186,7 @@ function showAddFundsPaymentOptions() {
           <i class="fas fa-qrcode"></i>
           Pay via QR Code
         </button>
-        
+
         <button onclick="openAddFundsUPIApp(${amount})" style="
           padding: 15px 20px;
           background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
@@ -2922,7 +3206,7 @@ function showAddFundsPaymentOptions() {
           Open UPI App
         </button>
       </div>
-      
+
       <button onclick="closeAddFundsModal()" style="
         background: #dc3545;
         color: white;
@@ -2935,9 +3219,9 @@ function showAddFundsPaymentOptions() {
       " onmouseover="this.style.background='#c82333'" onmouseout="this.style.background='#dc3545'">Cancel Transaction</button>
     </div>
   `;
-  
+
   document.body.appendChild(modal);
-  
+
   // Add event listener to close on overlay click
   modal.addEventListener('click', function(e) {
     if (e.target === modal) {
@@ -2949,12 +3233,12 @@ function showAddFundsPaymentOptions() {
 // Show QR Code for Add Funds
 function showAddFundsQRCode(amount) {
   closeAddFundsModal();
-  
+
   // Generate unique Order ID for Add Funds
   const timestamp = Date.now().toString();
   const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase();
   const addFundsOrderId = 'ADD' + timestamp.slice(-6) + randomChars.slice(0, 4);
-  
+
   // Create Add Funds specific QR modal
   const qrModal = document.createElement('div');
   qrModal.id = 'addFundsQRModal';
@@ -2968,7 +3252,7 @@ function showAddFundsQRCode(amount) {
       z-index: 10001;
       overflow-y: auto;
   `;
-  
+
   qrModal.innerHTML = `
       <div style="
           min-height: 100vh;
@@ -2998,7 +3282,7 @@ function showAddFundsQRCode(amount) {
                   color: #6c757d;
               ">Add Funds - QR Payment</div>
           </div>
-          
+
           <!-- Main Content -->
           <div style="
               padding: 20px;
@@ -3092,16 +3376,16 @@ function showAddFundsQRCode(amount) {
           </div>
       </div>
   `;
-  
+
   document.body.appendChild(qrModal);
-  
+
   window.generateAddFundsQR = function(amount) {
       const qrContainer = document.getElementById('addFundsQrCodeContainer');
       if (qrContainer) {
           const upiID = 'kavita.5049-49@waicici';
           const note = `Add Funds - India Social Panel`;
           const upiString = `upi://pay?pa=${upiID}&am=${amount.toFixed(2)}&tn=${encodeURIComponent(note)}&cu=INR`;
-          
+
           qrContainer.innerHTML = `
               <div style="
                   width: 100%;
@@ -3122,11 +3406,11 @@ function showAddFundsQRCode(amount) {
                   alt="Add Funds QR Code" />
               </div>
           `;
-          
+
           showNotification('✅ QR Code generated! Scan to add funds', 'success');
       }
   };
-  
+
   window.closeAddFundsQRModal = function() {
       if (qrModal && qrModal.parentElement) {
           document.body.removeChild(qrModal);
@@ -3138,7 +3422,7 @@ function showAddFundsQRCode(amount) {
 // Open UPI App for Add Funds
 function openAddFundsUPIApp(amount) {
   closeAddFundsModal();
-  
+
   const upiID = 'kavita.5049-49@waicici';
   const note = `Add Funds - India Social Panel`;
   const upiUrl = `upi://pay?pa=${upiID}&am=${amount.toFixed(2)}&tn=${encodeURIComponent(note)}&cu=INR
@@ -3150,26 +3434,26 @@ function validateAddFundsAmount() {
   const amountInput = document.getElementById('addFundsAmountInput');
   const addFundsBtn = document.getElementById('dynamicAddFundsBtn');
   const googlePayBtn = document.getElementById('googlePayUPIBtn');
-  
+
   if (!amountInput || !addFundsBtn) return;
-  
+
   const amount = parseFloat(amountInput.value) || 0;
   const isValidAmount = amount >= 100 && amount <= 100000;
-  
+
   if (isValidAmount) {
     // Enable buttons
     addFundsBtn.disabled = false;
     addFundsBtn.style.opacity = '1';
     addFundsBtn.style.cursor = 'pointer';
     addFundsBtn.classList.add('active');
-    
+
     if (googlePayBtn) {
       googlePayBtn.disabled = false;
       googlePayBtn.style.opacity = '1';
       googlePayBtn.style.cursor = 'pointer';
       googlePayBtn.classList.add('active');
     }
-    
+
     // Update input styling
     amountInput.classList.add('valid');
     amountInput.classList.remove('invalid');
@@ -3179,14 +3463,14 @@ function validateAddFundsAmount() {
     addFundsBtn.style.opacity = '0.6';
     addFundsBtn.style.cursor = 'not-allowed';
     addFundsBtn.classList.remove('active');
-    
+
     if (googlePayBtn) {
       googlePayBtn.disabled = true;
       googlePayBtn.style.opacity = '0.6';
       googlePayBtn.style.cursor = 'not-allowed';
       googlePayBtn.classList.remove('active');
     }
-    
+
     // Update input styling
     amountInput.classList.remove('valid');
     if (amountInput.value) {
@@ -3198,14 +3482,14 @@ function validateAddFundsAmount() {
 function openUPIAppGeneral() {
   const amountInput = document.getElementById('addFundsAmountInput');
   const amount = parseFloat(amountInput.value) || 0;
-  
+
   if (amount >= 100 && amount <= 100000) {
     openAddFundsUPIApp(amount);
   } else {
     const upiID = 'kavita.5049-49@waicici';
-    const note = `Add Funds - India Social Panel`;
-    const upiUrl = `upi://pay?pa=${upiID}&tn=${encodeURIComponent(note)}&cu=INR`;
-    
+    const note = 'Add Funds - India Social Panel';
+    const upiUrl = 'upi://pay?pa=' + upiID + '&tn=' + encodeURIComponent(note) + '&cu=INR';
+
     window.location.href = upiUrl;
     // Removed payment success notification
   }
@@ -3217,7 +3501,7 @@ function setQuickAmount(amount) {
   if (amountInput) {
     amountInput.value = amount;
     validateAddFundsAmount();
-    
+
     // Update visual state of quick amount buttons
     document.querySelectorAll('.quick-amount-btn').forEach(btn => {
       btn.classList.remove('selected');
@@ -3225,12 +3509,14 @@ function setQuickAmount(amount) {
     event.target.classList.add('selected');
   }
 }
+// Make function globally accessible
+window.setQuickAmount = setQuickAmount;
 
 // UPI payment function
 function proceedWithUPI() {
   const amountInput = document.getElementById('addFundsAmountInput');
   const amount = parseFloat(amountInput.value) || 0;
-  
+
   if (amount >= 100 && amount <= 100000) {
     showAddFundsPaymentOptions();
   } else {
@@ -3241,7 +3527,7 @@ function proceedWithUPI() {
 
 // Coming soon notification
 function showComingSoon(method) {
-  showNotification(`${method} will be available soon! Use UPI for instant deposits.`, 'info');
+  showNotification(method + ' will be available soon! Use UPI for instant deposits.', 'info');
 }
 
 // Close Add Funds Modal
@@ -3253,6 +3539,8 @@ function closeAddFundsModal() {
   // Simply go back to Add Funds page, no confirmation needed
   showPage('addFundsPage');
 }
+// Make function globally accessible
+window.closeAddFundsModal = closeAddFundsModal;
 
 // Add missing close modal functions for payment
 function closePaymentModal() {
@@ -3353,25 +3641,23 @@ function openAISupport() {
 function initializeAIChat() {
   const chatMessages = document.getElementById('chatMessages');
   if (chatMessages && chatMessages.children.length <= 1) {
-      const welcomeMessage = `
-          <div class="message ai-message">
-              <div class="message-avatar">
-                  <i class="fas fa-robot"></i>
-              </div>
-              <div class="message-content">
-                  <p>Hello! 👋 I'm India Social Panel's AI Assistant. I can help you with SMM services, orders, payments and other queries.</p>
-                  <div class="quick-questions">
-                      <h4>Quick Questions:</h4>
-                      <button class="quick-btn" onclick="askQuickQuestion('How to place an order?')">How to place an order?</button>
-                      <button class="quick-btn" onclick="askQuickQuestion('What payment methods do you accept?')">Payment methods?</button>
-                      <button class="quick-btn" onclick="askQuickQuestion('How to check order status?')">Order status?</button>
-                      <button class="quick-btn" onclick="askQuickQuestion('What is API?')">API information?</button>
-                      <button class="quick-btn" onclick="askQuickQuestion('Instagram followers price?')">Instagram pricing?</button>
-                      <button class="quick-btn" onclick="askQuickQuestion('YouTube monetization cost?')">YouTube monetization?</button>
-                  </div>
-              </div>
-          </div>
-      `;
+      const welcomeMessage = '<div class="message ai-message">' +
+          '<div class="message-avatar">' +
+              '<i class="fas fa-robot"></i>' +
+          '</div>' +
+          '<div class="message-content">' +
+              '<p>Hello! 👋 I\'m India Social Panel\'s AI Assistant. I can help you with SMM services, orders, payments and other queries.</p>' +
+              '<div class="quick-questions">' +
+                  '<h4>Quick Questions:</h4>' +
+                  '<button class="quick-btn" onclick="askQuickQuestion(\'How to place an order?\')">How to place an order?</button>' +
+                  '<button class="quick-btn" onclick="askQuickQuestion(\'What payment methods do you accept?\')">Payment methods?</button>' +
+                  '<button class="quick-btn" onclick="askQuickQuestion(\'How to check order status?\')">Order status?</button>' +
+                  '<button class="quick-btn" onclick="askQuickQuestion(\'What is API?\')">API information?</button>' +
+                  '<button class="quick-btn" onclick="askQuickQuestion(\'Instagram followers price?\')">Instagram pricing?</button>' +
+                  '<button class="quick-btn" onclick="askQuickQuestion(\'YouTube monetization cost?\')">YouTube monetization?</button>' +
+              '</div>' +
+          '</div>' +
+      '</div>';
       chatMessages.innerHTML = welcomeMessage;
   }
 }
@@ -3412,7 +3698,7 @@ function addMessageToChat(sender, message) {
   const chatMessages = document.getElementById('chatMessages');
   if (!chatMessages) return;
   const messageDiv = document.createElement('div');
-  messageDiv.className = `message ${sender}-message`;
+  messageDiv.className = 'message ' + sender + '-message';
   const avatar = document.createElement('div');
   avatar.className = 'message-avatar';
   avatar.innerHTML = sender === 'ai' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
@@ -3496,21 +3782,64 @@ document.addEventListener('click', function(e) {
 function showPaymentPage(order) {
   const paymentModal = document.createElement('div');
   paymentModal.id = 'paymentModal';
-  paymentModal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.8);
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      overflow-y: auto;
-  `;
-  paymentModal.innerHTML = `
+  paymentModal.style.cssText = 
+      'position: fixed;' +
+      'top: 0;' +
+      'left: 0;' +
+      'right: 0;' +
+      'bottom: 0;' +
+      'background: rgba(0,0,0,0.8);' +
+      'z-index: 10000;' +
+      'display: flex;' +
+      'align-items: center;' +
+      'justify-content: center;' +
+      'padding: 10px;' +
+      'overflow-y: auto;';
+
+  paymentModal.innerHTML = '<div class="payment-container" style="width: 100%; max-width: 450px; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin: auto; max-height: 95vh; overflow-y: auto;">' +
+      '<div class="payment-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; text-align: center;">' +
+          '<h1 style="font-size: 22px; margin-bottom: 8px;">🎉 Order Placed Successfully!</h1>' +
+          '<p style="margin: 0;">Complete your payment to activate the order</p>' +
+          '<div class="order-id" style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: 600; margin-top: 10px; font-size: 14px;">Order ID: ' + order.id + '</div>' +
+      '</div>' +
+      '<div class="order-summary" style="background: #f8f9fa; padding: 20px; border-bottom: 1px solid #e9ecef;">' +
+          '<h3 style="margin-bottom: 15px; color: #333; font-size: 16px;">📋 Order Summary / ऑर्डर विवरण</h3>' +
+          '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;"><span>Order ID / ऑर्डर ID:</span><strong style="color: #667eea;">#' + order.id + '</strong></div>' +
+          '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;"><span>Service / सेवा:</span><strong>' + order.serviceName + '</strong></div>' +
+          '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;"><span>Service ID:</span><strong>' + order.serviceId + '</strong></div>' +
+          '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;"><span>Target Link / लिंक:</span><strong style="word-break: break-all; font-size: 12px; color: #007bff;">' + order.link + '</strong></div>' +
+          '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;"><span>Quantity / मात्रा:</span><strong style="color: #28a745;">' + order.quantity.toLocaleString() + '</strong></div>' +
+          '<div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 6px 0; font-size: 14px;"><span>Charge / शुल्क:</span><strong style="color: #dc3545;">₹' + order.charge.toFixed(2) + '</strong></div>' +
+          '<div style="border-top: 2px solid #007bff; padding-top: 15px; margin-top: 15px; text-align: center;">' +
+              '<div style="font-size: 18px; font-weight: 700; color: #007bff;">💰 Total Amount / कुल राशि: ₹' + order.charge.toFixed(2) + '</div>' +
+          '</div>' +  
+      '</div>' +
+      '<div class="payment-methods" style="padding: 25px;">' +
+          '<h3 style="margin-bottom: 20px; color: #333; text-align: center; font-size: 18px;">💳 Choose Payment Method / भुगतान विधि चुनें</h3>' +
+          '<div class="payment-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">' +
+              '<button onclick="showUPIAppsPayment()" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px;">' +
+                  '<i class="fab fa-google-pay" style="font-size: 20px;"></i>' +
+                  'UPI Apps<br><small style="font-size: 12px; opacity: 0.9;">GPay, PhonePe, Paytm</small>' +
+              '</button>' +
+              '<button onclick="showQRCodePayment()" style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px;">' +
+                  '<i class="fas fa-qrcode" style="font-size: 20px;"></i>' +
+                  'QR Code<br><small style="font-size: 12px; opacity: 0.9;">Scan & Pay</small>' +
+              '</button>' +
+          '</div>' +
+          '<div class="payment-note" style="background: #e3f2fd; border-left: 4px solid #2196F3; padding: 15px; border-radius: 8px; margin-bottom: 20px;">' +
+              '<p style="margin: 0; font-size: 14px; color: #1565C0;"><strong>📌 Payment Instructions / भुगतान निर्देश:</strong></p>' +
+              '<ul style="margin: 10px 0 0 20px; font-size: 13px; color: #1565C0;">' +
+                  '<li>Complete payment within 10 minutes / 10 मिनट में भुगतान पूरा करें</li>' +
+                  '<li>Order will start automatically after payment / भुगतान के बाद ऑर्डर अपने आप शुरू हो जाएगा</li>' +
+                  '<li>Save screenshot of payment for reference / भुगतान का स्क्रीनशॉट संदर्भ के लिए सेव करें</li>' +
+              '</ul>' +
+          '</div>' +
+          '<div class="action-buttons" style="display: flex; gap: 12px; justify-content: space-between;">' +
+              '<button onclick="closePaymentModal()" style="background: #f44336; color: white; border: none; padding: 15px 25px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; flex: 1;">❌ Cancel Order</button>' +
+              '<button onclick="showQRCodePayment()" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); color: white; border: none; padding: 15px 25px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; flex: 2;">⚡ Quick Pay</button>' +
+          '</div>' +
+      '</div>' +
+  '</div>';
       <div class="payment-container" style="
           width: 100%;
           max-width: 450px;
@@ -3744,27 +4073,7 @@ function showPaymentPage(order) {
           </div>
       </div>
   `;
-  window.closePaymentModal = function() {
-      showCancelConfirmationPopup(() => {
-          if (paymentModal && paymentModal.parentElement) {
-              document.body.removeChild(paymentModal);
-          }
-          document.body.style.overflow = 'auto';
-          showPage('dashboardHome');
-      });
-  };
-  window.showUPIAppsPayment = function() {
-      showUPIAppsModal(order);
-  };
-  window.showQRCodePayment = function() {
-      showQRCodeModal(order);
-  };
-  window.showUPIIDPayment = function() {
-      showUPIIDModal(order);
-  };
-  window.showCardBankingPayment = function() {
-      showCardBankingModal(order);
-  };
+
   paymentModal.addEventListener('click', function(e) {
       if (e.target === paymentModal) {
           window.closePaymentModal();
@@ -3772,6 +4081,8 @@ function showPaymentPage(order) {
   });
   document.body.appendChild(paymentModal);
 }
+// Make function globally accessible
+window.showPaymentPage = showPaymentPage;
 function showCancelConfirmationPopup(onConfirm) {
   const confirmationModal = document.createElement('div');
   confirmationModal.id = 'cancelConfirmationModal';
@@ -3789,7 +4100,7 @@ function showCancelConfirmationPopup(onConfirm) {
     padding: 20px;
     animation: modalFadeIn 0.3s ease;
   `;
-  
+
   confirmationModal.innerHTML = `
     <div style="
       background: white;
@@ -3822,7 +4133,7 @@ function showCancelConfirmationPopup(onConfirm) {
           text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         ">Transaction Cancellation</h2>
       </div>
-      
+
       <!-- Warning Message -->
       <div style="
         margin-bottom: 30px;
@@ -3854,7 +4165,7 @@ function showCancelConfirmationPopup(onConfirm) {
           This action will <strong>permanently cancel</strong> your transaction and cannot be undone. You will lose your current progress and be redirected to the home page.
         </p>
       </div>
-      
+
       <!-- Risk Information -->
       <div style="
         background: linear-gradient(145deg, #f8d7da 0%, #f5c6cb 100%);
@@ -3888,7 +4199,7 @@ function showCancelConfirmationPopup(onConfirm) {
           <li>You'll need to start the process again from beginning</li>
         </ul>
       </div>
-      
+
       <!-- Action Buttons -->
       <div style="
         display: flex;
@@ -3915,7 +4226,7 @@ function showCancelConfirmationPopup(onConfirm) {
            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(220, 53, 69, 0.3)';">
           <i class="fas fa-times"></i> Yes, Cancel Transaction
         </button>
-        
+
         <button onclick="dismissCancellation()" style="
           background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
           color: white;
@@ -3934,7 +4245,7 @@ function showCancelConfirmationPopup(onConfirm) {
           <i class="fas fa-arrow-left"></i> Keep Transaction
         </button>
       </div>
-      
+
       <!-- Additional Warning -->
       <div style="
         margin-top: 20px;
@@ -3956,12 +4267,12 @@ function showCancelConfirmationPopup(onConfirm) {
       </div>
     </div>
   `;
-  
+
   document.body.appendChild(confirmationModal);
-  
+
   // Prevent background scrolling
   document.body.style.overflow = 'hidden';
-  
+
   window.confirmCancellation = function() {
     if (confirmationModal && confirmationModal.parentElement) {
       document.body.removeChild(confirmationModal);
@@ -3969,14 +4280,14 @@ function showCancelConfirmationPopup(onConfirm) {
     document.body.style.overflow = 'auto';
     onConfirm();
   };
-  
+
   window.dismissCancellation = function() {
     if (confirmationModal && confirmationModal.parentElement) {
       document.body.removeChild(confirmationModal);
     }
     document.body.style.overflow = 'auto';
   };
-  
+
   // Close on overlay click
   confirmationModal.addEventListener('click', function(e) {
     if (e.target === confirmationModal) {
@@ -4143,9 +4454,10 @@ function showUPIAppsModal(order) {
                           font-size: 14px;
                           font-weight: 600;
                           color: #495057;
-                      ">
+                      " onmouseover="this.style.borderColor='#28a745'; this.style.background='#f8fff9';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.background='white';">
                           <div style="font-size: 24px;">📱</div>
                           <span>Google Pay</span>
+                          <small style="font-size: 12px; color: #6c757d; font-weight: 400;">Auto-open with amount</small>
                       </button>
                       <button onclick="openUPIApp('phonepe')" style="
                           background: white;
@@ -4161,9 +4473,10 @@ function showUPIAppsModal(order) {
                           font-size: 14px;
                           font-weight: 600;
                           color: #495057;
-                      ">
+                      " onmouseover="this.style.borderColor='#673ab7'; this.style.background='#f3e5f5';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.background='white';">
                           <div style="font-size: 24px;">💜</div>
                           <span>PhonePe</span>
+                          <small style="font-size: 12px; color: #6c757d; font-weight: 400;">Auto-open with amount</small>
                       </button>
                       <button onclick="openUPIApp('paytm')" style="
                           background: white;
@@ -4179,9 +4492,10 @@ function showUPIAppsModal(order) {
                           font-size: 14px;
                           font-weight: 600;
                           color: #495057;
-                      ">
+                      " onmouseover="this.style.borderColor='#2196f3'; this.style.background='#e3f2fd';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.background='white';">
                           <div style="font-size: 24px;">💙</div>
                           <span>Paytm</span>
+                          <small style="font-size: 12px; color: #6c757d; font-weight: 400;">Auto-open with amount</small>
                       </button>
                       <button onclick="openUPIApp('other')" style="
                           background: white;
@@ -4197,9 +4511,10 @@ function showUPIAppsModal(order) {
                           font-size: 14px;
                           font-weight: 600;
                           color: #495057;
-                      ">
+                      " onmouseover="this.style.borderColor='#ff9800'; this.style.background='#fff3e0';" onmouseout="this.style.borderColor='#e0e0e0'; this.style.background='white';">
                           <div style="font-size: 24px;">📱</div>
                           <span>Any UPI App</span>
+                          <small style="font-size: 12px; color: #6c757d; font-weight: 400;">Generic UPI link</small>
                       </button>
               </div>
               </div>
@@ -4271,18 +4586,67 @@ function showUPIAppsModal(order) {
       }
       timeLeft--;
   }, 1000);
+  activeIntervals.push(timerInterval);
   window.openUPIApp = function(app) {
-      const upiID = 'kavita.5049-49@waicici'; // Updated with correct UPI ID
+      const upiID = 'kavita.5049-49@waicici'; // Correct UPI ID from copy function
       const amount = order.price.toFixed(2);
       const note = `Payment for Order ${order.id} - India Social Panel`;
-      const upiUrl = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-      window.location.href = upiUrl;
-      showNotification(`✅ Opening ${app.toUpperCase()}... Complete payment of ₹${amount}`, 'success');
+
+      let upiUrl = '';
+
+      // Generate app-specific UPI URLs for better compatibility
+      switch(app.toLowerCase()) {
+          case 'googlepay':
+              // Google Pay specific URL format
+              upiUrl = `tez://upi/pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+              // Fallback to generic UPI URL if Google Pay not installed
+              const fallbackTimer = setTimeout(() => {
+                  window.location.href = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+              }, 1000);
+              activeTimers.push(fallbackTimer);
+              break;
+
+          case 'phonepe':
+              // PhonePe specific URL format
+              upiUrl = `phonepe://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+              // Fallback to generic UPI URL
+              setTimeout(() => {
+                  window.location.href = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+              }, 1000);
+              break;
+
+          case 'paytm':
+              // Paytm specific URL format
+              upiUrl = `paytmmp://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+              // Fallback to generic UPI URL
+              setTimeout(() => {
+                  window.location.href = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+              }, 1000);
+              break;
+
+          case 'other':
+          default:
+              // Generic UPI URL that works with all UPI apps
+              upiUrl = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+              break;
+      }
+
+      // Try to open the app-specific URL first
+      try {
+          window.location.href = upiUrl;
+          showNotification(`✅ Opening ${app.toUpperCase()}... Amount ₹${amount} pre-filled`, 'success');
+      } catch (error) {
+          // If app-specific URL fails, try generic UPI URL
+          window.location.href = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
+          showNotification(`✅ Opening UPI App... Amount ₹${amount} pre-filled`, 'success');
+      }
+
+      // Give user time to complete payment then return to dashboard
       setTimeout(() => {
           clearInterval(timerInterval);
           closeUPIModal();
           showPage('dashboardHome');
-      }, 3000);
+      }, 5000); // Increased time to 5 seconds for better user experience
   };
   window.cancelTransaction = function() {
       showCancelConfirmationPopup(() => {
@@ -4616,7 +4980,7 @@ function showUPIIDModal(order) {
   `;
   let timerInterval;
   let timeLeft = 900; // 15 minutes
-  const actualUPIID = 'kavita.5049-49@waicici'; // Real UPI ID for copying
+  const actualUPIID = 'kavita.5049-49@waicici'; // Real UPI ID for copying - consistent with app opening
   const brandedDisplayUPIID = 'India Social Panel@paytm'; // Branded display UPI ID
   upiIDModal.innerHTML = `
       <div style="
@@ -5183,7 +5547,7 @@ function setupProfileFunctionality() {
       if (userAvatar) userAvatar.textContent = savedName.charAt(0).toUpperCase();
   }
   updateProfileStats();
-  
+
   // Name input functionality
   const nameInput = document.querySelector('input[placeholder="Enter your full name"]');
   if (nameInput) {
@@ -5223,7 +5587,7 @@ function setupProfileFunctionality() {
           const section = this.closest('.profile-section');
           if (section) {
               const sectionTitle = section.querySelector('h3').textContent;
-              
+
               if (sectionTitle.includes('Personal Information')) {
                   savePersonalInformation();
               } else if (sectionTitle.includes('Account Security')) {
@@ -5263,7 +5627,7 @@ function showPaymentMethodOptions() {
       justify-content: center;
       padding: 20px;
   `;
-  
+
   paymentModal.innerHTML = `
       <div style="
           background: white;
@@ -5284,7 +5648,7 @@ function showPaymentMethodOptions() {
                   color: #666;
               ">×</button>
           </div>
-          
+
           <div style="display: grid; gap: 15px;">
               <div class="payment-method-option" onclick="addUPIMethod()" style="
                   border: 2px solid #e9ecef;
@@ -5312,7 +5676,7 @@ function showPaymentMethodOptions() {
                       <p style="margin: 0; color: #666; font-size: 14px;">Add your UPI ID for payments</p>
                   </div>
               </div>
-              
+
               <div class="payment-method-option" onclick="addCardMethod()" style="
                   border: 2px solid #e9ecef;
                   border-radius: 10px;
@@ -5339,7 +5703,7 @@ function showPaymentMethodOptions() {
                       <p style="margin: 0; color: #666; font-size: 14px;">Add your card for payments</p>
                   </div>
               </div>
-              
+
               <div class="payment-method-option" onclick="addBankMethod()" style="
                   border: 2px solid #e9ecef;
                   border-radius: 10px;
@@ -5369,15 +5733,15 @@ function showPaymentMethodOptions() {
           </div>
       </div>
   `;
-  
+
   document.body.appendChild(paymentModal);
-  
+
   window.closePaymentMethodModal = function() {
       if (paymentModal && paymentModal.parentElement) {
           document.body.removeChild(paymentModal);
       }
   };
-  
+
   window.addUPIMethod = function() {
       const upiId = prompt('Enter your UPI ID:');
       if (upiId && upiId.includes('@')) {
@@ -5388,7 +5752,7 @@ function showPaymentMethodOptions() {
           showNotification('❌ Please enter a valid UPI ID', 'error');
       }
   };
-  
+
   window.addCardMethod = function() {
       const cardNumber = prompt('Enter last 4 digits of your card:');
       if (cardNumber && cardNumber.length === 4 && !isNaN(cardNumber)) {
@@ -5399,7 +5763,7 @@ function showPaymentMethodOptions() {
           showNotification('❌ Please enter valid last 4 digits', 'error');
       }
   };
-  
+
   window.addBankMethod = function() {
       const accountNumber = prompt('Enter last 4 digits of account number:');
       if (accountNumber && accountNumber.length === 4 && !isNaN(accountNumber)) {
@@ -5415,11 +5779,11 @@ function showPaymentMethodOptions() {
 function addPaymentMethodToList(type, details, icon) {
   const paymentMethodsList = document.getElementById('paymentMethodsList');
   const savedMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
-  
+
   const newMethod = { type, details, icon, id: Date.now() };
   savedMethods.push(newMethod);
   localStorage.setItem('paymentMethods', JSON.stringify(savedMethods));
-  
+
   loadUserPaymentMethods();
 }
 
@@ -5427,13 +5791,13 @@ function savePersonalInformation() {
   const nameInput = document.querySelector('input[placeholder="Enter your full name"]');
   const mobileInput = document.querySelector('input[placeholder="Enter your mobile number"]');
   const dobInput = document.querySelector('input[type="date"]');
-  
+
   const profileData = {
       name: nameInput ? nameInput.value : '',
       mobile: mobileInput ? mobileInput.value : '',
       dob: dobInput ? dobInput.value : ''
   };
-  
+
   localStorage.setItem('profileData', JSON.stringify(profileData));
   showNotification('✅ Personal information saved successfully!', 'success');
 }
@@ -5442,23 +5806,23 @@ function saveSecuritySettings() {
   const currentPassword = document.querySelector('input[placeholder="Enter current password"]');
   const newPassword = document.querySelector('input[placeholder="Enter new password"]');
   const confirmPassword = document.querySelector('input[placeholder="Confirm new password"]');
-  
+
   if (currentPassword && newPassword && confirmPassword) {
       if (newPassword.value !== confirmPassword.value) {
           showNotification('❌ New passwords do not match!', 'error');
           return;
       }
-      
+
       if (newPassword.value.length < 6) {
           showNotification('❌ Password must be at least 6 characters!', 'error');
           return;
       }
-      
+
       // Clear password fields
       currentPassword.value = '';
       newPassword.value = '';
       confirmPassword.value = '';
-      
+
       showNotification('✅ Password updated successfully!', 'success');
   }
 }
@@ -5468,14 +5832,14 @@ function savePreferences() {
   const currency = document.querySelector('.profile-section select[value="inr"]');
   const emailNotifications = document.querySelector('.profile-section select[value="all"]');
   const smsNotifications = document.querySelector('.profile-section select[value="enabled"]');
-  
+
   const preferences = {
       language: language ? language.value : 'english',
       currency: currency ? currency.value : 'inr',
       emailNotifications: emailNotifications ? emailNotifications.value : 'all',
       smsNotifications: smsNotifications ? smsNotifications.value : 'enabled'
   };
-  
+
   localStorage.setItem('userPreferences', JSON.stringify(preferences));
   showNotification('✅ Preferences saved successfully!', 'success');
 }
@@ -5495,7 +5859,7 @@ function enable2FA() {
       justify-content: center;
       padding: 20px;
   `;
-  
+
   enable2FAModal.innerHTML = `
       <div style="
           background: white;
@@ -5517,13 +5881,13 @@ function enable2FA() {
               margin: 0 auto 20px;
               font-size: 36px;
           ">🔐</div>
-          
+
           <h2 style="margin-bottom: 15px; color: #333;">Enable Two-Factor Authentication</h2>
           <p style="color: #666; margin-bottom: 25px; line-height: 1.6;">
               Two-factor authentication adds an extra layer of security to your account. 
               You'll receive SMS codes for login verification.
           </p>
-          
+
           <div style="margin-bottom: 25px;">
               <input type="tel" placeholder="Enter your mobile number" style="
                   width: 100%;
@@ -5544,7 +5908,7 @@ function enable2FA() {
                   margin-bottom: 15px;
               ">Send Verification Code</button>
           </div>
-          
+
           <div style="display: flex; gap: 10px;">
               <button onclick="close2FAModal()" style="
                   flex: 1;
@@ -5558,21 +5922,21 @@ function enable2FA() {
           </div>
       </div>
   `;
-  
+
   document.body.appendChild(enable2FAModal);
-  
+
   window.close2FAModal = function() {
       if (enable2FAModal && enable2FAModal.parentElement) {
           document.body.removeChild(enable2FAModal);
       }
   };
-  
+
   window.send2FACode = function() {
       const mobile = enable2FAModal.querySelector('input[type="tel"]').value;
       if (mobile && mobile.length >= 10) {
           showNotification('📱 Verification code sent to your mobile!', 'success');
           close2FAModal();
-          
+
           // Update 2FA status in UI
           const unverifiedBadge = document.querySelector('.unverified-badge');
           if (unverifiedBadge) {
@@ -5587,9 +5951,9 @@ function enable2FA() {
 function loadUserPaymentMethods() {
   const paymentMethodsList = document.getElementById('paymentMethodsList');
   if (!paymentMethodsList) return;
-  
+
   const savedMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
-  
+
   if (savedMethods.length === 0) {
       paymentMethodsList.innerHTML = `
           <div style="text-align: center; padding: 20px; color: #666;">
@@ -5621,7 +5985,7 @@ function loadUserPaymentMethods() {
           </div>
       `).join('');
   }
-  
+
   window.removePaymentMethod = function(methodId) {
       const savedMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
       const updatedMethods = savedMethods.filter(method => method.id !== methodId);
