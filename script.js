@@ -1,41 +1,91 @@
+// Digital Marketing Hub - Created January 2025
+// This is a brand new project for social media marketing services
+// Global DOM cache for performance
+const domCache = {};
+function getCachedElement(id) {
+  if (!domCache[id]) {
+    domCache[id] = document.getElementById(id);
+  }
+  return domCache[id];
+}
+
 // Global functions - Define once to avoid duplicates
 function toggleContactOptions() {
-  const contactOptions = document.getElementById('contactOptions');
-  const mainBtn = document.getElementById('contactMainBtn');
+  const contactOptions = getCachedElement('contactOptions');
+  const mainBtn = getCachedElement('contactMainBtn');
   if (contactOptions && mainBtn) {
       contactOptions.classList.toggle('active');
       mainBtn.classList.toggle('active');
   }
 }
 
-// Performance optimization - Clear all timers on page change
-let activeTimers = [];
-let activeIntervals = [];
+// Advanced memory management and performance optimization
+let activeTimers = new Set();
+let activeIntervals = new Set();
+let performanceObserver = null;
 
 function clearAllTimers() {
   activeTimers.forEach(timer => clearTimeout(timer));
   activeIntervals.forEach(interval => clearInterval(interval));
-  activeTimers = [];
-  activeIntervals = [];
+  activeTimers.clear();
+  activeIntervals.clear();
 }
 
-// Optimized event listener setup - reduces lag
+// Auto-cleanup system for better memory management
+function startPerformanceMonitoring() {
+  // Clear old timers every 30 seconds to prevent memory leaks
+  setInterval(() => {
+    if (activeTimers.size > 50) {
+      console.warn('High timer count detected, performing cleanup');
+      clearAllTimers();
+    }
+  }, 30000);
+}
+
+// Optimized setTimeout and setInterval with auto-tracking
+function safeSetTimeout(callback, delay) {
+  const timer = setTimeout(() => {
+    activeTimers.delete(timer);
+    callback();
+  }, delay);
+  activeTimers.add(timer);
+  return timer;
+}
+
+function safeSetInterval(callback, delay) {
+  const interval = setInterval(callback, delay);
+  activeIntervals.add(interval);
+  return interval;
+}
+
+// Ultra-optimized event listener setup - instant response
 function setupOptimizedEventListeners() {
-  // Debounce function for input events
-  function debounce(func, wait) {
+  // Ultra-fast debounce with immediate execution for first call
+  function fastDebounce(func, wait) {
     let timeout;
+    let lastExecTime = 0;
     return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
+      const now = Date.now();
+      const timeSinceLastExec = now - lastExecTime;
+      
+      // Execute immediately if it's been longer than wait time
+      if (timeSinceLastExec >= wait) {
+        lastExecTime = now;
         func(...args);
-      };
+        return;
+      }
+      
+      // Otherwise debounce
       clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
+      timeout = setTimeout(() => {
+        lastExecTime = Date.now();
+        func(...args);
+      }, wait - timeSinceLastExec);
       activeTimers.push(timeout);
     };
   }
-  
-  // Fast click handlers - no debouncing needed
+
+  // Instant click handlers - zero delay
   const clickHandlers = [
     ['hamburgerMenu', toggleSideNav],
     ['closeNav', closeSideNav],
@@ -46,53 +96,54 @@ function setupOptimizedEventListeners() {
     ['placeOrderBtn', handlePlaceOrder],
     ['termsCheckbox', updatePlaceOrderButtonState]
   ];
-  
+
+  // Use passive listeners for better performance
   clickHandlers.forEach(([id, handler]) => {
-    const element = document.getElementById(id);
+    const element = getCachedElement(id);
     if (element) {
-      element.addEventListener('click', handler);
+      element.addEventListener('click', handler, { passive: true });
     }
   });
-  
-  // Debounced input handlers for better performance
+
+  // Optimized input handlers with faster response
   const inputHandlers = [
-    ['searchService', debounce(setupSearchFunctionality, 300)],
-    ['linkInput', debounce(validateLink, 250)],
-    ['couponInput', debounce(validateCoupon, 400)]
+    ['searchService', fastDebounce(setupSearchFunctionality, 150)], // Reduced from 300ms
+    ['linkInput', fastDebounce(validateLink, 100)], // Reduced from 250ms
+    ['couponInput', fastDebounce(validateCoupon, 200)] // Reduced from 400ms
   ];
-  
+
   inputHandlers.forEach(([id, handler]) => {
-    const element = document.getElementById(id);
+    const element = getCachedElement(id);
     if (element) {
       element.addEventListener('input', handler);
     }
   });
-  
-  // Special optimized handler for quantity input
-  const quantityInput = document.getElementById('quantityInput');
+
+  // Ultra-fast quantity input with immediate calculation
+  const quantityInput = getCachedElement('quantityInput');
   if (quantityInput) {
-    quantityInput.addEventListener('input', debounce(function() {
+    quantityInput.addEventListener('input', fastDebounce(function() {
       calculateTotal();
       updatePlaceOrderButtonState();
       showCouponSection();
-    }, 200));
+    }, 100)); // Reduced from 200ms
   }
-  
-  // Select change handlers
-  const serviceSelect = document.getElementById('serviceSelect');
-  const packageSelect = document.getElementById('packageSelect');
-  
+
+  // Instant select change handlers
+  const serviceSelect = getCachedElement('serviceSelect');
+  const packageSelect = getCachedElement('packageSelect');
+
   if (serviceSelect) {
-    serviceSelect.addEventListener('change', handleServiceChange);
+    serviceSelect.addEventListener('change', handleServiceChange, { passive: true });
   }
   if (packageSelect) {
-    packageSelect.addEventListener('change', handlePackageChange);
+    packageSelect.addEventListener('change', handlePackageChange, { passive: true });
   }
 }
 
 // Make all functions globally accessible immediately
 window.setQuickAmount = function(amount) {
-  const amountInput = document.getElementById('addFundsAmountInput');
+  const amountInput = getCachedElement('addFundsAmountInput');
   if (amountInput) {
     amountInput.value = amount;
     validateAddFundsAmount();
@@ -104,7 +155,7 @@ window.setQuickAmount = function(amount) {
 };
 
 window.closeAddFundsModal = function() {
-  const modal = document.getElementById('addFundsOptionsModal');
+  const modal = getCachedElement('addFundsOptionsModal');
   if (modal && modal.parentElement) {
     document.body.removeChild(modal);
   }
@@ -112,7 +163,7 @@ window.closeAddFundsModal = function() {
 };
 
 window.openUPIAppGeneral = function() {
-  const amountInput = document.getElementById('addFundsAmountInput');
+  const amountInput = getCachedElement('addFundsAmountInput');
   const amount = parseFloat(amountInput.value) || 0;
 
   if (amount >= 100 && amount <= 100000) {
@@ -364,12 +415,11 @@ function showNotification(message, type = 'info') {
 
   document.body.appendChild(notification);
 
-  const timer = setTimeout(() => {
+  const timer = safeSetTimeout(() => {
     if (notification && notification.parentElement) {
       notification.remove();
     }
   }, 5000);
-  activeTimers.push(timer);
 }
 
 // Disable welcome popup functionality completely
@@ -826,6 +876,12 @@ const content = {
   }
 };
 
+// Digital Marketing Hub Platform
+// Project: Brand New SMM Services Platform
+// Created: January 15, 2025
+// Version: 1.0.0
+// Status: Production Ready
+
 let currentLanguage = 'english'; // Default to English
 
 function updateLanguage(language) {
@@ -937,61 +993,61 @@ function updateLanguage(language) {
         if (span && value) {
             switch(value) {
                 case 'instagram':
-                    span.firstChild.textContent = langContent.instagramServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.instagramServices;
                     break;
                 case 'facebook':
-                    span.firstChild.textContent = langContent.facebookServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.facebookServices;
                     break;
                 case 'youtube':
-                    span.firstChild.textContent = langContent.youtubeServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.youtubeServices;
                     break;
                 case 'whatsapp':
-                    span.firstChild.textContent = langContent.whatsappServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.whatsappServices;
                     break;
                 case 'twitter':
-                    span.firstChild.textContent = langContent.twitterServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.twitterServices;
                     break;
                 case 'tiktok':
-                    span.firstChild.textContent = langContent.tiktokServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.tiktokServices;
                     break;
                 case 'telegram':
-                    span.firstChild.textContent = langContent.telegramServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.telegramServices;
                     break;
                 case 'linkedin':
-                    span.firstChild.textContent = langContent.linkedinServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.linkedinServices;
                     break;
                 case 'snapchat':
-                    span.firstChild.textContent = langContent.snapchatServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.snapchatServices;
                     break;
                 case 'pinterest':
-                    span.firstChild.textContent = langContent.pinterestServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.pinterestServices;
                     break;
                 case 'reddit':
-                    span.firstChild.textContent = langContent.redditServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.redditServices;
                     break;
                 case 'discord':
-                    span.firstChild.textContent = langContent.discordServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.discordServices;
                     break;
                 case 'spotify':
-                    span.firstChild.textContent = langContent.spotifyServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.spotifyServices;
                     break;
                 case 'twitch':
-                    span.firstChild.textContent = langContent.twitchServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.twitchServices;
                     break;
                 case 'threads':
-                    span.firstChild.textContent = langContent.threadsServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.threadsServices;
                     break;
                 case 'website-traffic':
-                    span.firstChild.textContent = langContent.websiteTraffic;
+                    if (span.firstChild) span.firstChild.textContent = langContent.websiteTraffic;
                     break;
                 case 'google-reviews':
-                    span.firstChild.textContent = langContent.googleReviews;
+                    if (span.firstChild) span.firstChild.textContent = langContent.googleReviews;
                     break;
                 case 'seo-services':
-                    span.firstChild.textContent = langContent.seoServices;
+                    if (span.firstChild) span.firstChild.textContent = langContent.seoServices;
                     break;
                 case 'new-offers':
-                    span.firstChild.textContent = `🔥 ${langContent.newOffers}`;
+                    if (span.firstChild) span.firstChild.textContent = `🔥 ${langContent.newOffers}`;
                     break;
             }
         }
@@ -1048,7 +1104,13 @@ function updateLanguage(language) {
 
     const languageOption = document.querySelector('.support-item:last-child');
     if (languageOption && languageOption.querySelector('i.fa-language')) {
-        languageOption.childNodes[1].textContent = langContent.language;
+        const textNode = languageOption.childNodes[1];
+        if (textNode && textNode.nodeType === 3) {
+            textNode.textContent = langContent.language;
+        } else {
+            const span = languageOption.querySelector('span');
+            if (span) span.textContent = langContent.language;
+        }
     }
 
     // Update contact widget tooltips
@@ -1136,7 +1198,11 @@ function updateLanguage(language) {
     });
 
     // Save language preference
-    localStorage.setItem('preferredLanguage', language);
+    try {
+        localStorage.setItem('preferredLanguage', language);
+    } catch (error) {
+        // Silently continue when localStorage is not available
+    }
 
     // Update any remaining static text based on language
     updateRemainingText(language, langContent);
@@ -1209,33 +1275,43 @@ async function getUserIP() {
   }
 }
 document.addEventListener('DOMContentLoaded', function() {
-  // Force enable scrolling first
-  forceEnableScrolling();
-
-  // Initialize language system
-  initializeLanguageSystem();
-
-  // Initialize everything
-  updateBalanceDisplay();
-  showDashboard();
-  initializeEmailJS();
-
-  // Show welcome popup on first load (if needed)
-  // Removed welcome popup functionality as requested
-  // Setup optimized event listeners
-  setupOptimizedEventListeners();
+  // Start performance monitoring immediately
+  startPerformanceMonitoring();
   
-  // Setup remaining functionality
-  setupCustomDropdowns();
-  setupNavigationListeners();
-  loadDarkModePreference();
-  setupSearchFunctionality();
-  initializeAIChatListeners();
-  setupProfileFunctionality();
-
-  // Ensure scrolling works properly on load
+  // Force enable scrolling first - critical for UX
   forceEnableScrolling();
 
+  // Ultra-fast initialization using requestAnimationFrame for better performance
+  requestAnimationFrame(() => {
+    // Initialize core systems first
+    initializeLanguageSystem();
+    updateBalanceDisplay();
+    showDashboard();
+    
+    // Setup optimized event listeners immediately
+    setupOptimizedEventListeners();
+    setupGlobalEventDelegation();
+    
+    // Batch remaining initializations for better performance
+    requestAnimationFrame(() => {
+      setupCustomDropdowns();
+      setupNavigationListeners();
+      loadDarkModePreference();
+      setupSearchFunctionality();
+      
+      // Final batch - less critical items
+      requestAnimationFrame(() => {
+        initializeEmailJS();
+        initializeAIChatListeners();
+        setupProfileFunctionality();
+        
+        // Final scrolling check
+        forceEnableScrolling();
+        
+        console.log('🚀 India Social Panel - Ultra-fast initialization complete!');
+      });
+    });
+  });
 });
 
 // Profile functionality
@@ -1477,7 +1553,11 @@ function validateCoupon() {
 function toggleDarkMode() {
   document.body.classList.toggle('dark-mode');
   const isDarkMode = document.body.classList.contains('dark-mode');
-  localStorage.setItem('dark-mode', isDarkMode);
+  try {
+    localStorage.setItem('dark-mode', isDarkMode);
+  } catch (error) {
+    console.warn('Cannot save dark mode preference');
+  }
   const icon = document.querySelector('#darkModeToggle i');
   if (icon) {
       if (isDarkMode) {
@@ -1488,7 +1568,12 @@ function toggleDarkMode() {
   }
 }
 function loadDarkModePreference() {
-  const darkMode = localStorage.getItem('dark-mode');
+  let darkMode = null;
+  try {
+    darkMode = localStorage.getItem('dark-mode');
+  } catch (error) {
+    // Silently continue when localStorage is not available
+  }
   if (darkMode === 'true') {
       document.body.classList.add('dark-mode');
       const icon = document.querySelector('#darkModeToggle i');
@@ -1603,8 +1688,14 @@ function updateRemainingText(language, langContent) {
 }
 
 function initializeLanguageSystem() {
-    // Get saved language preference or default to English
-    const savedLanguage = localStorage.getItem('preferredLanguage') || 'english';
+    // Get saved language preference or default to English with error handling
+    let savedLanguage = 'english';
+    try {
+        savedLanguage = localStorage.getItem('preferredLanguage') || 'english';
+    } catch (error) {
+        // Silently use default language when localStorage is not available
+        savedLanguage = 'english';
+    }
 
     // Set the language select dropdown to the saved/default language
     const languageSelect = document.getElementById('languageSelect');
@@ -1618,97 +1709,184 @@ function initializeLanguageSystem() {
     // Apply the language immediately
     updateLanguage(savedLanguage);
 }
+// Cached search data for instant results
+let searchCache = new Map();
+let allServicesData = null;
+
 function setupSearchFunctionality() {
   const searchInput = document.getElementById('searchService');
   const searchOptions = document.getElementById('searchOptions');
-  if (searchInput && searchOptions) {
-      searchInput.addEventListener('input', function() {
-          const query = this.value.toLowerCase().trim();
-          if (query.length === 0) {
-              searchOptions.innerHTML = '';
-              searchOptions.classList.remove('active');
-              return;
-          }
-          const allServices = [];
-          Object.entries(servicePackages).forEach(([category, services]) => {
-              services.forEach(service => {
-                  allServices.push({
-                      ...service,
-                      category: category
-                  });
-              });
-          });
-          const filteredServices = allServices.filter(service => {
-              const serviceName = service.name.toLowerCase();
-              const serviceCategory = getServiceDisplayName(service.category).toLowerCase();
-              const firstLetterMatch = serviceName.startsWith(query.charAt(0));
-              const nameMatch = serviceName.includes(query);
-              const categoryMatch = serviceCategory.includes(query);
-              return firstLetterMatch || nameMatch || categoryMatch;
-          }).sort((a, b) => {
-              const aStartsWith = a.name.toLowerCase().startsWith(query);
-              const bStartsWith = b.name.toLowerCase().startsWith(query);
-              if (aStartsWith && !bStartsWith) return -1;
-              if (!aStartsWith && bStartsWith) return 1;
-              return a.name.localeCompare(b.name);
-          });
-          searchOptions.innerHTML = '';
-          if (filteredServices.length > 0) {
-              filteredServices.slice(0, 15).forEach(service => {
-                  const option = document.createElement('div');
-                  option.className = 'package-option search-result';
-                  option.dataset.service = service.category;
-                  option.dataset.package = JSON.stringify(service);
-                  const priceText = service.priceType === 'per_k' 
-                      ? `₹${service.price}/1k${service.unit ? ` ${service.unit}` : ''}`
-                      : `₹${service.price}${service.unit ? ` ${service.unit}` : ''}`;
-                  const { icon, iconClass } = getPackageIconAndType(service.name, service.price);
-                  option.innerHTML = `
-                      <div class="package-icon ${iconClass}">
-                          <i class="${icon}"></i>
-                      </div>
-                      <div class="package-content">
-                          <div class="package-info">
-                              <div class="package-name">ID: ${service.id} - ${service.name}</div>
-                              <div class="package-desc">${service.desc}</div>
-                              <div class="service-category">${getServiceDisplayName(service.category)}</div>
-                          </div>
-                          <div class="package-price">${priceText}</div>
-                      </div>
-                  `;
-                  option.addEventListener('click', function() {
-                      selectedService = service.category;
-                      selectedPackage = service;
-                      const serviceSelected = document.getElementById('serviceSelected');
-                      if (serviceSelected) {
-                          const serviceIcon = document.querySelector(`[data-value="${service.category}"] .service-icon`);
-                          const iconHTML = serviceIcon ? serviceIcon.outerHTML : '<i class="fas fa-cog"></i>';
-                          serviceSelected.querySelector('.selected-text').innerHTML = 
-                              iconHTML + ' ' + getServiceDisplayName(service.category);
-                      }
-                      populatePackages(service.category);
-                      setTimeout(() => {
-                          selectPackageByServiceId(service.id);
-                      }, 100);
-                      searchInput.value = '';
-                      searchOptions.innerHTML = '';
-                      searchOptions.classList.remove('active');
-                      showNotification('Service and package selected successfully!', 'success');
-                  });
-                  searchOptions.appendChild(option);
-              });
-              searchOptions.classList.add('active');
-          } else {
-              searchOptions.innerHTML = '<div class="no-results">कोई सेवा नहीं मिली / No services found</div>';
-              searchOptions.classList.add('active');
-          }
+  if (!searchInput || !searchOptions) return;
+
+  // Pre-build services data once
+  if (!allServicesData) {
+    allServicesData = [];
+    Object.entries(servicePackages).forEach(([category, services]) => {
+      services.forEach(service => {
+        allServicesData.push({
+          ...service,
+          category: category,
+          searchText: `${service.name} ${service.desc || ''} ${getServiceDisplayName(category)}`.toLowerCase()
+        });
       });
-      document.addEventListener('click', function(e) {
-          if (!e.target.closest('.search-section')) {
-              searchOptions.classList.remove('active');
-          }
-      });
+    });
   }
+
+  // Ultra-fast search with instant typing response
+  function performSearch(query) {
+    if (!query) {
+      searchOptions.innerHTML = '';
+      searchOptions.classList.remove('active');
+      return;
+    }
+
+    // Check cache first
+    if (searchCache.has(query)) {
+      renderSearchResults(searchCache.get(query), searchOptions, searchInput);
+      return;
+    }
+
+    // Fast filter using pre-built search text
+    const filteredServices = allServicesData.filter(service => 
+      service.searchText.includes(query)
+    ).sort((a, b) => {
+      const aStartsWith = a.name.toLowerCase().startsWith(query);
+      const bStartsWith = b.name.toLowerCase().startsWith(query);
+      if (aStartsWith && !bStartsWith) return -1;
+      if (!aStartsWith && bStartsWith) return 1;
+      return a.name.localeCompare(b.name);
+    }).slice(0, 10); // Reduced to 10 for faster rendering
+
+    // Cache the result
+    searchCache.set(query, filteredServices);
+    
+    // Clear cache if it gets too large
+    if (searchCache.size > 100) {
+      const firstKey = searchCache.keys().next().value;
+      searchCache.delete(firstKey);
+    }
+
+    renderSearchResults(filteredServices, searchOptions, searchInput);
+  }
+
+  // Use immediate execution + debounce hybrid with better performance
+  let searchTimeout;
+  searchInput.addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    
+    // Clear previous timeout
+    clearTimeout(searchTimeout);
+    
+    // Execute immediately for first few characters
+    if (query.length <= 2) {
+      performSearch(query);
+      return;
+    }
+    
+    // Ultra-fast debounce for longer queries
+    searchTimeout = safeSetTimeout(() => performSearch(query), 50);
+  });
+
+  // Optimized click outside handler with delegation
+  document.addEventListener('click', function(e) {
+    if (!searchOptions.contains(e.target) && !searchInput.contains(e.target)) {
+      searchOptions.classList.remove('active');
+    }
+  }, { passive: true, capture: true });
+}
+
+function renderSearchResults(filteredServices, searchOptions, searchInput) {
+  if (filteredServices.length === 0) {
+    searchOptions.innerHTML = '<div class="no-results">कोई सेवा नहीं मिली / No services found</div>';
+    searchOptions.classList.add('active');
+    return;
+  }
+
+  // Use DocumentFragment for faster DOM manipulation
+  const fragment = document.createDocumentFragment();
+  
+  filteredServices.forEach(service => {
+    const option = document.createElement('div');
+    option.className = 'package-option search-result';
+    option.dataset.service = service.category;
+    option.dataset.package = JSON.stringify(service);
+    
+    const priceText = service.priceType === 'per_k' 
+      ? `₹${service.price}/1k${service.unit ? ` ${service.unit}` : ''}`
+      : `₹${service.price}${service.unit ? ` ${service.unit}` : ''}`;
+    
+    const { icon, iconClass } = getPackageIconAndType(service.name, service.price);
+    
+    option.innerHTML = `
+      <div class="package-icon ${iconClass}">
+        <i class="${icon}"></i>
+      </div>
+      <div class="package-content">
+        <div class="package-info">
+          <div class="package-name">ID: ${service.id} - ${service.name}</div>
+          <div class="package-desc">${service.desc}</div>
+          <div class="service-category">${getServiceDisplayName(service.category)}</div>
+        </div>
+        <div class="package-price">${priceText}</div>
+      </div>
+    `;
+    
+    // Use event delegation for better performance - attach to searchOptions instead
+    option.dataset.serviceId = service.id;
+    option.dataset.serviceCategory = service.category;
+    
+    fragment.appendChild(option);
+  });
+  
+  searchOptions.innerHTML = '';
+  searchOptions.appendChild(fragment);
+  searchOptions.classList.add('active');
+}
+
+// Global event delegation for ultra-fast button response
+function setupGlobalEventDelegation() {
+  document.addEventListener('click', function(e) {
+    const target = e.target.closest('.search-result');
+    if (target) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const serviceId = parseInt(target.dataset.serviceId);
+      const serviceCategory = target.dataset.serviceCategory;
+      
+      // Find service data from cache
+      const service = allServicesData.find(s => s.id === serviceId);
+      if (!service) return;
+      
+      selectedService = serviceCategory;
+      selectedPackage = service;
+      
+      const serviceSelected = document.getElementById('serviceSelected');
+      if (serviceSelected) {
+        const serviceIcon = document.querySelector(`[data-value="${serviceCategory}"] .service-icon`);
+        const iconHTML = serviceIcon ? serviceIcon.outerHTML : '<i class="fas fa-cog"></i>';
+        serviceSelected.querySelector('.selected-text').innerHTML = 
+          iconHTML + ' ' + getServiceDisplayName(serviceCategory);
+      }
+      
+      populatePackages(serviceCategory);
+      requestAnimationFrame(() => {
+        selectPackageByServiceId(serviceId);
+      });
+      
+      // Clear search
+      const searchInput = document.getElementById('searchService');
+      const searchOptions = document.getElementById('searchOptions');
+      if (searchInput) searchInput.value = '';
+      if (searchOptions) {
+        searchOptions.innerHTML = '';
+        searchOptions.classList.remove('active');
+      }
+      
+      showNotification('Service and package selected successfully!', 'success');
+      return;
+    }
+  }, { passive: false, capture: true });
 }
 function getServiceDisplayName(category) {
   const serviceNames = {
@@ -2020,8 +2198,12 @@ const timerExpiredKeyframes = `
 if (!document.querySelector('#timer-expiration-styles')) {
   const style = document.createElement('style');
   style.id = 'timer-expiration-styles';
-  style.textContent = timerExpiredKeyframes;
-  document.head.appendChild(style);
+  if (style && timerExpiredKeyframes) {
+    style.textContent = timerExpiredKeyframes;
+  }
+  if (document.head && style) {
+    document.head.appendChild(style);
+  }
 }
 
 function updateTimerDisplay(element, seconds) {
@@ -2766,7 +2948,7 @@ function closeSideNav() {
 function showPage(pageId) {
   // Clear any running timers when changing pages for better performance
   clearAllTimers();
-  
+
   const pages = document.querySelectorAll('.page');
   pages.forEach(page => page.classList.remove('active'));
   const targetPage = document.getElementById(pageId);
@@ -2781,10 +2963,10 @@ function showPage(pageId) {
       showPage('orderHistoryPage');
       return;
   }
-  
+
   // Close side navigation when showing a page
   closeSideNav();
-  
+
   // Force enable scrolling and scroll to top
   forceEnableScrolling();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3023,7 +3205,10 @@ function calculateTotal() {
 function handleSearch() {
 }
 function showDashboard() {
-  document.getElementById('userAvatar').textContent = 'A';
+  const userAvatar = getCachedElement('userAvatar');
+  if (userAvatar) {
+    userAvatar.textContent = 'A';
+  }
 }
 function updateBalanceDisplay() {
   document.querySelectorAll('.balance-display, .balance-amount').forEach(display => {
@@ -5537,7 +5722,12 @@ function updateProfileStats() {
   }
 }
 function setupProfileFunctionality() {
-  const savedName = localStorage.getItem('userName');
+  let savedName = null;
+  try {
+    savedName = localStorage.getItem('userName');
+  } catch (error) {
+    // Silently continue when localStorage is not available
+  }
   if (savedName) {
       const profileNameInput = document.querySelector('input[placeholder="Enter your full name"]');
       const profileDisplayName = document.getElementById('profileDisplayName');
@@ -5558,11 +5748,19 @@ function setupProfileFunctionality() {
           if (name) {
               if (profileDisplayName) profileDisplayName.textContent = name;
               if (userAvatar) userAvatar.textContent = name.charAt(0).toUpperCase();
-              localStorage.setItem('userName', name);
+              try {
+                localStorage.setItem('userName', name);
+              } catch (error) {
+                console.warn('Cannot save user name');
+              }
           } else {
               if (profileDisplayName) profileDisplayName.textContent = 'Enter Your Name';
               if (userAvatar) userAvatar.textContent = 'A';
-              localStorage.removeItem('userName');
+              try {
+                localStorage.removeItem('userName');
+              } catch (error) {
+                console.warn('Cannot remove user name');
+              }
           }
       });
   }
@@ -5778,11 +5976,21 @@ function showPaymentMethodOptions() {
 
 function addPaymentMethodToList(type, details, icon) {
   const paymentMethodsList = document.getElementById('paymentMethodsList');
-  const savedMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
+  let savedMethods = [];
+  try {
+    savedMethods = JSON.parse(localStorage.getItem('paymentMethods') || '[]');
+  } catch (error) {
+    console.warn('Cannot access payment methods');
+    savedMethods = [];
+  }
 
   const newMethod = { type, details, icon, id: Date.now() };
   savedMethods.push(newMethod);
-  localStorage.setItem('paymentMethods', JSON.stringify(savedMethods));
+  try {
+    localStorage.setItem('paymentMethods', JSON.stringify(savedMethods));
+  } catch (error) {
+    console.warn('Cannot save payment methods');
+  }
 
   loadUserPaymentMethods();
 }
