@@ -1,5 +1,234 @@
 // Digital Marketing Hub - Created January 2025
 // This is a brand new project for social media marketing services
+
+// =================== ENHANCEMENT FEATURES ===================
+
+// 1. First Visit Tracking System
+function initializeFirstVisitTracking() {
+    const FIRST_VISIT_KEY = 'indiasp_first_visit_date';
+    const firstVisitData = localStorage.getItem(FIRST_VISIT_KEY);
+    
+    if (!firstVisitData) {
+        // First-ever visit - record the date and time
+        const now = new Date();
+        const visitDate = now.toLocaleString('en-IN', {
+            year: 'numeric',
+            month: '2-digit', 
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).replace(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}):(\d{2})/, '$3-$2-$1 $4:$5:$6');
+        
+        localStorage.setItem(FIRST_VISIT_KEY, visitDate);
+        
+        // Show first-time welcome popup
+        safeSetTimeout(() => showFirstTimeWelcomePopup(), 2000);
+    }
+    
+    // Update displays with first visit date immediately
+    safeSetTimeout(() => updateFirstVisitDisplays(), 100);
+}
+
+// 2. Global Currency Management
+const CURRENCY_RATES = {
+    'inr': { symbol: '₹', rate: 1, name: 'Indian Rupee' },
+    'usd': { symbol: '$', rate: 0.012, name: 'US Dollar' },
+    'eur': { symbol: '€', rate: 0.011, name: 'Euro' },
+    'gbp': { symbol: '£', rate: 0.0095, name: 'British Pound' },
+    'aud': { symbol: 'A$', rate: 0.018, name: 'Australian Dollar' },
+    'cad': { symbol: 'C$', rate: 0.016, name: 'Canadian Dollar' },
+    'jpy': { symbol: '¥', rate: 1.8, name: 'Japanese Yen' },
+    'sgd': { symbol: 'S$', rate: 0.016, name: 'Singapore Dollar' },
+    'aed': { symbol: 'د.إ', rate: 0.044, name: 'UAE Dirham' },
+    'chf': { symbol: 'CHF', rate: 0.011, name: 'Swiss Franc' }
+};
+
+let currentCurrency = 'inr';
+
+function initializeCurrencySystem() {
+    const savedCurrency = localStorage.getItem('indiasp_selected_currency');
+    if (savedCurrency && CURRENCY_RATES[savedCurrency]) {
+        currentCurrency = savedCurrency;
+    }
+    updateAllPricesDisplay();
+}
+
+function convertPrice(inrAmount, targetCurrency = currentCurrency) {
+    return inrAmount * CURRENCY_RATES[targetCurrency].rate;
+}
+
+function formatPrice(amount, currency = currentCurrency) {
+    const formatted = amount.toFixed(2);
+    return `${CURRENCY_RATES[currency].symbol}${formatted}`;
+}
+
+function changeCurrency(newCurrency) {
+    if (CURRENCY_RATES[newCurrency]) {
+        currentCurrency = newCurrency;
+        localStorage.setItem('indiasp_selected_currency', newCurrency);
+        updateAllPricesDisplay();
+    }
+}
+
+// 3. First-Time Welcome Popup
+function showFirstTimeWelcomePopup() {
+    // Only show if not shown before
+    if (localStorage.getItem('indiasp_welcome_shown')) return;
+    
+    const popupHTML = `
+        <div id="firstTimeWelcomePopup" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        ">
+            <div style="
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                max-width: 500px;
+                width: 100%;
+                text-align: center;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                animation: slideIn 0.5s ease;
+            ">
+                <div style="
+                    width: 80px;
+                    height: 80px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    border-radius: 50%;
+                    margin: 0 auto 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 30px;
+                ">
+                    🎉
+                </div>
+                <h2 style="color: #333; margin-bottom: 15px; font-size: 24px;">Welcome to India Social Panel!</h2>
+                <p style="color: #666; margin-bottom: 25px; line-height: 1.6;">
+                    🚀 India's most trusted SMM panel with 3+ years of experience!<br>
+                    🎯 Premium social media services at your fingertips<br>
+                    ⚡ 24/7 support and instant delivery
+                </p>
+                <button onclick="closeFirstTimeWelcome()" style="
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    padding: 15px 30px;
+                    border-radius: 25px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                    Start Exploring! ✨
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', popupHTML);
+    localStorage.setItem('indiasp_welcome_shown', 'true');
+}
+
+function closeFirstTimeWelcome() {
+    const popup = document.getElementById('firstTimeWelcomePopup');
+    if (popup) {
+        popup.style.animation = 'fadeOut 0.3s ease';
+        safeSetTimeout(() => {
+            if (popup.parentElement) {
+                popup.parentElement.removeChild(popup);
+            }
+        }, 300);
+    }
+}
+
+// 4. Update Display Functions
+function updateFirstVisitDisplays() {
+    const firstVisitDate = localStorage.getItem('indiasp_first_visit_date');
+    if (!firstVisitDate) return;
+    
+    // Update Latest News section with proper formatting
+    const newsDate = document.querySelector('.news-date');
+    if (newsDate) {
+        // Format the date properly for news section
+        const visitDate = new Date(firstVisitDate.replace(/(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2}):(\d{2})/, '$3-$2-$1 $4:$5:$6'));
+        const formattedDate = visitDate.toLocaleString('en-IN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).replace(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}):(\d{2})/, '$3-$2-$1 $4:$5:$6');
+        
+        newsDate.textContent = formattedDate;
+    }
+    
+    // Update Profile joining date in multiple locations - call with delay for DOM readiness
+    safeSetTimeout(() => {
+        const profileInfos = document.querySelectorAll('.profile-info p, .user-info p, [class*="profile"] p');
+        profileInfos.forEach(profileInfo => {
+            if (profileInfo && (profileInfo.textContent.includes('Member since') || 
+                profileInfo.textContent.includes('January') || 
+                profileInfo.textContent.includes('2025'))) {
+                const date = new Date(firstVisitDate.split(' ')[0].split('-').reverse().join('-'));
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'];
+                const formattedDate = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+                profileInfo.textContent = `Member since ${formattedDate}`;
+            }
+        });
+        
+        // Update profile page joining date specifically
+        updateProfileJoiningDate();
+    }, 500);
+}
+
+function updateAllPricesDisplay() {
+    // Update balance display
+    const balanceDisplay = document.querySelector('.balance-amount');
+    if (balanceDisplay) {
+        const currentBalance = 0; // Keep as 0 for demo
+        balanceDisplay.textContent = formatPrice(currentBalance);
+    }
+    
+    // Update header balance
+    const headerBalance = document.getElementById('balanceBtn');
+    if (headerBalance) {
+        const currentBalance = 0;
+        headerBalance.textContent = formatPrice(currentBalance);
+    }
+    
+    // Update service prices throughout the site
+    document.querySelectorAll('[data-price]').forEach(element => {
+        const originalPrice = parseFloat(element.getAttribute('data-price'));
+        if (!isNaN(originalPrice)) {
+            const convertedPrice = convertPrice(originalPrice);
+            element.textContent = formatPrice(convertedPrice);
+        }
+    });
+    
+    // Update currency selector in profile
+    const currencySelect = document.querySelector('select[data-currency]');
+    if (currencySelect) {
+        currencySelect.value = currentCurrency;
+    }
+}
+
 // Global DOM cache for performance
 const domCache = {};
 function getCachedElement(id) {
@@ -67,21 +296,21 @@ function setupOptimizedEventListeners() {
     return function executedFunction(...args) {
       const now = Date.now();
       const timeSinceLastExec = now - lastExecTime;
-      
+
       // Execute immediately if it's been longer than wait time
       if (timeSinceLastExec >= wait) {
         lastExecTime = now;
         func(...args);
         return;
       }
-      
+
       // Otherwise debounce
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         lastExecTime = Date.now();
         func(...args);
       }, wait - timeSinceLastExec);
-      activeTimers.push(timeout);
+      activeTimers.add(timeout);
     };
   }
 
@@ -129,13 +358,8 @@ function setupOptimizedEventListeners() {
     }, 100)); // Reduced from 200ms
   }
 
-  // Instant select change handlers
-  const serviceSelect = getCachedElement('serviceSelect');
+  // Package select change handler
   const packageSelect = getCachedElement('packageSelect');
-
-  if (serviceSelect) {
-    serviceSelect.addEventListener('change', handleServiceChange, { passive: true });
-  }
   if (packageSelect) {
     packageSelect.addEventListener('change', handlePackageChange, { passive: true });
   }
@@ -306,11 +530,32 @@ window.showPaymentPage = function(order) {
       '</div>';
 
   window.closePaymentModal = function() {
+      // Close all payment related modals
+      const paymentModal = document.getElementById('paymentModal');
+      const upiAppsModal = document.getElementById('upiAppsModal');
+      const qrCodeModal = document.getElementById('qrCodeModal');
+      const upiIdModal = document.getElementById('upiIdModal');
+      const creditCardModal = document.getElementById('creditCardModal');
+      
       if (paymentModal && paymentModal.parentElement) {
           document.body.removeChild(paymentModal);
       }
+      if (upiAppsModal && upiAppsModal.parentElement) {
+          document.body.removeChild(upiAppsModal);
+      }
+      if (qrCodeModal && qrCodeModal.parentElement) {
+          document.body.removeChild(qrCodeModal);
+      }
+      if (upiIdModal && upiIdModal.parentElement) {
+          document.body.removeChild(upiIdModal);
+      }
+      if (creditCardModal && creditCardModal.parentElement) {
+          document.body.removeChild(creditCardModal);
+      }
+      
       document.body.style.overflow = 'auto';
       showPage('dashboardHome');
+      forceEnableScrolling();
   };
 
   window.showUPIAppsPayment = function() {
@@ -331,11 +576,32 @@ window.showPaymentPage = function(order) {
 
   window.cancelTransaction = function() {
       showCancelConfirmationPopup(() => {
+          // Close all payment related modals
+          const paymentModal = document.getElementById('paymentModal');
+          const upiAppsModal = document.getElementById('upiAppsModal');
+          const qrCodeModal = document.getElementById('qrCodeModal');
+          const upiIdModal = document.getElementById('upiIdModal');
+          const creditCardModal = document.getElementById('creditCardModal');
+          
           if (paymentModal && paymentModal.parentElement) {
               document.body.removeChild(paymentModal);
           }
+          if (upiAppsModal && upiAppsModal.parentElement) {
+              document.body.removeChild(upiAppsModal);
+          }
+          if (qrCodeModal && qrCodeModal.parentElement) {
+              document.body.removeChild(qrCodeModal);
+          }
+          if (upiIdModal && upiIdModal.parentElement) {
+              document.body.removeChild(upiIdModal);
+          }
+          if (creditCardModal && creditCardModal.parentElement) {
+              document.body.removeChild(creditCardModal);
+          }
+          
           document.body.style.overflow = 'auto';
           showPage('dashboardHome');
+          forceEnableScrolling();
       });
   };
 
@@ -886,6 +1152,15 @@ let currentLanguage = 'english'; // Default to English
 
 function updateLanguage(language) {
     currentLanguage = language;
+    
+    // Save language preference
+    localStorage.setItem('indiasp_selected_language', language);
+    
+    // Sync all language selectors
+    const footerSelect = document.getElementById('languageSelect');
+    const profileSelect = document.getElementById('profileLanguageSelect');
+    if (footerSelect) footerSelect.value = language;
+    if (profileSelect) profileSelect.value = language;
 
     // Update all text content based on selected language
     const langContent = content[language];
@@ -1274,45 +1549,7 @@ async function getUserIP() {
       return 'Unknown';
   }
 }
-document.addEventListener('DOMContentLoaded', function() {
-  // Start performance monitoring immediately
-  startPerformanceMonitoring();
-  
-  // Force enable scrolling first - critical for UX
-  forceEnableScrolling();
-
-  // Ultra-fast initialization using requestAnimationFrame for better performance
-  requestAnimationFrame(() => {
-    // Initialize core systems first
-    initializeLanguageSystem();
-    updateBalanceDisplay();
-    showDashboard();
-    
-    // Setup optimized event listeners immediately
-    setupOptimizedEventListeners();
-    setupGlobalEventDelegation();
-    
-    // Batch remaining initializations for better performance
-    requestAnimationFrame(() => {
-      setupCustomDropdowns();
-      setupNavigationListeners();
-      loadDarkModePreference();
-      setupSearchFunctionality();
-      
-      // Final batch - less critical items
-      requestAnimationFrame(() => {
-        initializeEmailJS();
-        initializeAIChatListeners();
-        setupProfileFunctionality();
-        
-        // Final scrolling check
-        forceEnableScrolling();
-        
-        console.log('🚀 India Social Panel - Ultra-fast initialization complete!');
-      });
-    });
-  });
-});
+// Removed duplicate DOMContentLoaded listener - using the one at the end of file
 
 // Profile functionality
 function setupProfileFunctionality() {
@@ -1328,6 +1565,24 @@ function updateProfileStats() {
     statsElements[1].textContent = `₹${profileStats.totalSpent.toFixed(0)}`;
     statsElements[2].textContent = `₹${profileStats.currentBalance.toFixed(0)}`;
     statsElements[3].textContent = `${profileStats.successRate}%`;
+  }
+  
+  // Update profile joining date
+  updateProfileJoiningDate();
+}
+
+function updateProfileJoiningDate() {
+  const firstVisitDate = localStorage.getItem('indiasp_first_visit_date');
+  if (!firstVisitDate) return;
+  
+  // Find profile page joining date element and update it with correct date
+  const profileMemberSince = document.querySelector('#userProfilePage .profile-info p');
+  if (profileMemberSince && profileMemberSince.textContent.includes('Member since')) {
+    const date = new Date(firstVisitDate.split(' ')[0].split('-').reverse().join('-'));
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+    const formattedDate = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+    profileMemberSince.textContent = `Member since ${formattedDate}`;
   }
 }
 
@@ -1687,27 +1942,178 @@ function updateRemainingText(language, langContent) {
     });
 }
 
+// Enhanced Language Selector Data
+const LANGUAGE_DATA = {
+    'english': { flag: '🇺🇸', name: 'English', nativeName: 'English' },
+    'hindi': { flag: '🇮🇳', name: 'Hindi', nativeName: 'हिंदी (Hindi)' },
+    'spanish': { flag: '🇪🇸', name: 'Spanish', nativeName: 'Español' },
+    'french': { flag: '🇫🇷', name: 'French', nativeName: 'Français' },
+    'german': { flag: '🇩🇪', name: 'German', nativeName: 'Deutsch' },
+    'italian': { flag: '🇮🇹', name: 'Italian', nativeName: 'Italiano' },
+    'portuguese': { flag: '🇧🇷', name: 'Portuguese', nativeName: 'Português' },
+    'russian': { flag: '🇷🇺', name: 'Russian', nativeName: 'Русский' },
+    'chinese': { flag: '🇨🇳', name: 'Chinese', nativeName: '中文' },
+    'japanese': { flag: '🇯🇵', name: 'Japanese', nativeName: '日本語' },
+    'korean': { flag: '🇰🇷', name: 'Korean', nativeName: '한국어' },
+    'arabic': { flag: '🇸🇦', name: 'Arabic', nativeName: 'العربية' },
+    'dutch': { flag: '🇳🇱', name: 'Dutch', nativeName: 'Nederlands' },
+    'polish': { flag: '🇵🇱', name: 'Polish', nativeName: 'Polski' },
+    'turkish': { flag: '🇹🇷', name: 'Turkish', nativeName: 'Türkçe' },
+    'swedish': { flag: '🇸🇪', name: 'Swedish', nativeName: 'Svenska' },
+    'norwegian': { flag: '🇳🇴', name: 'Norwegian', nativeName: 'Norsk' },
+    'danish': { flag: '🇩🇰', name: 'Danish', nativeName: 'Dansk' },
+    'finnish': { flag: '🇫🇮', name: 'Finnish', nativeName: 'Suomi' },
+    'greek': { flag: '🇬🇷', name: 'Greek', nativeName: 'Ελληνικά' },
+    'hebrew': { flag: '🇮🇱', name: 'Hebrew', nativeName: 'עברית' },
+    'thai': { flag: '🇹🇭', name: 'Thai', nativeName: 'ไทย' }
+};
+
+function initializeEnhancedLanguageSelector() {
+    const dropdownSelected = document.getElementById('languageDropdownSelected');
+    const dropdownOptions = document.getElementById('languageDropdownOptions');
+    const languageSelect = document.getElementById('languageSelect');
+    
+    if (!dropdownSelected || !dropdownOptions) return;
+    
+    // Get saved language preference
+    let savedLanguage = 'english';
+    try {
+        savedLanguage = localStorage.getItem('indiasp_selected_language') || 'english';
+    } catch (error) {
+        savedLanguage = 'english';
+    }
+    
+    // Set initial display
+    updateLanguageDisplay(savedLanguage);
+    
+    // Handle dropdown toggle
+    dropdownSelected.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isActive = dropdownOptions.classList.contains('active');
+        
+        // Close all other dropdowns first
+        document.querySelectorAll('.language-dropdown-options.active').forEach(dropdown => {
+            if (dropdown !== dropdownOptions) {
+                dropdown.classList.remove('active');
+                dropdown.previousElementSibling.classList.remove('active');
+            }
+        });
+        
+        if (isActive) {
+            dropdownOptions.classList.remove('active');
+            dropdownSelected.classList.remove('active');
+        } else {
+            dropdownOptions.classList.add('active');
+            dropdownSelected.classList.add('active');
+        }
+    });
+    
+    // Handle language option selection
+    dropdownOptions.addEventListener('click', function(e) {
+        const option = e.target.closest('.language-option');
+        if (!option) return;
+        
+        const selectedLang = option.dataset.value;
+        
+        // Update visual selection
+        dropdownOptions.querySelectorAll('.language-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        option.classList.add('selected');
+        
+        // Update display
+        updateLanguageDisplay(selectedLang);
+        
+        // Close dropdown
+        dropdownOptions.classList.remove('active');
+        dropdownSelected.classList.remove('active');
+        
+        // Only apply language change for Hindi and English
+        if (selectedLang === 'hindi' || selectedLang === 'english') {
+            updateLanguage(selectedLang);
+        } else {
+            // Save selection but don't apply translation
+            try {
+                localStorage.setItem('indiasp_selected_language_display', selectedLang);
+            } catch (error) {
+                // Continue silently
+            }
+            
+            // Show notification for other languages
+            showNotification(`${LANGUAGE_DATA[selectedLang].nativeName} language selected! Currently only English and Hindi translations are available.`, 'info');
+        }
+        
+        // Update hidden select for compatibility
+        if (languageSelect) {
+            if (selectedLang === 'hindi' || selectedLang === 'english') {
+                languageSelect.value = selectedLang;
+            }
+        }
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!dropdownSelected.contains(e.target) && !dropdownOptions.contains(e.target)) {
+            dropdownOptions.classList.remove('active');
+            dropdownSelected.classList.remove('active');
+        }
+    });
+    
+    // Set initial selected option
+    const savedDisplayLang = localStorage.getItem('indiasp_selected_language_display') || savedLanguage;
+    const initialOption = dropdownOptions.querySelector(`[data-value="${savedDisplayLang}"]`);
+    if (initialOption) {
+        initialOption.classList.add('selected');
+    }
+    
+    // Apply actual language (only if Hindi/English)
+    if (savedLanguage === 'hindi' || savedLanguage === 'english') {
+        updateLanguage(savedLanguage);
+    }
+}
+
+function updateLanguageDisplay(languageCode) {
+    const dropdownSelected = document.getElementById('languageDropdownSelected');
+    if (!dropdownSelected || !LANGUAGE_DATA[languageCode]) return;
+    
+    const flagIcon = dropdownSelected.querySelector('.flag-icon');
+    const languageText = dropdownSelected.querySelector('.language-text');
+    
+    if (flagIcon && languageText) {
+        flagIcon.textContent = LANGUAGE_DATA[languageCode].flag;
+        languageText.textContent = LANGUAGE_DATA[languageCode].nativeName;
+    }
+}
+
 function initializeLanguageSystem() {
+    // Initialize enhanced language selector
+    initializeEnhancedLanguageSelector();
+    
     // Get saved language preference or default to English with error handling
     let savedLanguage = 'english';
     try {
-        savedLanguage = localStorage.getItem('preferredLanguage') || 'english';
+        savedLanguage = localStorage.getItem('indiasp_selected_language') || 'english';
     } catch (error) {
         // Silently use default language when localStorage is not available
         savedLanguage = 'english';
     }
 
-    // Set the language select dropdown to the saved/default language
-    const languageSelect = document.getElementById('languageSelect');
-    if (languageSelect) {
-        languageSelect.value = savedLanguage;
-        languageSelect.addEventListener('change', function() {
+    // Set profile language select dropdown
+    const profileLanguageSelect = document.getElementById('profileLanguageSelect');
+    
+    if (profileLanguageSelect) {
+        profileLanguageSelect.value = savedLanguage;
+        profileLanguageSelect.addEventListener('change', function() {
             updateLanguage(this.value);
+            // Also update the enhanced selector display
+            updateLanguageDisplay(this.value);
         });
     }
 
-    // Apply the language immediately
-    updateLanguage(savedLanguage);
+    // Apply the language immediately (only for Hindi/English)
+    if (savedLanguage === 'hindi' || savedLanguage === 'english') {
+        updateLanguage(savedLanguage);
+    }
 }
 // Cached search data for instant results
 let searchCache = new Map();
@@ -1759,7 +2165,7 @@ function setupSearchFunctionality() {
 
     // Cache the result
     searchCache.set(query, filteredServices);
-    
+
     // Clear cache if it gets too large
     if (searchCache.size > 100) {
       const firstKey = searchCache.keys().next().value;
@@ -1773,16 +2179,16 @@ function setupSearchFunctionality() {
   let searchTimeout;
   searchInput.addEventListener('input', function() {
     const query = this.value.toLowerCase().trim();
-    
+
     // Clear previous timeout
     clearTimeout(searchTimeout);
-    
+
     // Execute immediately for first few characters
     if (query.length <= 2) {
       performSearch(query);
       return;
     }
-    
+
     // Ultra-fast debounce for longer queries
     searchTimeout = safeSetTimeout(() => performSearch(query), 50);
   });
@@ -1804,19 +2210,19 @@ function renderSearchResults(filteredServices, searchOptions, searchInput) {
 
   // Use DocumentFragment for faster DOM manipulation
   const fragment = document.createDocumentFragment();
-  
+
   filteredServices.forEach(service => {
     const option = document.createElement('div');
     option.className = 'package-option search-result';
     option.dataset.service = service.category;
     option.dataset.package = JSON.stringify(service);
-    
+
     const priceText = service.priceType === 'per_k' 
       ? `₹${service.price}/1k${service.unit ? ` ${service.unit}` : ''}`
       : `₹${service.price}${service.unit ? ` ${service.unit}` : ''}`;
-    
+
     const { icon, iconClass } = getPackageIconAndType(service.name, service.price);
-    
+
     option.innerHTML = `
       <div class="package-icon ${iconClass}">
         <i class="${icon}"></i>
@@ -1830,14 +2236,14 @@ function renderSearchResults(filteredServices, searchOptions, searchInput) {
         <div class="package-price">${priceText}</div>
       </div>
     `;
-    
+
     // Use event delegation for better performance - attach to searchOptions instead
     option.dataset.serviceId = service.id;
     option.dataset.serviceCategory = service.category;
-    
+
     fragment.appendChild(option);
   });
-  
+
   searchOptions.innerHTML = '';
   searchOptions.appendChild(fragment);
   searchOptions.classList.add('active');
@@ -1850,17 +2256,17 @@ function setupGlobalEventDelegation() {
     if (target) {
       e.preventDefault();
       e.stopPropagation();
-      
+
       const serviceId = parseInt(target.dataset.serviceId);
       const serviceCategory = target.dataset.serviceCategory;
-      
+
       // Find service data from cache
       const service = allServicesData.find(s => s.id === serviceId);
       if (!service) return;
-      
+
       selectedService = serviceCategory;
       selectedPackage = service;
-      
+
       const serviceSelected = document.getElementById('serviceSelected');
       if (serviceSelected) {
         const serviceIcon = document.querySelector(`[data-value="${serviceCategory}"] .service-icon`);
@@ -1868,12 +2274,12 @@ function setupGlobalEventDelegation() {
         serviceSelected.querySelector('.selected-text').innerHTML = 
           iconHTML + ' ' + getServiceDisplayName(serviceCategory);
       }
-      
+
       populatePackages(serviceCategory);
       requestAnimationFrame(() => {
         selectPackageByServiceId(serviceId);
       });
-      
+
       // Clear search
       const searchInput = document.getElementById('searchService');
       const searchOptions = document.getElementById('searchOptions');
@@ -1882,7 +2288,7 @@ function setupGlobalEventDelegation() {
         searchOptions.innerHTML = '';
         searchOptions.classList.remove('active');
       }
-      
+
       showNotification('Service and package selected successfully!', 'success');
       return;
     }
@@ -2828,8 +3234,8 @@ function setupCustomDropdowns() {
               const text = option.querySelector('span').firstChild.textContent;
               const icon = option.querySelector('.service-icon').outerHTML;
               serviceSelected.querySelector('.selected-text').innerHTML = icon + ' ' + text;
-              const serviceSelect = document.getElementById('serviceSelect');
-              serviceSelect.value = value;
+              // Update selected service value directly
+              // Note: No hidden select element needed for this dropdown
               selectedService = value;
               serviceOptions.classList.remove('active');
               serviceSelected.classList.remove('active');
@@ -3103,11 +3509,10 @@ function updateRefillHistoryPage() {
   }
 }
 function handleServiceChange() {
-  const serviceSelect = document.getElementById('serviceSelect');
   const packageSelect = document.getElementById('packageSelect');
   const priceSection = document.getElementById('priceSection');
-  if (!serviceSelect || !packageSelect || !priceSection) return;
-  const selectedValue = selectedService || serviceSelect.value;
+  if (!packageSelect || !priceSection) return;
+  const selectedValue = selectedService;
   packageSelect.innerHTML = '<option value="">Select Package</option>';
   priceSection.classList.add('hidden');
   const packageSelected = document.getElementById('packageSelected');
@@ -3159,7 +3564,7 @@ function updateDynamicDescription() {
       calculatedPrice = selectedPackage.price;
   }
   const dynamicDescription = `
-      <p><strong>🚀 ${selectedPackage.name} - Only ₹${calculatedPrice.toFixed(2)} with instant delivery + 365 day guarantee!</strong></p>
+      <p><strong>🚀 ${selectedPackage.name} - Only ${formatPrice(convertPrice(calculatedPrice))} with instant delivery + 365 day guarantee!</strong></p>
       <p><strong>⏰ Service Delivery Time:</strong></p>
       <p>⚡ Start: <strong>0-15 minutes</strong> | 🚀 Speed: <strong>100K per day</strong></p>
       <p>👥 Quality: <strong>Real accounts</strong> | 💧 Drop rate: <strong>Maximum 10%</strong></p>
@@ -3192,7 +3597,9 @@ function calculateTotal() {
   } else {
       total = selectedPackage.price;
   }
-  totalAmount.textContent = total.toFixed(2);
+  // Display price in selected currency with symbol
+  const convertedTotal = convertPrice(total);
+  totalAmount.textContent = formatPrice(convertedTotal);
   updateDynamicDescription();
   if (balanceError) {
       if (total > 0) {
@@ -3545,8 +3952,8 @@ function showAddFundsQRCode(amount) {
                   ">Scan with any UPI app to add ₹${amount.toFixed(2)} to your wallet</div>
               </div>
 
-              <!-- Cancel Button -->
-              <button onclick="closeAddFundsQRModal()" style="
+              <!-- Cancel Transaction Button -->
+              <button onclick="showQRCancelConfirmation()" style="
                   width: 100%;
                   background: #dc3545;
                   color: white;
@@ -3557,7 +3964,7 @@ function showAddFundsQRCode(amount) {
                   font-weight: 600;
                   font-size: 16px;
                   transition: all 0.2s ease;
-              ">Back to Add Funds</button>
+              ">Cancel Transaction</button>
           </div>
       </div>
   `;
@@ -3566,6 +3973,8 @@ function showAddFundsQRCode(amount) {
 
   window.generateAddFundsQR = function(amount) {
       const qrContainer = document.getElementById('addFundsQrCodeContainer');
+      const generateButton = document.querySelector('button[onclick="generateAddFundsQR(' + amount + ')"]');
+      
       if (qrContainer) {
           const upiID = 'kavita.5049-49@waicici';
           const note = `Add Funds - India Social Panel`;
@@ -3592,7 +4001,22 @@ function showAddFundsQRCode(amount) {
               </div>
           `;
 
+          // Hide the generate button after QR code is created
+          if (generateButton) {
+              generateButton.style.display = 'none';
+          }
+
           showNotification('✅ QR Code generated! Scan to add funds', 'success');
+      }
+  };
+
+  window.showQRCancelConfirmation = function() {
+      if (confirm('Are you sure you want to cancel this transaction? You will be redirected to Add Funds page.')) {
+          if (qrModal && qrModal.parentElement) {
+              document.body.removeChild(qrModal);
+          }
+          showPage('addFundsPage');
+          showNotification('Transaction cancelled successfully', 'info');
       }
   };
 
@@ -4463,6 +4887,34 @@ function showCancelConfirmationPopup(onConfirm) {
       document.body.removeChild(confirmationModal);
     }
     document.body.style.overflow = 'auto';
+    
+    // Close all payment related modals when cancellation is confirmed
+    const paymentModal = document.getElementById('paymentModal');
+    const upiAppsModal = document.getElementById('upiAppsModal');
+    const qrCodeModal = document.getElementById('qrCodeModal');
+    const upiIdModal = document.getElementById('upiIdModal');
+    const creditCardModal = document.getElementById('creditCardModal');
+    
+    if (paymentModal && paymentModal.parentElement) {
+      document.body.removeChild(paymentModal);
+    }
+    if (upiAppsModal && upiAppsModal.parentElement) {
+      document.body.removeChild(upiAppsModal);
+    }
+    if (qrCodeModal && qrCodeModal.parentElement) {
+      document.body.removeChild(qrCodeModal);
+    }
+    if (upiIdModal && upiIdModal.parentElement) {
+      document.body.removeChild(upiIdModal);
+    }
+    if (creditCardModal && creditCardModal.parentElement) {
+      document.body.removeChild(creditCardModal);
+    }
+    
+    // Navigate to dashboard home page
+    showPage('dashboardHome');
+    forceEnableScrolling();
+    
     onConfirm();
   };
 
@@ -4788,7 +5240,7 @@ function showUPIAppsModal(order) {
               const fallbackTimer = setTimeout(() => {
                   window.location.href = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
               }, 1000);
-              activeTimers.push(fallbackTimer);
+              activeTimers.add(fallbackTimer);
               break;
 
           case 'phonepe':
@@ -4837,8 +5289,13 @@ function showUPIAppsModal(order) {
       showCancelConfirmationPopup(() => {
           clearInterval(timerInterval);
           closeUPIModal();
-          // Close payment modal completely
+          // Close payment modal completely and return to home
           const paymentModal = document.getElementById('paymentModal');
+          if (paymentModal && paymentModal.parentElement) {
+              document.body.removeChild(paymentModal);
+          }
+          // Return to dashboard home page
+          showPage('dashboardHome');
           if (paymentModal && paymentModal.parentElement) {
               document.body.removeChild(paymentModal);
           }
@@ -6315,3 +6772,182 @@ function getPackageIconAndType(packageName, price) {
       badge: price > 10000 ? { type: 'premium', text: 'Premium' } : null
   };
 }
+
+// =================== ENHANCEMENT FUNCTIONS ===================
+
+// 5. Enhanced Order History Functions
+function copyOrderId(orderId) {
+    navigator.clipboard.writeText(orderId).then(() => {
+        showNotification(`Order ID ${orderId} copied to clipboard!`, 'success');
+    }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = orderId;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showNotification(`Order ID ${orderId} copied to clipboard!`, 'success');
+    });
+}
+
+function viewOrderDetails(orderId) {
+    showNotification(`Viewing details for order ${orderId}`, 'info');
+    // This would typically show a detailed order modal
+    // For now, we'll just show a notification
+}
+
+// 6. Enhanced UPI Payment Functions
+function showUPIOptions() {
+    const upiAppsGrid = document.getElementById('upiAppsGrid');
+    if (upiAppsGrid) {
+        const isVisible = upiAppsGrid.style.display !== 'none';
+        upiAppsGrid.style.display = isVisible ? 'none' : 'block';
+        
+        if (!isVisible) {
+            // Scroll into view
+            upiAppsGrid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+}
+
+function openUPIApp(appName) {
+    const amount = document.getElementById('amountInput')?.value || '0';
+    const amountInINR = currentCurrency !== 'inr' ? Math.round(parseFloat(amount) / CURRENCY_RATES[currentCurrency].rate) : parseFloat(amount);
+    
+    // UPI ID - using the embedded Kavita UPI ID
+    const upiId = 'kavita.5049-49@waicici';
+    const merchantName = 'India Social Panel';
+    
+    // UPI URL format: upi://pay?pa=UPI_ID&pn=MERCHANT_NAME&am=AMOUNT&cu=INR&tn=TRANSACTION_NOTE
+    const transactionNote = `Add Funds - India Social Panel`;
+    
+    const upiUrls = {
+        'gpay': `tez://upi/pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
+        'phonepe': `phonepe://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
+        'paytm': `paytmmp://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
+        'bhim': `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
+        'amazonpay': `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
+        'whatsapp': `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`
+    };
+    
+    const fallbackUrl = `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`;
+    
+    if (amountInINR < 1) {
+        showNotification('Please enter a valid amount to proceed with payment', 'error');
+        return;
+    }
+    
+    // Attempt to open the specific UPI app
+    const upiUrl = upiUrls[appName] || fallbackUrl;
+    
+    // For mobile devices, try to open the UPI app
+    if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        window.location.href = upiUrl;
+        
+        // Fallback notification
+        safeSetTimeout(() => {
+            showNotification(`Opening ${getAppDisplayName(appName)}... If the app doesn't open, please ensure it's installed on your device.`, 'info');
+        }, 1000);
+    } else {
+        // For desktop, show QR code or instructions
+        showQRCodeForUPI(upiId, amountInINR, appName);
+    }
+    
+    showNotification(`Initiating payment of ₹${amountInINR} via ${getAppDisplayName(appName)}`, 'success');
+}
+
+function getAppDisplayName(appName) {
+    const names = {
+        'gpay': 'Google Pay',
+        'phonepe': 'PhonePe',
+        'paytm': 'Paytm',
+        'bhim': 'BHIM',
+        'amazonpay': 'Amazon Pay',
+        'whatsapp': 'WhatsApp Pay'
+    };
+    return names[appName] || 'UPI App';
+}
+
+function showQRCodeForUPI(upiId, amount, appName) {
+    // This would generate and show a QR code for desktop users
+    // For now, we'll show the UPI ID and amount
+    const message = `
+        UPI Payment Details:
+        UPI ID: ${upiId}
+        Amount: ₹${amount}
+        
+        Scan QR code with ${getAppDisplayName(appName)} or any UPI app to pay.
+    `;
+    showNotification(message, 'info');
+}
+
+// 7. Initialize All Enhancement Features
+function initializeAllEnhancements() {
+    // Initialize first visit tracking
+    initializeFirstVisitTracking();
+    
+    // Initialize currency system
+    initializeCurrencySystem();
+    
+    // Update price displays
+    updateAllPricesDisplay();
+    
+    console.log('🚀 All enhancement features initialized successfully!');
+}
+
+// Enhanced DOMContentLoaded Event - Include new initializations
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 India Social Panel - Ultra-fast initialization starting...');
+    
+    // Start performance monitoring immediately
+    startPerformanceMonitoring();
+
+    // Force enable scrolling first - critical for UX
+    forceEnableScrolling();
+
+    // Ultra-fast initialization using requestAnimationFrame for better performance
+    requestAnimationFrame(() => {
+        // Initialize core systems first
+        initializeLanguageSystem();
+        updateBalanceDisplay();
+        showDashboard();
+
+        // Setup optimized event listeners immediately
+        setupOptimizedEventListeners();
+        setupGlobalEventDelegation();
+
+        // Batch remaining initializations for better performance
+        requestAnimationFrame(() => {
+            setupCustomDropdowns();
+            setupNavigationListeners();
+            loadDarkModePreference();
+            setupSearchFunctionality();
+            setupServiceItemClickHandlers();
+            calculateTotal();
+
+            // Final batch - less critical items
+            requestAnimationFrame(() => {
+                initializeEmailJS();
+                initializeAIChatListeners();
+                setupProfileFunctionality();
+
+                // Initialize new enhancement features
+                initializeAllEnhancements();
+
+                // Final scrolling check
+                forceEnableScrolling();
+
+                console.log('🚀 India Social Panel - Ultra-fast initialization complete!');
+            });
+        });
+    });
+});
+
+// Global function to ensure compatibility
+window.closeFirstTimeWelcome = closeFirstTimeWelcome;
+window.copyOrderId = copyOrderId;
+window.viewOrderDetails = viewOrderDetails;
+window.showUPIOptions = showUPIOptions;
+window.openUPIApp =openUPIApp;
+window.changeCurrency = changeCurrency;
