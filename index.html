@@ -1546,108 +1546,31 @@ print(response.json())</code></pre>
                         </div>
                         <div class="support-item">
                             <i class="fas fa-language"></i>
-                            <div class="enhanced-language-selector">
-                                <div class="language-dropdown-selected" id="languageDropdownSelected">
-                                    <span class="flag-icon">🇺🇸</span>
-                                    <span class="language-text">English</span>
-                                    <i class="fas fa-chevron-down language-arrow"></i>
-                                </div>
-                                <div class="language-dropdown-options" id="languageDropdownOptions">
-                                    <div class="language-option" data-value="english" data-flag="🇺🇸">
-                                        <span class="flag-icon">🇺🇸</span>
-                                        <span class="language-name">English</span>
-                                    </div>
-                                    <div class="language-option" data-value="hindi" data-flag="🇮🇳">
-                                        <span class="flag-icon">🇮🇳</span>
-                                        <span class="language-name">हिंदी (Hindi)</span>
-                                    </div>
-                                    <div class="language-option" data-value="spanish" data-flag="🇪🇸">
-                                        <span class="flag-icon">🇪🇸</span>
-                                        <span class="language-name">Español</span>
-                                    </div>
-                                    <div class="language-option" data-value="french" data-flag="🇫🇷">
-                                        <span class="flag-icon">🇫🇷</span>
-                                        <span class="language-name">Français</span>
-                                    </div>
-                                    <div class="language-option" data-value="german" data-flag="🇩🇪">
-                                        <span class="flag-icon">🇩🇪</span>
-                                        <span class="language-name">Deutsch</span>
-                                    </div>
-                                    <div class="language-option" data-value="italian" data-flag="🇮🇹">
-                                        <span class="flag-icon">🇮🇹</span>
-                                        <span class="language-name">Italiano</span>
-                                    </div>
-                                    <div class="language-option" data-value="portuguese" data-flag="🇧🇷">
-                                        <span class="flag-icon">🇧🇷</span>
-                                        <span class="language-name">Português</span>
-                                    </div>
-                                    <div class="language-option" data-value="russian" data-flag="🇷🇺">
-                                        <span class="flag-icon">🇷🇺</span>
-                                        <span class="language-name">Русский</span>
-                                    </div>
-                                    <div class="language-option" data-value="chinese" data-flag="🇨🇳">
-                                        <span class="flag-icon">🇨🇳</span>
-                                        <span class="language-name">中文</span>
-                                    </div>
-                                    <div class="language-option" data-value="japanese" data-flag="🇯🇵">
-                                        <span class="flag-icon">🇯🇵</span>
-                                        <span class="language-name">日本語</span>
-                                    </div>
-                                    <div class="language-option" data-value="korean" data-flag="🇰🇷">
-                                        <span class="flag-icon">🇰🇷</span>
-                                        <span class="language-name">한국어</span>
-                                    </div>
-                                    <div class="language-option" data-value="arabic" data-flag="🇸🇦">
-                                        <span class="flag-icon">🇸🇦</span>
-                                        <span class="language-name">العربية</span>
-                                    </div>
-                                    <div class="language-option" data-value="dutch" data-flag="🇳🇱">
-                                        <span class="flag-icon">🇳🇱</span>
-                                        <span class="language-name">Nederlands</span>
-                                    </div>
-                                    <div class="language-option" data-value="polish" data-flag="🇵🇱">
-                                        <span class="flag-icon">🇵🇱</span>
-                                        <span class="language-name">Polski</span>
-                                    </div>
-                                    <div class="language-option" data-value="turkish" data-flag="🇹🇷">
-                                        <span class="flag-icon">🇹🇷</span>
-                                        <span class="language-name">Türkçe</span>
-                                    </div>
-                                    <div class="language-option" data-value="swedish" data-flag="🇸🇪">
-                                        <span class="flag-icon">🇸🇪</span>
-                                        <span class="language-name">Svenska</span>
-                                    </div>
-                                    <div class="language-option" data-value="norwegian" data-flag="🇳🇴">
-                                        <span class="flag-icon">🇳🇴</span>
-                                        <span class="language-name">Norsk</span>
-                                    </div>
-                                    <div class="language-option" data-value="danish" data-flag="🇩🇰">
-                                        <span class="flag-icon">🇩🇰</span>
-                                        <span class="language-name">Dansk</span>
-                                    </div>
-                                    <div class="language-option" data-value="finnish" data-flag="🇫🇮">
-                                        <span class="flag-icon">🇫🇮</span>
-                                        <span class="language-name">Suomi</span>
-                                    </div>
-                                    <div class="language-option" data-value="greek" data-flag="🇬🇷">
-                                        <span class="flag-icon">🇬🇷</span>
-                                        <span class="language-name">Ελληνικά</span>
-                                    </div>
-                                    <div class="language-option" data-value="hebrew" data-flag="🇮🇱">
-                                        <span class="flag-icon">🇮🇱</span>
-                                        <span class="language-name">עברית</span>
-                                    </div>
-                                    <div class="language-option" data-value="thai" data-flag="🇹🇭">
-                                        <span class="flag-icon">🇹🇭</span>
-                                        <span class="language-name">ไทย</span>
-                                    </div>
-                                </div>
-                                <!-- Hidden original select for compatibility -->
-                                <select id="languageSelect" style="display: none;">
-                                    <option value="english" selected>English</option>
-                                    <option value="hindi">Hindi</option>
-                                </select>
-                            </div>
+                            <span>Language</span>
+                            <select id="languageSelect" class="native-language-select" onchange="updateLanguage(this.value)">
+                                <option value="english" data-flag="🇺🇸">🇺🇸 English</option>
+                                <option value="hindi" data-flag="🇮🇳">🇮🇳 हिंदी (Hindi)</option>
+                                <option value="spanish" data-flag="🇪🇸">🇪🇸 Español</option>
+                                <option value="french" data-flag="🇫🇷">🇫🇷 Français</option>
+                                <option value="german" data-flag="🇩🇪">🇩🇪 Deutsch</option>
+                                <option value="italian" data-flag="🇮🇹">🇮🇹 Italiano</option>
+                                <option value="portuguese" data-flag="🇧🇷">🇧🇷 Português</option>
+                                <option value="russian" data-flag="🇷🇺">🇷🇺 Русский</option>
+                                <option value="chinese" data-flag="🇨🇳">🇨🇳 中文</option>
+                                <option value="japanese" data-flag="🇯🇵">🇯🇵 日本語</option>
+                                <option value="korean" data-flag="🇰🇷">🇰🇷 한국어</option>
+                                <option value="arabic" data-flag="🇸🇦">🇸🇦 العربية</option>
+                                <option value="dutch" data-flag="🇳🇱">🇳🇱 Nederlands</option>
+                                <option value="polish" data-flag="🇵🇱">🇵🇱 Polski</option>
+                                <option value="turkish" data-flag="🇹🇷">🇹🇷 Türkçe</option>
+                                <option value="swedish" data-flag="🇸🇪">🇸🇪 Svenska</option>
+                                <option value="norwegian" data-flag="🇳🇴">🇳🇴 Norsk</option>
+                                <option value="danish" data-flag="🇩🇰">🇩🇰 Dansk</option>
+                                <option value="finnish" data-flag="🇫🇮">🇫🇮 Suomi</option>
+                                <option value="greek" data-flag="🇬🇷">🇬🇷 Ελληνικά</option>
+                                <option value="hebrew" data-flag="🇮🇱">🇮🇱 עברית</option>
+                                <option value="thai" data-flag="🇹🇭">🇹🇭 ไทย</option>
+                            </select>
                         </div>
                     </div>
                 </div>
