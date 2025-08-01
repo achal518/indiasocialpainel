@@ -493,22 +493,30 @@ window.showPaymentPage = function(order) {
           '</div>' +
           '<div class="payment-methods" style="padding: 25px;">' +
               '<h3 style="margin-bottom: 20px; color: #333; text-align: center; font-size: 18px;">💳 Choose Payment Method / भुगतान विधि चुनें</h3>' +
-              '<div class="payment-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">' +
-                  '<button onclick="showUPIAppsPayment()" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; height: 60px; box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);">' +
-                      '<i class="fab fa-google-pay" style="font-size: 18px;"></i>' +
-                      '<span style="font-size: 11px; font-weight: 600;">UPI Apps</span>' +
+              '<div class="payment-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">' +
+                  '<button onclick="showUPIAppsPayment()" style="background: white; color: #333; border: 2px solid #e0e0e0; padding: 18px 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; height: 90px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onmouseover="this.style.borderColor=\'#4CAF50\'; this.style.backgroundColor=\'#f8fff8\'" onmouseout="this.style.borderColor=\'#e0e0e0\'; this.style.backgroundColor=\'white\'">' +
+                      '<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">' +
+                          '<i class="fab fa-google-pay" style="font-size: 20px; color: white;"></i>' +
+                      '</div>' +
+                      '<span style="font-size: 12px; font-weight: 600; color: #333;">UPI Apps</span>' +
                   '</button>' +
-                  '<button onclick="showQRCodePayment()" style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; border: none; padding: 12px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; height: 60px; box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);">' +
-                      '<i class="fas fa-qrcode" style="font-size: 18px;"></i>' +
-                      '<span style="font-size: 11px; font-weight: 600;">QR Code</span>' +
+                  '<button onclick="showQRCodePayment()" style="background: white; color: #333; border: 2px solid #e0e0e0; padding: 18px 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; height: 90px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onmouseover="this.style.borderColor=\'#2196F3\'; this.style.backgroundColor=\'#f0f8ff\'" onmouseout="this.style.borderColor=\'#e0e0e0\'; this.style.backgroundColor=\'white\'">' +
+                      '<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">' +
+                          '<i class="fas fa-qrcode" style="font-size: 20px; color: white;"></i>' +
+                      '</div>' +
+                      '<span style="font-size: 12px; font-weight: 600; color: #333;">QR Code</span>' +
                   '</button>' +
-                  '<button onclick="showUPIIDPayment()" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); color: white; border: none; padding: 12px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; height: 60px; box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);">' +
-                      '<i class="fas fa-at" style="font-size: 18px;"></i>' +
-                      '<span style="font-size: 11px; font-weight: 600;">UPI ID</span>' +
+                  '<button onclick="showUPIIDPayment()" style="background: white; color: #333; border: 2px solid #e0e0e0; padding: 18px 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; height: 90px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onmouseover="this.style.borderColor=\'#FF9800\'; this.style.backgroundColor=\'#fff8f0\'" onmouseout="this.style.borderColor=\'#e0e0e0\'; this.style.backgroundColor=\'white\'">' +
+                      '<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">' +
+                          '<i class="fas fa-at" style="font-size: 20px; color: white;"></i>' +
+                      '</div>' +
+                      '<span style="font-size: 12px; font-weight: 600; color: #333;">UPI ID</span>' +
                   '</button>' +
-                  '<button onclick="showCardBankingPayment()" style="background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); color: white; border: none; padding: 12px 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; height: 60px; box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);">' +
-                      '<i class="fas fa-credit-card" style="font-size: 18px;"></i>' +
-                      '<span style="font-size: 11px; font-weight: 600;">Card/Bank</span>' +
+                  '<button onclick="showCardBankingPayment()" style="background: white; color: #333; border: 2px solid #e0e0e0; padding: 18px 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; height: 90px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" onmouseover="this.style.borderColor=\'#9C27B0\'; this.style.backgroundColor=\'#faf0ff\'" onmouseout="this.style.borderColor=\'#e0e0e0\'; this.style.backgroundColor=\'white\'">' +
+                      '<div style="width: 40px; height: 40px; background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">' +
+                          '<i class="fas fa-credit-card" style="font-size: 20px; color: white;"></i>' +
+                      '</div>' +
+                      '<span style="font-size: 12px; font-weight: 600; color: #333;">Card/Bank</span>' +
                   '</button>' +
               '</div>' +
               '<div style="text-align: center; margin-bottom: 15px;">' +
@@ -1968,12 +1976,10 @@ const LANGUAGE_DATA = {
     'thai': { flag: '🇹🇭', name: 'Thai', nativeName: 'ไทย' }
 };
 
-function initializeEnhancedLanguageSelector() {
-    const dropdownSelected = document.getElementById('languageDropdownSelected');
-    const dropdownOptions = document.getElementById('languageDropdownOptions');
+function initializeNativeLanguageSelector() {
     const languageSelect = document.getElementById('languageSelect');
     
-    if (!dropdownSelected || !dropdownOptions) return;
+    if (!languageSelect) return;
     
     // Get saved language preference
     let savedLanguage = 'english';
@@ -1983,50 +1989,17 @@ function initializeEnhancedLanguageSelector() {
         savedLanguage = 'english';
     }
     
-    // Set initial display
-    updateLanguageDisplay(savedLanguage);
+    // Set the saved language value
+    languageSelect.value = savedLanguage;
     
-    // Handle dropdown toggle
-    dropdownSelected.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const isActive = dropdownOptions.classList.contains('active');
-        
-        // Close all other dropdowns first
-        document.querySelectorAll('.language-dropdown-options.active').forEach(dropdown => {
-            if (dropdown !== dropdownOptions) {
-                dropdown.classList.remove('active');
-                dropdown.previousElementSibling.classList.remove('active');
-            }
-        });
-        
-        if (isActive) {
-            dropdownOptions.classList.remove('active');
-            dropdownSelected.classList.remove('active');
-        } else {
-            dropdownOptions.classList.add('active');
-            dropdownSelected.classList.add('active');
-        }
-    });
+    // Apply the language immediately (only for Hindi/English)
+    if (savedLanguage === 'hindi' || savedLanguage === 'english') {
+        updateLanguage(savedLanguage);
+    }
     
-    // Handle language option selection
-    dropdownOptions.addEventListener('click', function(e) {
-        const option = e.target.closest('.language-option');
-        if (!option) return;
-        
-        const selectedLang = option.dataset.value;
-        
-        // Update visual selection
-        dropdownOptions.querySelectorAll('.language-option').forEach(opt => {
-            opt.classList.remove('selected');
-        });
-        option.classList.add('selected');
-        
-        // Update display
-        updateLanguageDisplay(selectedLang);
-        
-        // Close dropdown
-        dropdownOptions.classList.remove('active');
-        dropdownSelected.classList.remove('active');
+    // Add change event listener
+    languageSelect.addEventListener('change', function() {
+        const selectedLang = this.value;
         
         // Only apply language change for Hindi and English
         if (selectedLang === 'hindi' || selectedLang === 'english') {
@@ -2040,54 +2013,16 @@ function initializeEnhancedLanguageSelector() {
             }
             
             // Show notification for other languages
-            showNotification(`${LANGUAGE_DATA[selectedLang].nativeName} language selected! Currently only English and Hindi translations are available.`, 'info');
-        }
-        
-        // Update hidden select for compatibility
-        if (languageSelect) {
-            if (selectedLang === 'hindi' || selectedLang === 'english') {
-                languageSelect.value = selectedLang;
-            }
+            const optionText = this.options[this.selectedIndex].text;
+            const languageName = optionText.split(' ').slice(1).join(' ');
+            showNotification(`${languageName} language selected! Currently only English and Hindi translations are available.`, 'info');
         }
     });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!dropdownSelected.contains(e.target) && !dropdownOptions.contains(e.target)) {
-            dropdownOptions.classList.remove('active');
-            dropdownSelected.classList.remove('active');
-        }
-    });
-    
-    // Set initial selected option
-    const savedDisplayLang = localStorage.getItem('indiasp_selected_language_display') || savedLanguage;
-    const initialOption = dropdownOptions.querySelector(`[data-value="${savedDisplayLang}"]`);
-    if (initialOption) {
-        initialOption.classList.add('selected');
-    }
-    
-    // Apply actual language (only if Hindi/English)
-    if (savedLanguage === 'hindi' || savedLanguage === 'english') {
-        updateLanguage(savedLanguage);
-    }
-}
-
-function updateLanguageDisplay(languageCode) {
-    const dropdownSelected = document.getElementById('languageDropdownSelected');
-    if (!dropdownSelected || !LANGUAGE_DATA[languageCode]) return;
-    
-    const flagIcon = dropdownSelected.querySelector('.flag-icon');
-    const languageText = dropdownSelected.querySelector('.language-text');
-    
-    if (flagIcon && languageText) {
-        flagIcon.textContent = LANGUAGE_DATA[languageCode].flag;
-        languageText.textContent = LANGUAGE_DATA[languageCode].nativeName;
-    }
 }
 
 function initializeLanguageSystem() {
-    // Initialize enhanced language selector
-    initializeEnhancedLanguageSelector();
+    // Initialize native language selector
+    initializeNativeLanguageSelector();
     
     // Get saved language preference or default to English with error handling
     let savedLanguage = 'english';
@@ -2105,8 +2040,11 @@ function initializeLanguageSystem() {
         profileLanguageSelect.value = savedLanguage;
         profileLanguageSelect.addEventListener('change', function() {
             updateLanguage(this.value);
-            // Also update the enhanced selector display
-            updateLanguageDisplay(this.value);
+            // Also update the main language selector
+            const mainLanguageSelect = document.getElementById('languageSelect');
+            if (mainLanguageSelect) {
+                mainLanguageSelect.value = this.value;
+            }
         });
     }
 
