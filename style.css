@@ -30,6 +30,98 @@ body::before {
   z-index: 0;
 }
 
+/* Native Language Selector Styles */
+.native-language-select {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 160px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 20px;
+  padding-right: 35px;
+}
+
+.native-language-select:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+  transform: translateY(-1px);
+}
+
+.native-language-select:focus {
+  outline: none;
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+}
+
+/* Native select option styling */
+.native-language-select option {
+  background: white;
+  color: #333;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  border: none;
+}
+
+/* Dark mode support for native language selector */
+body.dark-mode .native-language-select {
+  background: rgba(255,255,255,0.05);
+  border-color: #334155;
+  color: #e2e8f0;
+  background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e2e8f0'><path d='M7 10l5 5 5-5z'/></svg>");
+}
+
+body.dark-mode .native-language-select:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: #475569;
+}
+
+body.dark-mode .native-language-select:focus {
+  background: rgba(255,255,255,0.1);
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+body.dark-mode .native-language-select option {
+  background: #1a252f;
+  color: #e2e8f0;
+}
+
+/* Mobile responsive for native language selector */
+@media (max-width: 768px) {
+  .native-language-select {
+    min-width: 140px;
+    padding: 6px 30px 6px 10px;
+    font-size: 12px;
+    background-size: 18px;
+    background-position: right 6px center;
+  }
+}
+
+@media (max-width: 480px) {
+  .native-language-select {
+    min-width: 120px;
+    padding: 5px 25px 5px 8px;
+    font-size: 11px;
+    background-size: 16px;
+    background-position: right 5px center;
+  }
+}
+
 /* Enhanced Dark Mode Styles */
 body.dark-mode {
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
