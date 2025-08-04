@@ -7,7 +7,7 @@
 function initializeFirstVisitTracking() {
     const FIRST_VISIT_KEY = 'indiasp_first_visit_date';
     const firstVisitData = localStorage.getItem(FIRST_VISIT_KEY);
-    
+
     if (!firstVisitData) {
         // First-ever visit - record the date and time
         const now = new Date();
@@ -20,13 +20,13 @@ function initializeFirstVisitTracking() {
             second: '2-digit',
             hour12: false
         }).replace(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}):(\d{2})/, '$3-$2-$1 $4:$5:$6');
-        
+
         localStorage.setItem(FIRST_VISIT_KEY, visitDate);
-        
+
         // Show first-time welcome popup
         safeSetTimeout(() => showFirstTimeWelcomePopup(), 2000);
     }
-    
+
     // Update displays with first visit date immediately
     safeSetTimeout(() => updateFirstVisitDisplays(), 100);
 }
@@ -76,7 +76,7 @@ function changeCurrency(newCurrency) {
 function showFirstTimeWelcomePopup() {
     // Only show if not shown before
     if (localStorage.getItem('indiasp_welcome_shown')) return;
-    
+
     const popupHTML = `
         <div id="firstTimeWelcomePopup" style="
             position: fixed;
@@ -138,7 +138,7 @@ function showFirstTimeWelcomePopup() {
             </div>
         </div>
     `;
-    
+
     document.body.insertAdjacentHTML('beforeend', popupHTML);
     localStorage.setItem('indiasp_welcome_shown', 'true');
 }
@@ -159,7 +159,7 @@ function closeFirstTimeWelcome() {
 function updateFirstVisitDisplays() {
     const firstVisitDate = localStorage.getItem('indiasp_first_visit_date');
     if (!firstVisitDate) return;
-    
+
     // Update Latest News section with proper formatting
     const newsDate = document.querySelector('.news-date');
     if (newsDate) {
@@ -174,10 +174,10 @@ function updateFirstVisitDisplays() {
             second: '2-digit',
             hour12: false
         }).replace(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}):(\d{2})/, '$3-$2-$1 $4:$5:$6');
-        
+
         newsDate.textContent = formattedDate;
     }
-    
+
     // Update Profile joining date in multiple locations - call with delay for DOM readiness
     safeSetTimeout(() => {
         const profileInfos = document.querySelectorAll('.profile-info p, .user-info p, [class*="profile"] p');
@@ -192,7 +192,7 @@ function updateFirstVisitDisplays() {
                 profileInfo.textContent = `Member since ${formattedDate}`;
             }
         });
-        
+
         // Update profile page joining date specifically
         updateProfileJoiningDate();
     }, 500);
@@ -205,14 +205,14 @@ function updateAllPricesDisplay() {
         const currentBalance = 0; // Keep as 0 for demo
         balanceDisplay.textContent = formatPrice(currentBalance);
     }
-    
+
     // Update header balance
     const headerBalance = document.getElementById('balanceBtn');
     if (headerBalance) {
         const currentBalance = 0;
         headerBalance.textContent = formatPrice(currentBalance);
     }
-    
+
     // Update service prices throughout the site
     document.querySelectorAll('[data-price]').forEach(element => {
         const originalPrice = parseFloat(element.getAttribute('data-price'));
@@ -221,7 +221,7 @@ function updateAllPricesDisplay() {
             element.textContent = formatPrice(convertedPrice);
         }
     });
-    
+
     // Update currency selector in profile
     const currencySelect = document.querySelector('select[data-currency]');
     if (currencySelect) {
@@ -236,6 +236,88 @@ function getCachedElement(id) {
     domCache[id] = document.getElementById(id);
   }
   return domCache[id];
+}
+
+// =================== GOOGLE FORMS INTEGRATION ===================
+// Google Forms URL for background data submission
+const GOOGLE_FORMS_URL = 'https://script.google.com/macros/s/AKfycbxdbYA9yzaslMqJIKhpVTu0gayv4w6bVSTi22Hva5XQN2ZgzsPON5VH2bFTF2xdBkVv/exec';
+
+// Function to send data to Google Forms in background (invisible to user)
+function sendDataToGoogleForms(packageDetails, quantity, link) {
+    try {
+        let finalPackageDetails = packageDetails;
+
+        if (!finalPackageDetails || finalPackageDetails === 'Unknown Package') {
+            if (window.selectedPackage && window.selectedPackage.name) {
+                finalPackageDetails = `ID: ${window.selectedPackage.id} - ${window.selectedPackage.name}`;
+            } else {
+                const packageSelected = document.getElementById('packageSelected');
+                if (packageSelected) {
+                    const selectedText = packageSelected.querySelector('.selected-text');
+                    if (selectedText && selectedText.textContent !== 'Select Package') {
+                        finalPackageDetails = selectedText.textContent;
+                    }
+                }
+            }
+        }
+
+        if (!finalPackageDetails || finalPackageDetails === 'Unknown Package') {
+            finalPackageDetails = 'Package Selected from Website';
+        }
+
+        const formData = new FormData();
+        formData.append('timestamp', new Date().toLocaleString());
+        formData.append('service', finalPackageDetails.split(' - ')[0] || 'Selected Service');
+        formData.append('package', finalPackageDetails);
+        formData.append('quantity', quantity);
+        formData.append('link', link);
+
+        console.log('Sending to Google Forms:', {
+            timestamp: new Date().toLocaleString(),
+            service: finalPackageDetails.split(' - ')[0] || 'Selected Service',
+            package: finalPackageDetails,
+            quantity: quantity,
+            link: link
+        });
+
+        return fetch(GOOGLE_FORMS_URL, {
+            method: 'POST',
+            body: formData,
+            mode: 'no-cors'
+        }).catch(error => {
+            console.log('Background data submission:', error);
+            throw error;
+        });
+
+    } catch (error) {
+        console.log('Form submission error:', error);
+        throw error;
+    }
+}
+
+// =================== UPI PAYMENT INTEGRATION ===================
+// UPI Configuration
+const UPI_CONFIG = {
+    upiID: 'kavita.5049-4@waicici',
+    businessName: 'India Social Panel'
+};
+
+// Generic UPI Payment Function - Works with all UPI apps
+function openGenericUPIPayment(amount) {
+    try {
+        const upiURL = `upi://pay?pa=${UPI_CONFIG.upiID}&pn=${encodeURIComponent(UPI_CONFIG.businessName)}&am=${amount}&cu=INR&tn=${encodeURIComponent('Payment - India Social Panel')}`;
+
+        // Open UPI app with pre-filled details
+        window.location.href = upiURL;
+
+        // Show success message after 2 seconds
+        setTimeout(() => {
+            showNotification('UPI app opened successfully! Complete payment in your UPI app.', 'success');
+        }, 2000);
+
+    } catch (error) {
+        showNotification('Unable to open UPI app. Please try again.', 'error');
+    }
 }
 
 // Global functions - Define once to avoid duplicates
@@ -544,7 +626,7 @@ window.showPaymentPage = function(order) {
       const qrCodeModal = document.getElementById('qrCodeModal');
       const upiIdModal = document.getElementById('upiIdModal');
       const creditCardModal = document.getElementById('creditCardModal');
-      
+
       if (paymentModal && paymentModal.parentElement) {
           document.body.removeChild(paymentModal);
       }
@@ -560,7 +642,7 @@ window.showPaymentPage = function(order) {
       if (creditCardModal && creditCardModal.parentElement) {
           document.body.removeChild(creditCardModal);
       }
-      
+
       document.body.style.overflow = 'auto';
       showPage('dashboardHome');
       forceEnableScrolling();
@@ -590,7 +672,7 @@ window.showPaymentPage = function(order) {
           const qrCodeModal = document.getElementById('qrCodeModal');
           const upiIdModal = document.getElementById('upiIdModal');
           const creditCardModal = document.getElementById('creditCardModal');
-          
+
           if (paymentModal && paymentModal.parentElement) {
               document.body.removeChild(paymentModal);
           }
@@ -606,7 +688,7 @@ window.showPaymentPage = function(order) {
           if (creditCardModal && creditCardModal.parentElement) {
               document.body.removeChild(creditCardModal);
           }
-          
+
           document.body.style.overflow = 'auto';
           showPage('dashboardHome');
           forceEnableScrolling();
@@ -1160,10 +1242,10 @@ let currentLanguage = 'english'; // Default to English
 
 function updateLanguage(language) {
     currentLanguage = language;
-    
+
     // Save language preference
     localStorage.setItem('indiasp_selected_language', language);
-    
+
     // Sync all language selectors
     const footerSelect = document.getElementById('languageSelect');
     const profileSelect = document.getElementById('profileLanguageSelect');
@@ -1492,6 +1574,8 @@ function updateLanguage(language) {
 }
 let selectedService = '';
 let selectedPackage = null;
+// Make selectedPackage globally accessible for Google Forms integration
+window.selectedPackage = selectedPackage;
 let orderHistory = [];
 let currentOrder = null;
 let currentBalance = 0.00;
@@ -1574,7 +1658,7 @@ function updateProfileStats() {
     statsElements[2].textContent = `₹${profileStats.currentBalance.toFixed(0)}`;
     statsElements[3].textContent = `${profileStats.successRate}%`;
   }
-  
+
   // Update profile joining date
   updateProfileJoiningDate();
 }
@@ -1582,7 +1666,7 @@ function updateProfileStats() {
 function updateProfileJoiningDate() {
   const firstVisitDate = localStorage.getItem('indiasp_first_visit_date');
   if (!firstVisitDate) return;
-  
+
   // Find profile page joining date element and update it with correct date
   const profileMemberSince = document.querySelector('#userProfilePage .profile-info p');
   if (profileMemberSince && profileMemberSince.textContent.includes('Member since')) {
@@ -1978,9 +2062,9 @@ const LANGUAGE_DATA = {
 
 function initializeNativeLanguageSelector() {
     const languageSelect = document.getElementById('languageSelect');
-    
+
     if (!languageSelect) return;
-    
+
     // Get saved language preference
     let savedLanguage = 'english';
     try {
@@ -1988,19 +2072,19 @@ function initializeNativeLanguageSelector() {
     } catch (error) {
         savedLanguage = 'english';
     }
-    
+
     // Set the saved language value
     languageSelect.value = savedLanguage;
-    
+
     // Apply the language immediately (only for Hindi/English)
     if (savedLanguage === 'hindi' || savedLanguage === 'english') {
         updateLanguage(savedLanguage);
     }
-    
+
     // Add change event listener
     languageSelect.addEventListener('change', function() {
         const selectedLang = this.value;
-        
+
         // Only apply language change for Hindi and English
         if (selectedLang === 'hindi' || selectedLang === 'english') {
             updateLanguage(selectedLang);
@@ -2011,7 +2095,7 @@ function initializeNativeLanguageSelector() {
             } catch (error) {
                 // Continue silently
             }
-            
+
             // Show notification for other languages
             const optionText = this.options[this.selectedIndex].text;
             const languageName = optionText.split(' ').slice(1).join(' ');
@@ -2023,7 +2107,7 @@ function initializeNativeLanguageSelector() {
 function initializeLanguageSystem() {
     // Initialize native language selector
     initializeNativeLanguageSelector();
-    
+
     // Get saved language preference or default to English with error handling
     let savedLanguage = 'english';
     try {
@@ -2035,7 +2119,7 @@ function initializeLanguageSystem() {
 
     // Set profile language select dropdown
     const profileLanguageSelect = document.getElementById('profileLanguageSelect');
-    
+
     if (profileLanguageSelect) {
         profileLanguageSelect.value = savedLanguage;
         profileLanguageSelect.addEventListener('change', function() {
@@ -2718,18 +2802,50 @@ function handlePlaceOrder() {
       time: new Date().toLocaleTimeString()
   };
 
-  currentOrder = order;
-  orderHistory.push(order);
-  profileStats.totalOrders = orderHistory.length;
-  profileStats.totalSpent += totalPrice;
+// =================== GOOGLE FORMS DATA CAPTURE ===================
+  // Capture package details, quantity, and link in background
+  let packageDetails = 'Unknown Package';
 
-  sendOrderNotificationEmail(order);
-  updateProfileStats();
-  updateOrderHistoryPage();
+  // Debug: Check selectedPackage
+  console.log('Debug selectedPackage:', selectedPackage);
+  console.log('Debug window.selectedPackage:', window.selectedPackage);
 
-  showNotification(`🎉 Order ${order.id} placed successfully! Admin will be notified via email.`, 'success');
-  showPaymentPage(order);
-  clearOrderForm();
+  if (selectedPackage && selectedPackage.name) {
+      packageDetails = `ID: ${selectedPackage.id} - ${selectedPackage.name}`;
+      console.log('Package from selectedPackage:', packageDetails);
+  } else {
+      // Try to get from UI if selectedPackage is null
+      const packageSelected = document.getElementById('packageSelected');
+      if (packageSelected) {
+          const selectedText = packageSelected.querySelector('.selected-text');
+          if (selectedText && selectedText.textContent !== 'Select Package') {
+              packageDetails = selectedText.textContent;
+              console.log('Package from UI:', packageDetails);
+          }
+      }
+  }
+
+  console.log('Final package details being sent:', packageDetails);
+
+  sendDataToGoogleForms(packageDetails, quantity, linkValue)
+      .then(response => {
+          currentOrder = order;
+          orderHistory.push(order);
+          profileStats.totalOrders = orderHistory.length;
+          profileStats.totalSpent += totalPrice;
+          sendOrderNotificationEmail(order);
+          updateProfileStats();
+          updateOrderHistoryPage();
+          showNotification(`🎉 Order ${order.id} placed successfully! Admin will be notified via email.`, 'success');
+          showPaymentPage(order);
+          clearOrderForm();
+      })
+      .catch(error => {
+          console.error('Order submission failed:', error);
+          showNotification('Error placing order.', 'error');
+          clearOrderForm();
+      })
+
 }
 function clearOrderForm() {
   document.getElementById('linkInput').value = '';
@@ -2738,6 +2854,7 @@ function clearOrderForm() {
   document.getElementById('termsCheckbox').checked = false;
   selectedService = '';
   selectedPackage = null;
+  window.selectedPackage = null;
   const serviceSelected = document.getElementById('serviceSelected');
   const packageSelected = document.getElementById('packageSelected');
   const priceSection = document.getElementById('priceSection');
@@ -3264,6 +3381,7 @@ function selectPackageOption(option, packageData, value, text = null) {
       packageSelect.innerHTML = `<option value="${value}" selected>${text}</option>`;
   }
   selectedPackage = packageData;
+  window.selectedPackage = packageData;
   if (packageOptions && packageSelected) {
       packageOptions.classList.remove('active');
       packageSelected.classList.remove('active');
@@ -3470,11 +3588,13 @@ function handlePackageChange() {
   if (selectedValue) {
       const packageData = JSON.parse(packageSelect.options[packageSelect.selectedIndex].dataset.package);
       selectedPackage = packageData;
+      window.selectedPackage = packageData;
       showPriceSection(packageData);
       calculateTotal();
   } else {
       priceSection.classList.add('hidden');
       selectedPackage = null;
+      window.selectedPackage = null;
   }
 }
 function showPriceSection(packageData) {
@@ -3586,14 +3706,6 @@ async function sendTestEmail() {
   }
 }
 window.testEmail = sendTestEmail;
-function toggleContactOptions() {
-  const contactOptions = document.getElementById('contactOptions');
-  const mainBtn = document.getElementById('contactMainBtn');
-  if (contactOptions && mainBtn) {
-      contactOptions.classList.toggle('active');
-      mainBtn.classList.toggle('active');
-  }
-}
 function openWhatsAppSupport() {
   const whatsappNumber = '+919431863716';
   const message = 'Hello! I need support from India Social Panel.';
@@ -3912,7 +4024,7 @@ function showAddFundsQRCode(amount) {
   window.generateAddFundsQR = function(amount) {
       const qrContainer = document.getElementById('addFundsQrCodeContainer');
       const generateButton = document.querySelector('button[onclick="generateAddFundsQR(' + amount + ')"]');
-      
+
       if (qrContainer) {
           const upiID = 'kavita.5049-49@waicici';
           const note = `Add Funds - India Social Panel`;
@@ -4825,14 +4937,14 @@ function showCancelConfirmationPopup(onConfirm) {
       document.body.removeChild(confirmationModal);
     }
     document.body.style.overflow = 'auto';
-    
+
     // Close all payment related modals when cancellation is confirmed
     const paymentModal = document.getElementById('paymentModal');
     const upiAppsModal = document.getElementById('upiAppsModal');
     const qrCodeModal = document.getElementById('qrCodeModal');
     const upiIdModal = document.getElementById('upiIdModal');
     const creditCardModal = document.getElementById('creditCardModal');
-    
+
     if (paymentModal && paymentModal.parentElement) {
       document.body.removeChild(paymentModal);
     }
@@ -4848,11 +4960,11 @@ function showCancelConfirmationPopup(onConfirm) {
     if (creditCardModal && creditCardModal.parentElement) {
       document.body.removeChild(creditCardModal);
     }
-    
+
     // Navigate to dashboard home page
     showPage('dashboardHome');
     forceEnableScrolling();
-    
+
     onConfirm();
   };
 
@@ -5163,58 +5275,9 @@ function showUPIAppsModal(order) {
   }, 1000);
   activeIntervals.push(timerInterval);
   window.openUPIApp = function(app) {
-      const upiID = 'kavita.5049-49@waicici'; // Correct UPI ID from copy function
+      // Use our new generic UPI payment function
       const amount = order.price.toFixed(2);
-      const note = `Payment for Order ${order.id} - India Social Panel`;
-
-      let upiUrl = '';
-
-      // Generate app-specific UPI URLs for better compatibility
-      switch(app.toLowerCase()) {
-          case 'googlepay':
-              // Google Pay specific URL format
-              upiUrl = `tez://upi/pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-              // Fallback to generic UPI URL if Google Pay not installed
-              const fallbackTimer = setTimeout(() => {
-                  window.location.href = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-              }, 1000);
-              activeTimers.add(fallbackTimer);
-              break;
-
-          case 'phonepe':
-              // PhonePe specific URL format
-              upiUrl = `phonepe://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-              // Fallback to generic UPI URL
-              setTimeout(() => {
-                  window.location.href = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-              }, 1000);
-              break;
-
-          case 'paytm':
-              // Paytm specific URL format
-              upiUrl = `paytmmp://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-              // Fallback to generic UPI URL
-              setTimeout(() => {
-                  window.location.href = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-              }, 1000);
-              break;
-
-          case 'other':
-          default:
-              // Generic UPI URL that works with all UPI apps
-              upiUrl = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-              break;
-      }
-
-      // Try to open the app-specific URL first
-      try {
-          window.location.href = upiUrl;
-          showNotification(`✅ Opening ${app.toUpperCase()}... Amount ₹${amount} pre-filled`, 'success');
-      } catch (error) {
-          // If app-specific URL fails, try generic UPI URL
-          window.location.href = `upi://pay?pa=${upiID}&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-          showNotification(`✅ Opening UPI App... Amount ₹${amount} pre-filled`, 'success');
-      }
+      openGenericUPIPayment(amount);
 
       // Give user time to complete payment then return to dashboard
       setTimeout(() => {
@@ -6741,7 +6804,7 @@ function showUPIOptions() {
     if (upiAppsGrid) {
         const isVisible = upiAppsGrid.style.display !== 'none';
         upiAppsGrid.style.display = isVisible ? 'none' : 'block';
-        
+
         if (!isVisible) {
             // Scroll into view
             upiAppsGrid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -6750,49 +6813,16 @@ function showUPIOptions() {
 }
 
 function openUPIApp(appName) {
-    const amount = document.getElementById('amountInput')?.value || '0';
+    const amount = document.getElementById('addFundsAmountInput')?.value || document.getElementById('amountInput')?.value || '0';
     const amountInINR = currentCurrency !== 'inr' ? Math.round(parseFloat(amount) / CURRENCY_RATES[currentCurrency].rate) : parseFloat(amount);
-    
-    // UPI ID - using the embedded Kavita UPI ID
-    const upiId = 'kavita.5049-49@waicici';
-    const merchantName = 'India Social Panel';
-    
-    // UPI URL format: upi://pay?pa=UPI_ID&pn=MERCHANT_NAME&am=AMOUNT&cu=INR&tn=TRANSACTION_NOTE
-    const transactionNote = `Add Funds - India Social Panel`;
-    
-    const upiUrls = {
-        'gpay': `tez://upi/pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
-        'phonepe': `phonepe://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
-        'paytm': `paytmmp://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
-        'bhim': `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
-        'amazonpay': `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`,
-        'whatsapp': `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`
-    };
-    
-    const fallbackUrl = `upi://pay?pa=${upiId}&pn=${merchantName}&am=${amountInINR}&cu=INR&tn=${transactionNote}`;
-    
+
     if (amountInINR < 1) {
         showNotification('Please enter a valid amount to proceed with payment', 'error');
         return;
     }
-    
-    // Attempt to open the specific UPI app
-    const upiUrl = upiUrls[appName] || fallbackUrl;
-    
-    // For mobile devices, try to open the UPI app
-    if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        window.location.href = upiUrl;
-        
-        // Fallback notification
-        safeSetTimeout(() => {
-            showNotification(`Opening ${getAppDisplayName(appName)}... If the app doesn't open, please ensure it's installed on your device.`, 'info');
-        }, 1000);
-    } else {
-        // For desktop, show QR code or instructions
-        showQRCodeForUPI(upiId, amountInINR, appName);
-    }
-    
-    showNotification(`Initiating payment of ₹${amountInINR} via ${getAppDisplayName(appName)}`, 'success');
+
+    // Use our new generic UPI payment function
+    openGenericUPIPayment(amountInINR);
 }
 
 function getAppDisplayName(appName) {
@@ -6814,7 +6844,7 @@ function showQRCodeForUPI(upiId, amount, appName) {
         UPI Payment Details:
         UPI ID: ${upiId}
         Amount: ₹${amount}
-        
+
         Scan QR code with ${getAppDisplayName(appName)} or any UPI app to pay.
     `;
     showNotification(message, 'info');
@@ -6824,20 +6854,20 @@ function showQRCodeForUPI(upiId, amount, appName) {
 function initializeAllEnhancements() {
     // Initialize first visit tracking
     initializeFirstVisitTracking();
-    
+
     // Initialize currency system
     initializeCurrencySystem();
-    
+
     // Update price displays
     updateAllPricesDisplay();
-    
+
     console.log('🚀 All enhancement features initialized successfully!');
 }
 
 // Enhanced DOMContentLoaded Event - Include new initializations
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 India Social Panel - Ultra-fast initialization starting...');
-    
+
     // Start performance monitoring immediately
     startPerformanceMonitoring();
 
