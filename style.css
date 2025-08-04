@@ -7773,22 +7773,22 @@ body.dark-mode .upi-app-btn:hover {
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .order-footer {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
-  
+
   .upi-apps-container {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
-  
+
   .enhanced-order-item {
     padding: 15px;
   }
-  
+
   .upi-apps-grid {
     padding: 15px;
   }
