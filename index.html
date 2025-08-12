@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- EmailJS CDN for email notifications -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 </head>
 <body>
     <!-- Main Dashboard -->
@@ -105,8 +104,8 @@
                     <div class="stats-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3>TOTAL ORDERS AT INDIASOCIALPANEL.IN</h3>
-                    <div class="stats-number">119168991</div>
+                    <h3>TOTAL ORDERS AT INDIASOCIALPANEL</h3>
+                    <div class="stats-number">119168990</div>
                     <p>3+ years experience providing SMM services!</p>
                 </div>
 
@@ -792,15 +791,15 @@
                             max="100000"
                             oninput="validateAddFundsAmount()"
                         >
-                        <div class="amount-note">Minimum: ₹100 | Maximum: ₹100,000</div>
+                        <div class="amount-note">Minimum: ₹100| Maximum: ₹100,000</div>
 
                         <!-- Quick Amount Buttons -->
                         <div class="quick-amounts">
                             <h4>💡 Quick Select</h4>
                             <div class="quick-amount-grid">
                                 <button class="quick-amount-btn" onclick="setQuickAmount(500)">₹500</button>
-                                <button class="quick-amount-btn" onclick="setQuickAmount(1000)">₹1K</button>
-                                <button class="quick-amount-btn" onclick="setQuickAmount(2000)">₹2K</button>
+                                <button class="quick-amount-btn" onclick="setQuickAmount(1000)">₹1000</button>
+                                <button class="quick-amount-btn" onclick="setQuickAmount(2000)">₹2000</button>
                             </div>
                         </div>
 
@@ -1425,12 +1424,12 @@ print(response.json())</code></pre>
                                 <label>Confirm New Password</label>
                                 <input type="password" class="profile-input" placeholder="Confirm new password">
                             </div>
-                            <div class="profile-field">
+                            <div class="profile-field" id="twoFactorSection">
                                 <label>Two-Factor Authentication</label>
-                                <span class="unverified-badge">
+                                <span class="unverified-badge" id="tfaStatus">
                                     <i class="fas fa-exclamation-triangle"></i> Not Enabled
                                 </span>
-                                <button class="profile-edit-btn" style="margin-left: 10px;">
+                                <button class="profile-edit-btn" id="enable2FABtn" onclick="open2FAModal()" style="margin-left: 10px;">
                                     <i class="fas fa-mobile-alt"></i> Enable 2FA
                                 </button>
                             </div>
@@ -1459,8 +1458,28 @@ print(response.json())</code></pre>
                             <div class="profile-field">
                                 <label>Language</label>
                                 <select class="profile-input" id="profileLanguageSelect" onchange="updateLanguage(this.value)">
-                                    <option value="english" selected>English</option>
-                                    <option value="hindi">Hindi</option>
+                                <option value="english" data-flag="🇺🇸">🇺🇸 English</option>
+                                <option value="hindi" data-flag="🇮🇳">🇮🇳 हिंदी (Hindi)</option>
+                                <option value="spanish" data-flag="🇪🇸">🇪🇸 Español</option>
+                                <option value="french" data-flag="🇫🇷">🇫🇷 Français</option>
+                                <option value="german" data-flag="🇩🇪">🇩🇪 Deutsch</option>
+                                <option value="italian" data-flag="🇮🇹">🇮🇹 Italiano</option>
+                                <option value="portuguese" data-flag="🇧🇷">🇧🇷 Português</option>
+                                <option value="russian" data-flag="🇷🇺">🇷🇺 Русский</option>
+                                <option value="chinese" data-flag="🇨🇳">🇨🇳 中文</option>
+                                <option value="japanese" data-flag="🇯🇵">🇯🇵 日本語</option>
+                                <option value="korean" data-flag="🇰🇷">🇰🇷 한국어</option>
+                                <option value="arabic" data-flag="🇸🇦">🇸🇦 العربية</option>
+                                <option value="dutch" data-flag="🇳🇱">🇳🇱 Nederlands</option>
+                                <option value="polish" data-flag="🇵🇱">🇵🇱 Polski</option>
+                                <option value="turkish" data-flag="🇹🇷">🇹🇷 Türkçe</option>
+                                <option value="swedish" data-flag="🇸🇪">🇸🇪 Svenska</option>
+                                <option value="norwegian" data-flag="🇳🇴">🇳🇴 Norsk</option>
+                                <option value="danish" data-flag="🇩🇰">🇩🇰 Dansk</option>
+                                <option value="finnish" data-flag="🇫🇮">🇫🇮 Suomi</option>
+                                <option value="greek" data-flag="🇬🇷">🇬🇷 Ελληνικά</option>
+                                <option value="hebrew" data-flag="🇮🇱">🇮🇱 עברית</option>
+                                <option value="thai" data-flag="🇹🇭">🇹🇭 ไทย</option>                                                                                                                                                                                                
                                 </select>
                             </div>
                             <div class="profile-field">
@@ -1481,16 +1500,17 @@ print(response.json())</code></pre>
                             <div class="profile-field">
                                 <label>Email Notifications</label>
                                 <select class="profile-input">
-                                    <option value="all" selected>All Notifications</option>
+                                    <option value="all" selected>Disable</option>
                                     <option value="important">Important Only</option>
-                                    <option value="none">Disable All</option>
+                                    <option value="none">All Notifications</option>
                                 </select>
                             </div>
                             <div class="profile-field">
                                 <label>SMS Notifications</label>
                                 <select class="profile-input">
-                                    <option value="enabled" selected>Enabled</option>
-                                    <option value="disabled">Disabled</option>
+                                    <Enabledvalue="enabled" selected>Disable</option> 
+                                   <option value="important">Disable</option>
+                                    </option value="none">Enable</option>
                                 </select>
                             </div>
                             <button class="save-btn">
@@ -1582,6 +1602,64 @@ print(response.json())</code></pre>
         </footer>
     </div>
 
+    <!-- 2FA Setup Modal -->
+    <div id="twoFactorModal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="close2FAModal()"></div>
+        <div class="modal-content-2fa">
+            <div class="modal-header">
+                <h3><i class="fas fa-shield-alt"></i> Enable Two-Factor Authentication</h3>
+                <button onclick="close2FAModal()" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="step-indicator">
+                    <div class="step active">1</div>
+                    <div class="step">2</div>
+                </div>
+                
+                <div class="tfa-step step-1">
+                    <h4>📱 Enter Your Mobile Number</h4>
+                    <p>We'll send you a verification code to secure your account</p>
+                    
+                    <div class="phone-input-container">
+                        <div class="country-selector">
+                            <span class="flag">🇮🇳</span>
+                            <span class="code">+91</span>
+                        </div>
+                        <input type="tel" id="phoneNumber" placeholder="Enter 10 digit mobile number" maxlength="10" oninput="validatePhoneInput(this)" onkeydown="restrictPhoneInput(event)" onpaste="handlePhonePaste(event)">
+                    </div>
+                    <div id="phoneError" class="error-message" style="display: none;"></div>
+                    
+                    <button onclick="sendOTP()" class="verify-btn">
+                        <i class="fas fa-paper-plane"></i> Send Verification Code
+                    </button>
+                </div>
+
+                <div class="tfa-step step-2" style="display: none;">
+                    <h4>✅ Verification Code Sent!</h4>
+                    <p>Enter the 6-digit code sent to +91 <span id="maskedNumber"></span></p>
+                    
+                    <div class="otp-input-container">
+                        <input type="text" maxlength="1" class="otp-digit">
+                        <input type="text" maxlength="1" class="otp-digit">
+                        <input type="text" maxlength="1" class="otp-digit">
+                        <input type="text" maxlength="1" class="otp-digit">
+                        <input type="text" maxlength="1" class="otp-digit">
+                        <input type="text" maxlength="1" class="otp-digit">
+                    </div>
+                    
+                    <button onclick="verifyOTP()" class="verify-btn">
+                        <i class="fas fa-check-circle"></i> Verify & Enable 2FA
+                    </button>
+                    <button onclick="resendOTP()" class="resend-btn">
+                        <i class="fas fa-refresh"></i> Resend Code
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Enhanced Floating Contact Widget -->
     <div class="floating-contact">
         <div class="contact-widget">
@@ -1633,13 +1711,15 @@ print(response.json())</code></pre>
                         <i class="fas fa-robot"></i>
                     </div>
                     <div class="message-content">
-                        <p>Hello! 👋 I'm India Social Panel's AI Assistant. I can help you with SMM services, orders, payments and other queries.</p>
+                        <p>नमस्ते! 🙏 मैं India Social Panel का AI Assistant हूं। मैं आपकी SMM services, orders, payments और अन्य queries में मदद कर सकता हूं।</p>
                         <div class="quick-questions">
-                            <h4>Quick Questions:</h4>
-                            <button class="quick-btn" onclick="askQuickQuestion('How to place an order?')">How to place an order?</button>
-                            <button class="quick-btn" onclick="askQuickQuestion('What payment methods do you accept?')">Payment methods?</button>
-                            <button class="quick-btn" onclick="askQuickQuestion('How to check order status?')">Order status?</button>
-                            <button class="quick-btn" onclick="askQuickQuestion('What is API?')">API information?</button>
+                            <h4>💡 Popular Questions:</h4>
+                            <button class="quick-btn" onclick="askQuickQuestion('How to place an order?')">🛒 Order कैसे करें?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('What payment methods do you accept?')">💳 Payment methods?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('How to check order status?')">📊 Order status कैसे check करें?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('What is API?')">🔗 API क्या है?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('Best services for Instagram growth?')">📸 Instagram growth tips?</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('YouTube services available?')">🎥 YouTube services?</button>
                         </div>
                     </div>
                 </div>
